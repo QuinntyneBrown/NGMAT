@@ -80,8 +80,12 @@ public static class MessagingActivitySource
     /// </summary>
     public static void RecordException(Activity? activity, Exception exception)
     {
-        activity?.SetStatus(ActivityStatusCode.Error, exception.Message);
-        activity?.RecordException(exception);
+        if (activity == null) return;
+
+        activity.SetStatus(ActivityStatusCode.Error, exception.Message);
+        activity.SetTag("exception.type", exception.GetType().FullName);
+        activity.SetTag("exception.message", exception.Message);
+        activity.SetTag("exception.stacktrace", exception.StackTrace);
     }
 
     /// <summary>
