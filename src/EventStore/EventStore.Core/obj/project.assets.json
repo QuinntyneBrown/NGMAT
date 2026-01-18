@@ -678,7 +678,7 @@
     ]
   },
   "packageFolders": {
-    "/home/runner/.nuget/packages/": {}
+    "/home/runner/work/NGMAT/.codeql-scratch/dbs/csharp/working/packages": {}
   },
   "project": {
     "version": "1.0.0",
@@ -686,7 +686,7 @@
       "projectUniqueName": "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Core/EventStore.Core.csproj",
       "projectName": "EventStore.Core",
       "projectPath": "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Core/EventStore.Core.csproj",
-      "packagesPath": "/home/runner/.nuget/packages/",
+      "packagesPath": "/home/runner/work/NGMAT/.codeql-scratch/dbs/csharp/working/packages",
       "outputPath": "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Core/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
@@ -737,6 +737,16 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.22, 8.0.22]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.22, 8.0.22]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"

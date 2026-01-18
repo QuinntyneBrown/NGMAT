@@ -1,13 +1,48 @@
+using MissionManagement.Infrastructure.Extensions;
+using MissionManagement.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+using Serilog;
+using Shared.Messaging.UdpMulticast.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .Enrich.WithMachineName()
+    .WriteTo.Console()
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
+// Add services to the container
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new() { Title = "Mission Management API", Version = "v1" });
+});
+
+// Add Mission Management infrastructure
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? "Server=(localdb)\\mssqllocaldb;Database=MissionManagement;Trusted_Connection=True;MultipleActiveResultSets=true";
+
+builder.Services.AddMissionManagementInfrastructure(connectionString);
+
+// Add UDP Multicast messaging for local development
+builder.Services.AddUdpMulticastEventBus(options =>
+{
+    builder.Configuration.GetSection("UdpMulticast").Bind(options);
+});
+
+// Add health checks
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<MissionManagementDbContext>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -16,29 +51,24 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+app.UseSerilogRequestLogging();
 
-app.MapGet("/weatherforecast", () =>
+app.UseAuthorization();
+
+app.MapControllers();
+
+// Map health check endpoint
+app.MapHealthChecks("/health");
+
+// Ensure database is created (for development)
+if (app.Environment.IsDevelopment())
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<MissionManagementDbContext>();
+    dbContext.Database.EnsureCreated();
+}
+
+Log.Information("Mission Management API starting...");
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
