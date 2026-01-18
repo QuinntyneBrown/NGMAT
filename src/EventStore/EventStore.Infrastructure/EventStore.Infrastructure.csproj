@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EventStore.Core\EventStore.Core.csproj" />
+    <ProjectReference Include="..\..\Shared\Shared.Messaging.Abstractions\Shared.Messaging.Abstractions.csproj" />
+  </ItemGroup>
+
 </Project>
