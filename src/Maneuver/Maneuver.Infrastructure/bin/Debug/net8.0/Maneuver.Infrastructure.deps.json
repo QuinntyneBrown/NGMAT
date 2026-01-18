@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Maneuver.Infrastructure/1.0.0": {
+        "runtime": {
+          "Maneuver.Infrastructure.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Maneuver.Infrastructure/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

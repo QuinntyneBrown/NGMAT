@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGMAT - User Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <style>
+    :root {
+      --primary-500: #2196f3;
+      --accent-500: #ff9800;
+      --warn-500: #f44336;
+      --surface-background: #121212;
+      --surface-card: #1e1e1e;
+      --surface-elevated: #2d2d2d;
+      --surface-divider: rgba(255, 255, 255, 0.12);
+      --surface-hover: rgba(255, 255, 255, 0.08);
+      --text-primary: rgba(255, 255, 255, 0.87);
+      --text-secondary: rgba(255, 255, 255, 0.60);
+      --text-disabled: rgba(255, 255, 255, 0.38);
+      --status-success: #4caf50;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --elevation-4: 0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--surface-background);
+      color: var(--text-primary);
+    }
+
+    .app-container { display: flex; flex-direction: column; height: 100vh; }
+
+    .mat-toolbar {
+      display: flex; align-items: center;
+      padding: 0 var(--spacing-md);
+      height: 64px;
+      background-color: var(--surface-card);
+      box-shadow: var(--elevation-4);
+      z-index: 1000;
+    }
+
+    .mat-toolbar__back {
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border: none; border-radius: 50%;
+      background: transparent; color: var(--text-primary); cursor: pointer;
+    }
+
+    .mat-toolbar__title { font-size: 18px; font-weight: 500; margin-left: var(--spacing-md); }
+    .mat-toolbar__spacer { flex: 1; }
+
+    .btn {
+      display: inline-flex; align-items: center; padding: 0 var(--spacing-md);
+      height: 36px; border: none; border-radius: var(--radius-sm);
+      font-family: 'Roboto', sans-serif; font-size: 14px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 1.25px; cursor: pointer; gap: var(--spacing-sm);
+    }
+
+    .btn--primary { background-color: var(--primary-500); color: white; }
+    .btn--stroked { background: transparent; color: var(--primary-500); border: 1px solid var(--primary-500); }
+    .btn--warn { background: transparent; color: var(--warn-500); border: 1px solid var(--warn-500); }
+
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--spacing-xl);
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Profile Header */
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xl);
+      padding: var(--spacing-xl);
+      background-color: var(--surface-card);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-500), var(--accent-500));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      font-weight: 500;
+      color: white;
+      position: relative;
+    }
+
+    .profile-avatar__edit {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 36px;
+      height: 36px;
+      background-color: var(--surface-elevated);
+      border: 2px solid var(--surface-card);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-primary);
+    }
+
+    .profile-info { flex: 1; }
+    .profile-name { font-size: 28px; font-weight: 400; margin-bottom: var(--spacing-xs); }
+    .profile-email { font-size: 14px; color: var(--text-secondary); margin-bottom: var(--spacing-md); }
+
+    .profile-stats {
+      display: flex;
+      gap: var(--spacing-xl);
+    }
+
+    .profile-stat { text-align: center; }
+    .profile-stat__value { font-size: 24px; font-weight: 500; color: var(--primary-500); }
+    .profile-stat__label { font-size: 12px; color: var(--text-secondary); }
+
+    .profile-actions {
+      display: flex;
+      gap: var(--spacing-sm);
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: var(--spacing-xs);
+      margin-bottom: var(--spacing-lg);
+      border-bottom: 1px solid var(--surface-divider);
+    }
+
+    .tab {
+      padding: var(--spacing-md) var(--spacing-lg);
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .tab--active {
+      color: var(--primary-500);
+    }
+
+    .tab--active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: var(--primary-500);
+    }
+
+    /* Section */
+    .section {
+      background-color: var(--surface-card);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-lg);
+      overflow: hidden;
+    }
+
+    .section__header {
+      padding: var(--spacing-md) var(--spacing-lg);
+      background-color: var(--surface-elevated);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section__title { font-size: 14px; font-weight: 500; }
+    .section__content { padding: var(--spacing-lg); }
+
+    /* Form */
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .form-row--single { grid-template-columns: 1fr; }
+    .form-row:last-child { margin-bottom: 0; }
+
+    .form-field { display: flex; flex-direction: column; }
+
+    .form-field__label {
+      font-size: 12px; font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-xs);
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    .form-field__input {
+      padding: var(--spacing-md);
+      background-color: var(--surface-background);
+      border: 1px solid var(--surface-divider);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+    }
+
+    .form-field__input:focus {
+      outline: none;
+      border-color: var(--primary-500);
+    }
+
+    .form-field__input--readonly {
+      background-color: var(--surface-elevated);
+      color: var(--text-secondary);
+    }
+
+    /* Connected Accounts */
+    .connected-account {
+      display: flex;
+      align-items: center;
+      padding: var(--spacing-md) 0;
+      border-bottom: 1px solid var(--surface-divider);
+    }
+
+    .connected-account:last-child { border-bottom: none; }
+
+    .connected-account__icon {
+      width: 40px;
+      height: 40px;
+      background-color: var(--surface-elevated);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: var(--spacing-md);
+    }
+
+    .connected-account__info { flex: 1; }
+    .connected-account__name { font-size: 14px; font-weight: 500; }
+    .connected-account__status { font-size: 12px; color: var(--status-success); display: flex; align-items: center; gap: var(--spacing-xs); }
+    .connected-account__status--disconnected { color: var(--text-secondary); }
+
+    /* Security Item */
+    .security-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--spacing-md) 0;
+      border-bottom: 1px solid var(--surface-divider);
+    }
+
+    .security-item:last-child { border-bottom: none; }
+
+    .security-item__info { flex: 1; }
+    .security-item__title { font-size: 14px; font-weight: 500; }
+    .security-item__desc { font-size: 13px; color: var(--text-secondary); margin-top: var(--spacing-xs); }
+
+    .security-item__status {
+      padding: var(--spacing-xs) var(--spacing-md);
+      background-color: rgba(76, 175, 80, 0.2);
+      color: var(--status-success);
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .security-item__status--warning {
+      background-color: rgba(255, 152, 0, 0.2);
+      color: var(--accent-500);
+    }
+
+    /* Session Item */
+    .session-item {
+      display: flex;
+      align-items: center;
+      padding: var(--spacing-md) 0;
+      border-bottom: 1px solid var(--surface-divider);
+    }
+
+    .session-item:last-child { border-bottom: none; }
+
+    .session-item__icon {
+      width: 40px;
+      height: 40px;
+      background-color: var(--surface-elevated);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: var(--spacing-md);
+      color: var(--text-secondary);
+    }
+
+    .session-item__icon--current { color: var(--status-success); }
+
+    .session-item__info { flex: 1; }
+    .session-item__device { font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: var(--spacing-sm); }
+    .session-item__current { font-size: 11px; color: var(--status-success); background: rgba(76, 175, 80, 0.2); padding: 2px 8px; border-radius: 4px; }
+    .session-item__details { font-size: 12px; color: var(--text-secondary); margin-top: var(--spacing-xs); }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header class="mat-toolbar">
+      <button class="mat-toolbar__back">
+        <span class="material-icons-outlined">arrow_back</span>
+      </button>
+      <span class="mat-toolbar__title">Profile</span>
+      <div class="mat-toolbar__spacer"></div>
+    </header>
+
+    <div class="main-content">
+      <!-- Profile Header -->
+      <div class="profile-header">
+        <div class="profile-avatar">
+          JD
+          <div class="profile-avatar__edit">
+            <span class="material-icons-outlined" style="font-size: 18px;">photo_camera</span>
+          </div>
+        </div>
+        <div class="profile-info">
+          <h1 class="profile-name">John Doe</h1>
+          <p class="profile-email">john.doe@example.com</p>
+          <div class="profile-stats">
+            <div class="profile-stat">
+              <div class="profile-stat__value">12</div>
+              <div class="profile-stat__label">Missions</div>
+            </div>
+            <div class="profile-stat">
+              <div class="profile-stat__value">23</div>
+              <div class="profile-stat__label">Spacecraft</div>
+            </div>
+            <div class="profile-stat">
+              <div class="profile-stat__value">156</div>
+              <div class="profile-stat__label">Simulations</div>
+            </div>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <button class="btn btn--primary">
+            <span class="material-icons-outlined" style="font-size: 18px;">edit</span>
+            Edit Profile
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab tab--active">Account</button>
+        <button class="tab">Security</button>
+        <button class="tab">Connected Apps</button>
+        <button class="tab">Sessions</button>
+      </div>
+
+      <!-- Personal Information -->
+      <section class="section">
+        <div class="section__header">
+          <span class="section__title">Personal Information</span>
+        </div>
+        <div class="section__content">
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-field__label">First Name</label>
+              <input type="text" class="form-field__input" value="John">
+            </div>
+            <div class="form-field">
+              <label class="form-field__label">Last Name</label>
+              <input type="text" class="form-field__input" value="Doe">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-field__label">Email Address</label>
+              <input type="email" class="form-field__input" value="john.doe@example.com">
+            </div>
+            <div class="form-field">
+              <label class="form-field__label">Phone Number</label>
+              <input type="tel" class="form-field__input" value="+1 (555) 123-4567">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-field__label">Organization</label>
+              <input type="text" class="form-field__input" value="Space Technologies Inc.">
+            </div>
+            <div class="form-field">
+              <label class="form-field__label">Role</label>
+              <input type="text" class="form-field__input" value="Mission Analyst">
+            </div>
+          </div>
+          <div class="form-row form-row--single">
+            <div class="form-field">
+              <label class="form-field__label">User ID</label>
+              <input type="text" class="form-field__input form-field__input--readonly" value="USR-2025-00042" readonly>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Security -->
+      <section class="section">
+        <div class="section__header">
+          <span class="section__title">Security</span>
+        </div>
+        <div class="section__content">
+          <div class="security-item">
+            <div class="security-item__info">
+              <div class="security-item__title">Password</div>
+              <div class="security-item__desc">Last changed 30 days ago</div>
+            </div>
+            <button class="btn btn--stroked">Change Password</button>
+          </div>
+          <div class="security-item">
+            <div class="security-item__info">
+              <div class="security-item__title">Two-Factor Authentication</div>
+              <div class="security-item__desc">Add an extra layer of security to your account</div>
+            </div>
+            <span class="security-item__status">Enabled</span>
+          </div>
+          <div class="security-item">
+            <div class="security-item__info">
+              <div class="security-item__title">Recovery Email</div>
+              <div class="security-item__desc">j***@backup.com</div>
+            </div>
+            <button class="btn btn--stroked">Update</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Connected Accounts -->
+      <section class="section">
+        <div class="section__header">
+          <span class="section__title">Connected Accounts</span>
+        </div>
+        <div class="section__content">
+          <div class="connected-account">
+            <div class="connected-account__icon">
+              <span class="material-icons-outlined">g_translate</span>
+            </div>
+            <div class="connected-account__info">
+              <div class="connected-account__name">Google</div>
+              <div class="connected-account__status">
+                <span class="material-icons-outlined" style="font-size: 14px;">check_circle</span>
+                Connected
+              </div>
+            </div>
+            <button class="btn btn--stroked">Disconnect</button>
+          </div>
+          <div class="connected-account">
+            <div class="connected-account__icon">
+              <span class="material-icons-outlined">window</span>
+            </div>
+            <div class="connected-account__info">
+              <div class="connected-account__name">Microsoft</div>
+              <div class="connected-account__status connected-account__status--disconnected">Not connected</div>
+            </div>
+            <button class="btn btn--primary">Connect</button>
+          </div>
+          <div class="connected-account">
+            <div class="connected-account__icon">
+              <span class="material-icons-outlined">code</span>
+            </div>
+            <div class="connected-account__info">
+              <div class="connected-account__name">GitHub</div>
+              <div class="connected-account__status">
+                <span class="material-icons-outlined" style="font-size: 14px;">check_circle</span>
+                Connected
+              </div>
+            </div>
+            <button class="btn btn--stroked">Disconnect</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Active Sessions -->
+      <section class="section">
+        <div class="section__header">
+          <span class="section__title">Active Sessions</span>
+          <button class="btn btn--warn">Sign Out All</button>
+        </div>
+        <div class="section__content">
+          <div class="session-item">
+            <div class="session-item__icon session-item__icon--current">
+              <span class="material-icons-outlined">computer</span>
+            </div>
+            <div class="session-item__info">
+              <div class="session-item__device">
+                Windows - Chrome
+                <span class="session-item__current">Current</span>
+              </div>
+              <div class="session-item__details">New York, USA - Active now</div>
+            </div>
+          </div>
+          <div class="session-item">
+            <div class="session-item__icon">
+              <span class="material-icons-outlined">laptop_mac</span>
+            </div>
+            <div class="session-item__info">
+              <div class="session-item__device">macOS - Safari</div>
+              <div class="session-item__details">San Francisco, USA - Last active 2 hours ago</div>
+            </div>
+            <button class="btn btn--stroked">Sign Out</button>
+          </div>
+          <div class="session-item">
+            <div class="session-item__icon">
+              <span class="material-icons-outlined">phone_iphone</span>
+            </div>
+            <div class="session-item__info">
+              <div class="session-item__device">iOS - NGMAT Mobile</div>
+              <div class="session-item__details">New York, USA - Last active yesterday</div>
+            </div>
+            <button class="btn btn--stroked">Sign Out</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Danger Zone -->
+      <section class="section" style="border: 1px solid rgba(244, 67, 54, 0.3);">
+        <div class="section__header" style="background-color: rgba(244, 67, 54, 0.1);">
+          <span class="section__title" style="color: var(--warn-500);">Danger Zone</span>
+        </div>
+        <div class="section__content">
+          <div class="security-item">
+            <div class="security-item__info">
+              <div class="security-item__title">Delete Account</div>
+              <div class="security-item__desc">Permanently delete your account and all associated data. This action cannot be undone.</div>
+            </div>
+            <button class="btn btn--warn">Delete Account</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

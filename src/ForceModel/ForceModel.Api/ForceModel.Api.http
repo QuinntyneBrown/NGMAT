@@ -1,0 +1,6 @@
+@ForceModel.Api_HostAddress = http://localhost:5189
+
+GET {{ForceModel.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

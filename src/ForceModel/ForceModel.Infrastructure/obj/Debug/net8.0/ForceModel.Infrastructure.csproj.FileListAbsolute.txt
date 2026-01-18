@@ -1,0 +1,12 @@
+C:\projects\NGMAT\src\ForceModel\ForceModel.Infrastructure\bin\Debug\net8.0\ForceModel.Infrastructure.deps.json
+C:\projects\NGMAT\src\ForceModel\ForceModel.Infrastructure\bin\Debug\net8.0\ForceModel.Infrastructure.dll
+C:\projects\NGMAT\src\ForceModel\ForceModel.Infrastructure\bin\Debug\net8.0\ForceModel.Infrastructure.pdb
+C:\projects\NGMAT\src\ForceModel\ForceModel.Infrastructure\obj\Debug\net8.0\ForceModel.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\NGMAT\src\ForceModel\ForceModel.Infrastructure\obj\Debug\net8.0\ForceModel.Infrastructure.AssemblyInfoInputs.cache
+C:\projects\NGMAT\src\ForceModel\ForceModel.Infrastructure\obj\Debug\net8.0\ForceModel.Infrastructure.AssemblyInfo.cs
+C:\projects\NGMAT\src\ForceModel\ForceModel.Infrastructure\obj\Debug\net8.0\ForceModel.Infrastructure.csproj.CoreCompileInputs.cache
+C:\projects\NGMAT\src\ForceModel\ForceModel.Infrastructure\obj\Debug\net8.0\ForceModel.Infrastructure.sourcelink.json
+C:\projects\NGMAT\src\ForceModel\ForceModel.Infrastructure\obj\Debug\net8.0\ForceModel.Infrastructure.dll
+C:\projects\NGMAT\src\ForceModel\ForceModel.Infrastructure\obj\Debug\net8.0\refint\ForceModel.Infrastructure.dll
+C:\projects\NGMAT\src\ForceModel\ForceModel.Infrastructure\obj\Debug\net8.0\ForceModel.Infrastructure.pdb
+C:\projects\NGMAT\src\ForceModel\ForceModel.Infrastructure\obj\Debug\net8.0\ref\ForceModel.Infrastructure.dll

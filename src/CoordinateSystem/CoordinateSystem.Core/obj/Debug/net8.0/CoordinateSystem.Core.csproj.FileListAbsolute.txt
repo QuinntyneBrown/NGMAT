@@ -1,0 +1,12 @@
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Core\bin\Debug\net8.0\CoordinateSystem.Core.deps.json
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Core\bin\Debug\net8.0\CoordinateSystem.Core.dll
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Core\bin\Debug\net8.0\CoordinateSystem.Core.pdb
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Core\obj\Debug\net8.0\CoordinateSystem.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Core\obj\Debug\net8.0\CoordinateSystem.Core.AssemblyInfoInputs.cache
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Core\obj\Debug\net8.0\CoordinateSystem.Core.AssemblyInfo.cs
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Core\obj\Debug\net8.0\CoordinateSystem.Core.csproj.CoreCompileInputs.cache
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Core\obj\Debug\net8.0\CoordinateSystem.Core.sourcelink.json
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Core\obj\Debug\net8.0\CoordinateSystem.Core.dll
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Core\obj\Debug\net8.0\refint\CoordinateSystem.Core.dll
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Core\obj\Debug\net8.0\CoordinateSystem.Core.pdb
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Core\obj\Debug\net8.0\ref\CoordinateSystem.Core.dll

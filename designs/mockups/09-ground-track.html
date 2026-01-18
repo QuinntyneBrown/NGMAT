@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGMAT - Ground Track Map</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <style>
+    :root {
+      --primary-500: #2196f3;
+      --accent-500: #ff9800;
+      --surface-background: #121212;
+      --surface-card: #1e1e1e;
+      --surface-elevated: #2d2d2d;
+      --surface-divider: rgba(255, 255, 255, 0.12);
+      --surface-hover: rgba(255, 255, 255, 0.08);
+      --text-primary: rgba(255, 255, 255, 0.87);
+      --text-secondary: rgba(255, 255, 255, 0.60);
+      --text-disabled: rgba(255, 255, 255, 0.38);
+      --track-1: #00bcd4;
+      --track-2: #ff9800;
+      --track-3: #4caf50;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --elevation-4: 0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--surface-background);
+      color: var(--text-primary);
+    }
+
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    /* Toolbar */
+    .mat-toolbar {
+      display: flex;
+      align-items: center;
+      padding: 0 var(--spacing-md);
+      height: 56px;
+      background-color: rgba(30, 30, 30, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--elevation-4);
+      z-index: 1000;
+    }
+
+    .mat-toolbar__back {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    .mat-toolbar__title { font-size: 16px; font-weight: 500; margin-left: var(--spacing-md); }
+    .mat-toolbar__spacer { flex: 1; }
+    .mat-toolbar__actions { display: flex; align-items: center; gap: var(--spacing-sm); }
+
+    .icon-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    .icon-btn:hover { background-color: var(--surface-hover); }
+
+    /* Map Container */
+    .map-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* World Map Background */
+    .world-map {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, #0a1628 0%, #1a237e 50%, #0a1628 100%);
+      position: relative;
+    }
+
+    /* Lat/Lon Grid */
+    .map-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: calc(100% / 12) calc(100% / 6);
+    }
+
+    /* Continents (simplified shapes) */
+    .continent {
+      position: absolute;
+      background-color: rgba(46, 125, 50, 0.4);
+      border: 1px solid rgba(76, 175, 80, 0.3);
+    }
+
+    .continent--na {
+      top: 15%;
+      left: 10%;
+      width: 20%;
+      height: 25%;
+      border-radius: 30% 50% 40% 20%;
+    }
+
+    .continent--sa {
+      top: 45%;
+      left: 20%;
+      width: 10%;
+      height: 30%;
+      border-radius: 40% 60% 50% 30%;
+    }
+
+    .continent--eu {
+      top: 18%;
+      left: 45%;
+      width: 12%;
+      height: 15%;
+      border-radius: 40% 50% 30% 60%;
+    }
+
+    .continent--af {
+      top: 35%;
+      left: 45%;
+      width: 12%;
+      height: 30%;
+      border-radius: 30% 40% 50% 30%;
+    }
+
+    .continent--as {
+      top: 15%;
+      left: 55%;
+      width: 25%;
+      height: 30%;
+      border-radius: 20% 40% 50% 30%;
+    }
+
+    .continent--au {
+      top: 55%;
+      left: 75%;
+      width: 8%;
+      height: 15%;
+      border-radius: 30% 50% 40% 60%;
+    }
+
+    /* Ground Tracks */
+    .ground-track {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .ground-track svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .track-path {
+      fill: none;
+      stroke-width: 2;
+      stroke-dasharray: 5, 3;
+    }
+
+    .track-path--1 { stroke: var(--track-1); }
+    .track-path--2 { stroke: var(--track-2); }
+    .track-path--3 { stroke: var(--track-3); }
+
+    .track-current {
+      fill: none;
+      stroke-width: 3;
+    }
+
+    .track-current--1 { stroke: var(--track-1); }
+    .track-current--2 { stroke: var(--track-2); }
+    .track-current--3 { stroke: var(--track-3); }
+
+    /* Spacecraft Position Markers */
+    .spacecraft-marker {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .spacecraft-marker::after {
+      content: '';
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 2px solid;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    .spacecraft-marker--1 {
+      background-color: var(--track-1);
+      top: 35%;
+      left: 65%;
+    }
+
+    .spacecraft-marker--1::after { border-color: var(--track-1); }
+
+    .spacecraft-marker--2 {
+      background-color: var(--track-2);
+      top: 55%;
+      left: 25%;
+    }
+
+    .spacecraft-marker--2::after { border-color: var(--track-2); }
+
+    .spacecraft-marker--3 {
+      background-color: var(--track-3);
+      top: 28%;
+      left: 48%;
+    }
+
+    .spacecraft-marker--3::after { border-color: var(--track-3); }
+
+    /* Node markers */
+    .node-marker {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .node-marker--ascending { border: 2px solid var(--track-1); background: transparent; }
+    .node-marker--descending { background-color: var(--track-1); }
+
+    /* Info Panel */
+    .info-panel {
+      position: absolute;
+      top: var(--spacing-lg);
+      right: var(--spacing-lg);
+      width: 280px;
+      background-color: rgba(30, 30, 30, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--elevation-4);
+    }
+
+    .info-panel__header {
+      padding: var(--spacing-md);
+      background-color: var(--surface-elevated);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .info-panel__title { font-size: 14px; font-weight: 500; }
+    .info-panel__content { padding: var(--spacing-md); }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: var(--spacing-sm) 0;
+      border-bottom: 1px solid var(--surface-divider);
+    }
+
+    .info-row:last-child { border-bottom: none; }
+    .info-row__label { font-size: 12px; color: var(--text-secondary); }
+    .info-row__value { font-size: 12px; font-family: 'Roboto Mono', monospace; }
+
+    /* Map Controls */
+    .map-controls {
+      position: absolute;
+      top: var(--spacing-lg);
+      left: var(--spacing-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+
+    .control-btn {
+      width: 40px;
+      height: 40px;
+      background-color: rgba(30, 30, 30, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--surface-divider);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .control-btn:hover { background-color: var(--surface-elevated); }
+
+    /* Layers Panel */
+    .layers-panel {
+      position: absolute;
+      bottom: 100px;
+      left: var(--spacing-lg);
+      background-color: rgba(30, 30, 30, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--elevation-4);
+    }
+
+    .layers-panel__header {
+      padding: var(--spacing-sm) var(--spacing-md);
+      background-color: var(--surface-elevated);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .layers-panel__content { padding: var(--spacing-sm); }
+
+    .layer-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+
+    .layer-item:hover { background-color: var(--surface-hover); }
+
+    .layer-checkbox {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--text-secondary);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .layer-checkbox--checked {
+      background-color: var(--primary-500);
+      border-color: var(--primary-500);
+    }
+
+    .layer-checkbox--checked::after {
+      content: '';
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .layer-label { font-size: 13px; }
+
+    /* Legend */
+    .legend {
+      position: absolute;
+      bottom: 100px;
+      right: var(--spacing-lg);
+      background-color: rgba(30, 30, 30, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      box-shadow: var(--elevation-4);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-xs) 0;
+      font-size: 12px;
+    }
+
+    .legend-line {
+      width: 24px;
+      height: 3px;
+      border-radius: 1px;
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    /* Playback Controls */
+    .playback-controls {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+      padding: var(--spacing-md) var(--spacing-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+
+    .timeline {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .timeline__time {
+      font-size: 12px;
+      font-family: 'Roboto Mono', monospace;
+      color: var(--text-secondary);
+      min-width: 100px;
+    }
+
+    .timeline__track {
+      flex: 1;
+      height: 4px;
+      background-color: var(--surface-elevated);
+      border-radius: 2px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .timeline__progress {
+      width: 45%;
+      height: 100%;
+      background-color: var(--primary-500);
+      border-radius: 2px;
+    }
+
+    .timeline__thumb {
+      position: absolute;
+      top: 50%;
+      left: 45%;
+      width: 14px;
+      height: 14px;
+      background-color: var(--primary-500);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      cursor: grab;
+      box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+    }
+
+    .playback-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+    }
+
+    .play-btn {
+      width: 44px;
+      height: 44px;
+      background-color: var(--primary-500);
+      border: none;
+      border-radius: 50%;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .playback-btn {
+      width: 36px;
+      height: 36px;
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+
+    .playback-btn:hover { background-color: var(--surface-hover); }
+
+    /* Coordinate display */
+    .coord-display {
+      position: absolute;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(30, 30, 30, 0.9);
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-family: 'Roboto Mono', monospace;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Toolbar -->
+    <header class="mat-toolbar">
+      <button class="mat-toolbar__back">
+        <span class="material-icons-outlined">arrow_back</span>
+      </button>
+      <span class="mat-toolbar__title">Ground Track Map - LEO Constellation Deploy</span>
+      <div class="mat-toolbar__spacer"></div>
+      <div class="mat-toolbar__actions">
+        <button class="icon-btn">
+          <span class="material-icons-outlined">camera_alt</span>
+        </button>
+        <button class="icon-btn">
+          <span class="material-icons-outlined">layers</span>
+        </button>
+        <button class="icon-btn">
+          <span class="material-icons-outlined">settings</span>
+        </button>
+        <button class="icon-btn">
+          <span class="material-icons-outlined">fullscreen</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Map -->
+    <div class="map-container">
+      <div class="world-map">
+        <div class="map-grid"></div>
+
+        <!-- Simplified continents -->
+        <div class="continent continent--na"></div>
+        <div class="continent continent--sa"></div>
+        <div class="continent continent--eu"></div>
+        <div class="continent continent--af"></div>
+        <div class="continent continent--as"></div>
+        <div class="continent continent--au"></div>
+
+        <!-- Ground Track SVG -->
+        <div class="ground-track">
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+            <!-- SAT-001 Track -->
+            <path d="M5,30 Q15,20 25,35 T45,25 T65,40 T85,30 T100,35" class="track-path track-path--1" />
+            <path d="M0,60 Q10,50 20,65 T40,55 T60,70 T80,60 T100,65" class="track-path track-path--1" />
+            <path d="M40,25 Q50,35 65,35" class="track-current track-current--1" />
+
+            <!-- SAT-002 Track -->
+            <path d="M0,40 Q10,30 20,45 T40,35 T60,50 T80,40 T100,45" class="track-path track-path--2" />
+            <path d="M5,70 Q15,60 25,75 T45,65 T65,80 T85,70" class="track-path track-path--2" />
+            <path d="M15,50 Q25,55 30,55" class="track-current track-current--2" />
+
+            <!-- SAT-003 Track -->
+            <path d="M10,25 Q20,15 30,30 T50,20 T70,35 T90,25" class="track-path track-path--3" />
+            <path d="M0,55 Q10,45 20,60 T40,50 T60,65 T80,55 T100,60" class="track-path track-path--3" />
+            <path d="M38,20 Q48,28 52,28" class="track-current track-current--3" />
+          </svg>
+        </div>
+
+        <!-- Spacecraft Markers -->
+        <div class="spacecraft-marker spacecraft-marker--1">
+          <span class="material-icons-outlined" style="font-size: 12px; color: white;">satellite_alt</span>
+        </div>
+        <div class="spacecraft-marker spacecraft-marker--2">
+          <span class="material-icons-outlined" style="font-size: 12px; color: white;">satellite_alt</span>
+        </div>
+        <div class="spacecraft-marker spacecraft-marker--3">
+          <span class="material-icons-outlined" style="font-size: 12px; color: white;">satellite_alt</span>
+        </div>
+
+        <!-- Node Markers -->
+        <div class="node-marker node-marker--ascending" style="top: 50%; left: 40%;"></div>
+        <div class="node-marker node-marker--descending" style="top: 50%; left: 70%;"></div>
+      </div>
+
+      <!-- Map Controls -->
+      <div class="map-controls">
+        <button class="control-btn">
+          <span class="material-icons-outlined">zoom_in</span>
+        </button>
+        <button class="control-btn">
+          <span class="material-icons-outlined">zoom_out</span>
+        </button>
+        <button class="control-btn">
+          <span class="material-icons-outlined">my_location</span>
+        </button>
+      </div>
+
+      <!-- Info Panel -->
+      <div class="info-panel">
+        <div class="info-panel__header">
+          <span class="info-panel__title">SAT-001</span>
+          <button class="icon-btn" style="width: 28px; height: 28px;">
+            <span class="material-icons-outlined" style="font-size: 18px;">close</span>
+          </button>
+        </div>
+        <div class="info-panel__content">
+          <div class="info-row">
+            <span class="info-row__label">Latitude</span>
+            <span class="info-row__value">23.45° N</span>
+          </div>
+          <div class="info-row">
+            <span class="info-row__label">Longitude</span>
+            <span class="info-row__value">78.32° E</span>
+          </div>
+          <div class="info-row">
+            <span class="info-row__label">Altitude</span>
+            <span class="info-row__value">552.3 km</span>
+          </div>
+          <div class="info-row">
+            <span class="info-row__label">Velocity</span>
+            <span class="info-row__value">7.59 km/s</span>
+          </div>
+          <div class="info-row">
+            <span class="info-row__label">Ground Speed</span>
+            <span class="info-row__value">6.92 km/s</span>
+          </div>
+          <div class="info-row">
+            <span class="info-row__label">Next AOS</span>
+            <span class="info-row__value">12:34:56</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Layers Panel -->
+      <div class="layers-panel">
+        <div class="layers-panel__header">Layers</div>
+        <div class="layers-panel__content">
+          <div class="layer-item">
+            <div class="layer-checkbox layer-checkbox--checked"></div>
+            <span class="layer-label">Ground Tracks</span>
+          </div>
+          <div class="layer-item">
+            <div class="layer-checkbox layer-checkbox--checked"></div>
+            <span class="layer-label">Spacecraft</span>
+          </div>
+          <div class="layer-item">
+            <div class="layer-checkbox layer-checkbox--checked"></div>
+            <span class="layer-label">Ascending Nodes</span>
+          </div>
+          <div class="layer-item">
+            <div class="layer-checkbox"></div>
+            <span class="layer-label">Ground Stations</span>
+          </div>
+          <div class="layer-item">
+            <div class="layer-checkbox"></div>
+            <span class="layer-label">Footprints</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-line" style="background-color: var(--track-1);"></div>
+          <span>SAT-001</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-line" style="background-color: var(--track-2);"></div>
+          <span>SAT-002</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-line" style="background-color: var(--track-3);"></div>
+          <span>SAT-003</span>
+        </div>
+      </div>
+
+      <!-- Coordinate Display -->
+      <div class="coord-display">Mouse: 45.23° N, 12.45° E</div>
+
+      <!-- Playback Controls -->
+      <div class="playback-controls">
+        <div class="timeline">
+          <span class="timeline__time">2025-03-16 02:15:00</span>
+          <div class="timeline__track">
+            <div class="timeline__progress"></div>
+            <div class="timeline__thumb"></div>
+          </div>
+          <span class="timeline__time">2025-03-17 12:00:00</span>
+        </div>
+        <div class="playback-buttons">
+          <button class="playback-btn">
+            <span class="material-icons-outlined">skip_previous</span>
+          </button>
+          <button class="playback-btn">
+            <span class="material-icons-outlined">fast_rewind</span>
+          </button>
+          <button class="play-btn">
+            <span class="material-icons-outlined">pause</span>
+          </button>
+          <button class="playback-btn">
+            <span class="material-icons-outlined">fast_forward</span>
+          </button>
+          <button class="playback-btn">
+            <span class="material-icons-outlined">skip_next</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

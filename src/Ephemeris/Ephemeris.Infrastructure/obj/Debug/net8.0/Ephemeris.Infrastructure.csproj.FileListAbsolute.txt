@@ -1,0 +1,12 @@
+C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\bin\Debug\net8.0\Ephemeris.Infrastructure.deps.json
+C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\bin\Debug\net8.0\Ephemeris.Infrastructure.dll
+C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\bin\Debug\net8.0\Ephemeris.Infrastructure.pdb
+C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\obj\Debug\net8.0\Ephemeris.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\obj\Debug\net8.0\Ephemeris.Infrastructure.AssemblyInfoInputs.cache
+C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\obj\Debug\net8.0\Ephemeris.Infrastructure.AssemblyInfo.cs
+C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\obj\Debug\net8.0\Ephemeris.Infrastructure.csproj.CoreCompileInputs.cache
+C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\obj\Debug\net8.0\Ephemeris.Infrastructure.sourcelink.json
+C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\obj\Debug\net8.0\Ephemeris.Infrastructure.dll
+C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\obj\Debug\net8.0\refint\Ephemeris.Infrastructure.dll
+C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\obj\Debug\net8.0\Ephemeris.Infrastructure.pdb
+C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\obj\Debug\net8.0\ref\Ephemeris.Infrastructure.dll

@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGMAT - Notifications</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <style>
+    :root {
+      --primary-500: #2196f3;
+      --accent-500: #ff9800;
+      --warn-500: #f44336;
+      --surface-background: #121212;
+      --surface-card: #1e1e1e;
+      --surface-elevated: #2d2d2d;
+      --surface-divider: rgba(255, 255, 255, 0.12);
+      --surface-hover: rgba(255, 255, 255, 0.08);
+      --surface-selected: rgba(33, 150, 243, 0.16);
+      --text-primary: rgba(255, 255, 255, 0.87);
+      --text-secondary: rgba(255, 255, 255, 0.60);
+      --text-disabled: rgba(255, 255, 255, 0.38);
+      --status-success: #4caf50;
+      --status-info: #2196f3;
+      --status-warning: #ff9800;
+      --status-error: #f44336;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --elevation-4: 0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--surface-background);
+      color: var(--text-primary);
+    }
+
+    .app-container { display: flex; flex-direction: column; height: 100vh; }
+
+    .mat-toolbar {
+      display: flex; align-items: center;
+      padding: 0 var(--spacing-md);
+      height: 64px;
+      background-color: var(--surface-card);
+      box-shadow: var(--elevation-4);
+      z-index: 1000;
+    }
+
+    .mat-toolbar__back {
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border: none; border-radius: 50%;
+      background: transparent; color: var(--text-primary); cursor: pointer;
+    }
+
+    .mat-toolbar__title { font-size: 18px; font-weight: 500; margin-left: var(--spacing-md); }
+    .mat-toolbar__spacer { flex: 1; }
+    .mat-toolbar__actions { display: flex; align-items: center; gap: var(--spacing-sm); }
+
+    .icon-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border: none; border-radius: 50%;
+      background: transparent; color: var(--text-primary); cursor: pointer;
+    }
+
+    .icon-btn:hover { background-color: var(--surface-hover); }
+
+    .btn {
+      display: inline-flex; align-items: center; padding: 0 var(--spacing-md);
+      height: 36px; border: none; border-radius: var(--radius-sm);
+      font-family: 'Roboto', sans-serif; font-size: 14px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 1.25px; cursor: pointer; gap: var(--spacing-sm);
+    }
+
+    .btn--primary { background-color: var(--primary-500); color: white; }
+
+    .main-content { display: flex; flex: 1; overflow: hidden; }
+
+    /* Filters */
+    .filters-panel {
+      width: 250px;
+      background-color: var(--surface-card);
+      border-right: 1px solid var(--surface-divider);
+      padding: var(--spacing-md);
+    }
+
+    .filter-section { margin-bottom: var(--spacing-lg); }
+
+    .filter-section__title {
+      font-size: 11px; font-weight: 500;
+      color: var(--text-disabled);
+      text-transform: uppercase; letter-spacing: 1.5px;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .filter-item {
+      display: flex; align-items: center; gap: var(--spacing-sm);
+      padding: var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+
+    .filter-item:hover { background-color: var(--surface-hover); }
+    .filter-item--active { background-color: var(--surface-selected); color: var(--primary-500); }
+
+    .filter-item__icon { font-size: 20px; }
+    .filter-item__label { flex: 1; font-size: 14px; }
+    .filter-item__count {
+      padding: 2px 8px;
+      background-color: var(--surface-elevated);
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .filter-item--active .filter-item__count {
+      background-color: var(--primary-500);
+      color: white;
+    }
+
+    /* Notifications List */
+    .notifications-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+    .notifications-header {
+      padding: var(--spacing-md) var(--spacing-lg);
+      background-color: var(--surface-card);
+      border-bottom: 1px solid var(--surface-divider);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .notifications-header__title { font-size: 14px; font-weight: 500; }
+    .notifications-header__actions { display: flex; gap: var(--spacing-sm); }
+
+    .notifications-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .notification-group {
+      border-bottom: 1px solid var(--surface-divider);
+    }
+
+    .notification-group__header {
+      padding: var(--spacing-sm) var(--spacing-lg);
+      background-color: var(--surface-elevated);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .notification-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md) var(--spacing-lg);
+      border-bottom: 1px solid var(--surface-divider);
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .notification-item:hover { background-color: var(--surface-hover); }
+
+    .notification-item--unread { background-color: rgba(33, 150, 243, 0.05); }
+    .notification-item--unread::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background-color: var(--primary-500);
+    }
+
+    .notification-item { position: relative; }
+
+    .notification-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .notification-icon--success { background-color: rgba(76, 175, 80, 0.2); color: var(--status-success); }
+    .notification-icon--warning { background-color: rgba(255, 152, 0, 0.2); color: var(--status-warning); }
+    .notification-icon--error { background-color: rgba(244, 67, 54, 0.2); color: var(--status-error); }
+    .notification-icon--info { background-color: rgba(33, 150, 243, 0.2); color: var(--status-info); }
+
+    .notification-content { flex: 1; min-width: 0; }
+
+    .notification-title {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .notification-message {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-sm);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .notification-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      font-size: 12px;
+      color: var(--text-disabled);
+    }
+
+    .notification-meta__item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .notification-actions {
+      display: flex;
+      gap: var(--spacing-xs);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .notification-item:hover .notification-actions { opacity: 1; }
+
+    .notification-action {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .notification-action:hover {
+      background-color: var(--surface-elevated);
+      color: var(--text-primary);
+    }
+
+    /* Empty State */
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-xl);
+      color: var(--text-secondary);
+    }
+
+    .empty-state__icon {
+      width: 80px;
+      height: 80px;
+      background-color: var(--surface-elevated);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .empty-state__title {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .empty-state__message {
+      font-size: 14px;
+      text-align: center;
+    }
+
+    /* Toast Notification (floating) */
+    .toast {
+      position: fixed;
+      bottom: var(--spacing-xl);
+      right: var(--spacing-xl);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md) var(--spacing-lg);
+      background-color: var(--surface-elevated);
+      border-radius: var(--radius-md);
+      box-shadow: var(--elevation-4);
+      z-index: 1001;
+    }
+
+    .toast__icon { color: var(--status-success); }
+    .toast__message { font-size: 14px; }
+    .toast__action {
+      color: var(--primary-500);
+      background: none;
+      border: none;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-left: var(--spacing-lg);
+    }
+
+    /* Notification Dropdown Preview (for reference) */
+    .notification-dropdown {
+      position: absolute;
+      top: 60px;
+      right: 120px;
+      width: 400px;
+      background-color: var(--surface-card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--elevation-4);
+      overflow: hidden;
+      z-index: 1000;
+    }
+
+    .dropdown-header {
+      padding: var(--spacing-md);
+      border-bottom: 1px solid var(--surface-divider);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .dropdown-header__title { font-size: 16px; font-weight: 500; }
+    .dropdown-header__link {
+      color: var(--primary-500);
+      font-size: 13px;
+      text-decoration: none;
+    }
+
+    .dropdown-list { max-height: 400px; overflow-y: auto; }
+
+    .dropdown-notification {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      border-bottom: 1px solid var(--surface-divider);
+      cursor: pointer;
+    }
+
+    .dropdown-notification:hover { background-color: var(--surface-hover); }
+    .dropdown-notification--unread { background-color: rgba(33, 150, 243, 0.05); }
+
+    .dropdown-footer {
+      padding: var(--spacing-sm);
+      text-align: center;
+      border-top: 1px solid var(--surface-divider);
+    }
+
+    .dropdown-footer__link {
+      color: var(--primary-500);
+      font-size: 13px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header class="mat-toolbar">
+      <button class="mat-toolbar__back">
+        <span class="material-icons-outlined">arrow_back</span>
+      </button>
+      <span class="mat-toolbar__title">Notifications</span>
+      <div class="mat-toolbar__spacer"></div>
+      <div class="mat-toolbar__actions">
+        <button class="icon-btn">
+          <span class="material-icons-outlined">search</span>
+        </button>
+        <button class="icon-btn">
+          <span class="material-icons-outlined">settings</span>
+        </button>
+        <button class="btn btn--primary">
+          Mark All Read
+        </button>
+      </div>
+    </header>
+
+    <div class="main-content">
+      <!-- Filters -->
+      <aside class="filters-panel">
+        <div class="filter-section">
+          <div class="filter-section__title">View</div>
+          <div class="filter-item filter-item--active">
+            <span class="material-icons-outlined filter-item__icon">inbox</span>
+            <span class="filter-item__label">All</span>
+            <span class="filter-item__count">24</span>
+          </div>
+          <div class="filter-item">
+            <span class="material-icons-outlined filter-item__icon">mark_email_unread</span>
+            <span class="filter-item__label">Unread</span>
+            <span class="filter-item__count">5</span>
+          </div>
+          <div class="filter-item">
+            <span class="material-icons-outlined filter-item__icon">star</span>
+            <span class="filter-item__label">Starred</span>
+            <span class="filter-item__count">3</span>
+          </div>
+          <div class="filter-item">
+            <span class="material-icons-outlined filter-item__icon">archive</span>
+            <span class="filter-item__label">Archived</span>
+            <span class="filter-item__count">12</span>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <div class="filter-section__title">Type</div>
+          <div class="filter-item">
+            <span class="material-icons-outlined filter-item__icon" style="color: var(--status-success);">check_circle</span>
+            <span class="filter-item__label">Success</span>
+            <span class="filter-item__count">8</span>
+          </div>
+          <div class="filter-item">
+            <span class="material-icons-outlined filter-item__icon" style="color: var(--status-warning);">warning</span>
+            <span class="filter-item__label">Warnings</span>
+            <span class="filter-item__count">3</span>
+          </div>
+          <div class="filter-item">
+            <span class="material-icons-outlined filter-item__icon" style="color: var(--status-error);">error</span>
+            <span class="filter-item__label">Errors</span>
+            <span class="filter-item__count">1</span>
+          </div>
+          <div class="filter-item">
+            <span class="material-icons-outlined filter-item__icon" style="color: var(--status-info);">info</span>
+            <span class="filter-item__label">Info</span>
+            <span class="filter-item__count">12</span>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <div class="filter-section__title">Mission</div>
+          <div class="filter-item">
+            <span class="material-icons-outlined filter-item__icon">rocket_launch</span>
+            <span class="filter-item__label">LEO Constellation</span>
+            <span class="filter-item__count">15</span>
+          </div>
+          <div class="filter-item">
+            <span class="material-icons-outlined filter-item__icon">rocket_launch</span>
+            <span class="filter-item__label">GEO Transfer</span>
+            <span class="filter-item__count">6</span>
+          </div>
+          <div class="filter-item">
+            <span class="material-icons-outlined filter-item__icon">rocket_launch</span>
+            <span class="filter-item__label">Polar Survey</span>
+            <span class="filter-item__count">3</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Notifications List -->
+      <main class="notifications-panel">
+        <div class="notifications-header">
+          <span class="notifications-header__title">All Notifications (24)</span>
+          <div class="notifications-header__actions">
+            <button class="icon-btn">
+              <span class="material-icons-outlined">filter_list</span>
+            </button>
+            <button class="icon-btn">
+              <span class="material-icons-outlined">more_vert</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="notifications-list">
+          <!-- Today -->
+          <div class="notification-group">
+            <div class="notification-group__header">Today</div>
+
+            <div class="notification-item notification-item--unread">
+              <div class="notification-icon notification-icon--success">
+                <span class="material-icons-outlined">check_circle</span>
+              </div>
+              <div class="notification-content">
+                <div class="notification-title">Propagation Completed</div>
+                <div class="notification-message">LEO Constellation Deploy propagation completed successfully. 6 spacecraft processed, total simulation time: 48 hours.</div>
+                <div class="notification-meta">
+                  <span class="notification-meta__item">
+                    <span class="material-icons-outlined" style="font-size: 14px;">schedule</span>
+                    2 hours ago
+                  </span>
+                  <span class="notification-meta__item">
+                    <span class="material-icons-outlined" style="font-size: 14px;">rocket_launch</span>
+                    LEO Constellation Deploy
+                  </span>
+                </div>
+              </div>
+              <div class="notification-actions">
+                <button class="notification-action">
+                  <span class="material-icons-outlined" style="font-size: 18px;">star_border</span>
+                </button>
+                <button class="notification-action">
+                  <span class="material-icons-outlined" style="font-size: 18px;">archive</span>
+                </button>
+                <button class="notification-action">
+                  <span class="material-icons-outlined" style="font-size: 18px;">delete</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="notification-item notification-item--unread">
+              <div class="notification-icon notification-icon--warning">
+                <span class="material-icons-outlined">warning</span>
+              </div>
+              <div class="notification-content">
+                <div class="notification-title">Conjunction Warning</div>
+                <div class="notification-message">SAT-002 potential conjunction detected with debris object. Closest approach: 2.3 km at 2025-03-16 14:23:00 UTC.</div>
+                <div class="notification-meta">
+                  <span class="notification-meta__item">
+                    <span class="material-icons-outlined" style="font-size: 14px;">schedule</span>
+                    5 hours ago
+                  </span>
+                  <span class="notification-meta__item">
+                    <span class="material-icons-outlined" style="font-size: 14px;">satellite_alt</span>
+                    SAT-002
+                  </span>
+                </div>
+              </div>
+              <div class="notification-actions">
+                <button class="notification-action">
+                  <span class="material-icons-outlined" style="font-size: 18px;">star_border</span>
+                </button>
+                <button class="notification-action">
+                  <span class="material-icons-outlined" style="font-size: 18px;">archive</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="notification-item">
+              <div class="notification-icon notification-icon--info">
+                <span class="material-icons-outlined">info</span>
+              </div>
+              <div class="notification-content">
+                <div class="notification-title">Report Generated</div>
+                <div class="notification-message">Mission summary report for LEO Constellation Deploy has been generated and is ready for download.</div>
+                <div class="notification-meta">
+                  <span class="notification-meta__item">
+                    <span class="material-icons-outlined" style="font-size: 14px;">schedule</span>
+                    8 hours ago
+                  </span>
+                </div>
+              </div>
+              <div class="notification-actions">
+                <button class="notification-action">
+                  <span class="material-icons-outlined" style="font-size: 18px;">star_border</span>
+                </button>
+                <button class="notification-action">
+                  <span class="material-icons-outlined" style="font-size: 18px;">archive</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Yesterday -->
+          <div class="notification-group">
+            <div class="notification-group__header">Yesterday</div>
+
+            <div class="notification-item">
+              <div class="notification-icon notification-icon--success">
+                <span class="material-icons-outlined">check_circle</span>
+              </div>
+              <div class="notification-content">
+                <div class="notification-title">Maneuver Optimized</div>
+                <div class="notification-message">Hohmann transfer optimization completed. Delta-V reduced by 12.3 m/s (7.2% improvement).</div>
+                <div class="notification-meta">
+                  <span class="notification-meta__item">
+                    <span class="material-icons-outlined" style="font-size: 14px;">schedule</span>
+                    Yesterday at 3:45 PM
+                  </span>
+                </div>
+              </div>
+              <div class="notification-actions">
+                <button class="notification-action">
+                  <span class="material-icons-outlined" style="font-size: 18px;">star</span>
+                </button>
+                <button class="notification-action">
+                  <span class="material-icons-outlined" style="font-size: 18px;">archive</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="notification-item">
+              <div class="notification-icon notification-icon--error">
+                <span class="material-icons-outlined">error</span>
+              </div>
+              <div class="notification-content">
+                <div class="notification-title">Script Execution Failed</div>
+                <div class="notification-message">Error in maneuvers.gmat at line 42: Invalid coordinate system reference. Check the script and try again.</div>
+                <div class="notification-meta">
+                  <span class="notification-meta__item">
+                    <span class="material-icons-outlined" style="font-size: 14px;">schedule</span>
+                    Yesterday at 11:20 AM
+                  </span>
+                </div>
+              </div>
+              <div class="notification-actions">
+                <button class="notification-action">
+                  <span class="material-icons-outlined" style="font-size: 18px;">star_border</span>
+                </button>
+                <button class="notification-action">
+                  <span class="material-icons-outlined" style="font-size: 18px;">archive</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="notification-item">
+              <div class="notification-icon notification-icon--info">
+                <span class="material-icons-outlined">person_add</span>
+              </div>
+              <div class="notification-content">
+                <div class="notification-title">Mission Shared</div>
+                <div class="notification-message">Jane Smith shared "GEO Transfer Mission" with you. You now have editor access.</div>
+                <div class="notification-meta">
+                  <span class="notification-meta__item">
+                    <span class="material-icons-outlined" style="font-size: 14px;">schedule</span>
+                    Yesterday at 9:15 AM
+                  </span>
+                </div>
+              </div>
+              <div class="notification-actions">
+                <button class="notification-action">
+                  <span class="material-icons-outlined" style="font-size: 18px;">star_border</span>
+                </button>
+                <button class="notification-action">
+                  <span class="material-icons-outlined" style="font-size: 18px;">archive</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Earlier -->
+          <div class="notification-group">
+            <div class="notification-group__header">Earlier This Week</div>
+
+            <div class="notification-item">
+              <div class="notification-icon notification-icon--info">
+                <span class="material-icons-outlined">update</span>
+              </div>
+              <div class="notification-content">
+                <div class="notification-title">System Update</div>
+                <div class="notification-message">NGMAT has been updated to version 2.5.0. Check the release notes for new features and improvements.</div>
+                <div class="notification-meta">
+                  <span class="notification-meta__item">
+                    <span class="material-icons-outlined" style="font-size: 14px;">schedule</span>
+                    3 days ago
+                  </span>
+                </div>
+              </div>
+              <div class="notification-actions">
+                <button class="notification-action">
+                  <span class="material-icons-outlined" style="font-size: 18px;">star_border</span>
+                </button>
+                <button class="notification-action">
+                  <span class="material-icons-outlined" style="font-size: 18px;">archive</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast">
+      <span class="material-icons-outlined toast__icon">check_circle</span>
+      <span class="toast__message">Propagation completed successfully</span>
+      <button class="toast__action">View</button>
+      <button class="toast__action">Dismiss</button>
+    </div>
+  </div>
+</body>
+</html>

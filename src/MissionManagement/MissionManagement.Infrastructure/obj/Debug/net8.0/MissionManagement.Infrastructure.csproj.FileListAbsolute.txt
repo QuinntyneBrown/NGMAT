@@ -1,0 +1,12 @@
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\bin\Debug\net8.0\MissionManagement.Infrastructure.deps.json
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\bin\Debug\net8.0\MissionManagement.Infrastructure.dll
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\bin\Debug\net8.0\MissionManagement.Infrastructure.pdb
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\obj\Debug\net8.0\MissionManagement.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\obj\Debug\net8.0\MissionManagement.Infrastructure.AssemblyInfoInputs.cache
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\obj\Debug\net8.0\MissionManagement.Infrastructure.AssemblyInfo.cs
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\obj\Debug\net8.0\MissionManagement.Infrastructure.csproj.CoreCompileInputs.cache
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\obj\Debug\net8.0\MissionManagement.Infrastructure.sourcelink.json
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\obj\Debug\net8.0\MissionManagement.Infrastructure.dll
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\obj\Debug\net8.0\refint\MissionManagement.Infrastructure.dll
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\obj\Debug\net8.0\MissionManagement.Infrastructure.pdb
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\obj\Debug\net8.0\ref\MissionManagement.Infrastructure.dll

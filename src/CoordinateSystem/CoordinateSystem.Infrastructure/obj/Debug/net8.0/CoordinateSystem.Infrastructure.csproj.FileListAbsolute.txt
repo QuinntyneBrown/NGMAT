@@ -1,0 +1,12 @@
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Infrastructure\bin\Debug\net8.0\CoordinateSystem.Infrastructure.deps.json
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Infrastructure\bin\Debug\net8.0\CoordinateSystem.Infrastructure.dll
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Infrastructure\bin\Debug\net8.0\CoordinateSystem.Infrastructure.pdb
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Infrastructure\obj\Debug\net8.0\CoordinateSystem.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Infrastructure\obj\Debug\net8.0\CoordinateSystem.Infrastructure.AssemblyInfoInputs.cache
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Infrastructure\obj\Debug\net8.0\CoordinateSystem.Infrastructure.AssemblyInfo.cs
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Infrastructure\obj\Debug\net8.0\CoordinateSystem.Infrastructure.csproj.CoreCompileInputs.cache
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Infrastructure\obj\Debug\net8.0\CoordinateSystem.Infrastructure.sourcelink.json
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Infrastructure\obj\Debug\net8.0\CoordinateSystem.Infrastructure.dll
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Infrastructure\obj\Debug\net8.0\refint\CoordinateSystem.Infrastructure.dll
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Infrastructure\obj\Debug\net8.0\CoordinateSystem.Infrastructure.pdb
+C:\projects\NGMAT\src\CoordinateSystem\CoordinateSystem.Infrastructure\obj\Debug\net8.0\ref\CoordinateSystem.Infrastructure.dll

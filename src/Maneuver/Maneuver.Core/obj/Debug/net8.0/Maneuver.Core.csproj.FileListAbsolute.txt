@@ -1,0 +1,12 @@
+C:\projects\NGMAT\src\Maneuver\Maneuver.Core\bin\Debug\net8.0\Maneuver.Core.deps.json
+C:\projects\NGMAT\src\Maneuver\Maneuver.Core\bin\Debug\net8.0\Maneuver.Core.dll
+C:\projects\NGMAT\src\Maneuver\Maneuver.Core\bin\Debug\net8.0\Maneuver.Core.pdb
+C:\projects\NGMAT\src\Maneuver\Maneuver.Core\obj\Debug\net8.0\Maneuver.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\NGMAT\src\Maneuver\Maneuver.Core\obj\Debug\net8.0\Maneuver.Core.AssemblyInfoInputs.cache
+C:\projects\NGMAT\src\Maneuver\Maneuver.Core\obj\Debug\net8.0\Maneuver.Core.AssemblyInfo.cs
+C:\projects\NGMAT\src\Maneuver\Maneuver.Core\obj\Debug\net8.0\Maneuver.Core.csproj.CoreCompileInputs.cache
+C:\projects\NGMAT\src\Maneuver\Maneuver.Core\obj\Debug\net8.0\Maneuver.Core.sourcelink.json
+C:\projects\NGMAT\src\Maneuver\Maneuver.Core\obj\Debug\net8.0\Maneuver.Core.dll
+C:\projects\NGMAT\src\Maneuver\Maneuver.Core\obj\Debug\net8.0\refint\Maneuver.Core.dll
+C:\projects\NGMAT\src\Maneuver\Maneuver.Core\obj\Debug\net8.0\Maneuver.Core.pdb
+C:\projects\NGMAT\src\Maneuver\Maneuver.Core\obj\Debug\net8.0\ref\Maneuver.Core.dll

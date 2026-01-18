@@ -1,0 +1,12 @@
+C:\projects\NGMAT\src\EventStore\EventStore.Core\bin\Debug\net8.0\EventStore.Core.deps.json
+C:\projects\NGMAT\src\EventStore\EventStore.Core\bin\Debug\net8.0\EventStore.Core.dll
+C:\projects\NGMAT\src\EventStore\EventStore.Core\bin\Debug\net8.0\EventStore.Core.pdb
+C:\projects\NGMAT\src\EventStore\EventStore.Core\obj\Debug\net8.0\EventStore.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\NGMAT\src\EventStore\EventStore.Core\obj\Debug\net8.0\EventStore.Core.AssemblyInfoInputs.cache
+C:\projects\NGMAT\src\EventStore\EventStore.Core\obj\Debug\net8.0\EventStore.Core.AssemblyInfo.cs
+C:\projects\NGMAT\src\EventStore\EventStore.Core\obj\Debug\net8.0\EventStore.Core.csproj.CoreCompileInputs.cache
+C:\projects\NGMAT\src\EventStore\EventStore.Core\obj\Debug\net8.0\EventStore.Core.sourcelink.json
+C:\projects\NGMAT\src\EventStore\EventStore.Core\obj\Debug\net8.0\EventStore.Core.dll
+C:\projects\NGMAT\src\EventStore\EventStore.Core\obj\Debug\net8.0\refint\EventStore.Core.dll
+C:\projects\NGMAT\src\EventStore\EventStore.Core\obj\Debug\net8.0\EventStore.Core.pdb
+C:\projects\NGMAT\src\EventStore\EventStore.Core\obj\Debug\net8.0\ref\EventStore.Core.dll

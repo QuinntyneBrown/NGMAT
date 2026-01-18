@@ -1,0 +1,12 @@
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Infrastructure\bin\Debug\net8.0\CalculationEngine.Infrastructure.deps.json
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Infrastructure\bin\Debug\net8.0\CalculationEngine.Infrastructure.dll
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Infrastructure\bin\Debug\net8.0\CalculationEngine.Infrastructure.pdb
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Infrastructure\obj\Debug\net8.0\CalculationEngine.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Infrastructure\obj\Debug\net8.0\CalculationEngine.Infrastructure.AssemblyInfoInputs.cache
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Infrastructure\obj\Debug\net8.0\CalculationEngine.Infrastructure.AssemblyInfo.cs
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Infrastructure\obj\Debug\net8.0\CalculationEngine.Infrastructure.csproj.CoreCompileInputs.cache
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Infrastructure\obj\Debug\net8.0\CalculationEngine.Infrastructure.sourcelink.json
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Infrastructure\obj\Debug\net8.0\CalculationEngine.Infrastructure.dll
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Infrastructure\obj\Debug\net8.0\refint\CalculationEngine.Infrastructure.dll
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Infrastructure\obj\Debug\net8.0\CalculationEngine.Infrastructure.pdb
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Infrastructure\obj\Debug\net8.0\ref\CalculationEngine.Infrastructure.dll

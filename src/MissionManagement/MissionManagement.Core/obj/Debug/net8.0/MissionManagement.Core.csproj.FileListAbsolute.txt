@@ -1,0 +1,12 @@
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Core\bin\Debug\net8.0\MissionManagement.Core.deps.json
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Core\bin\Debug\net8.0\MissionManagement.Core.dll
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Core\bin\Debug\net8.0\MissionManagement.Core.pdb
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Core\obj\Debug\net8.0\MissionManagement.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Core\obj\Debug\net8.0\MissionManagement.Core.AssemblyInfoInputs.cache
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Core\obj\Debug\net8.0\MissionManagement.Core.AssemblyInfo.cs
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Core\obj\Debug\net8.0\MissionManagement.Core.csproj.CoreCompileInputs.cache
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Core\obj\Debug\net8.0\MissionManagement.Core.sourcelink.json
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Core\obj\Debug\net8.0\MissionManagement.Core.dll
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Core\obj\Debug\net8.0\refint\MissionManagement.Core.dll
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Core\obj\Debug\net8.0\MissionManagement.Core.pdb
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Core\obj\Debug\net8.0\ref\MissionManagement.Core.dll

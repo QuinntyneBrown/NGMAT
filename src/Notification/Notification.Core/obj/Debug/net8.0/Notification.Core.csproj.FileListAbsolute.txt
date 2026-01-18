@@ -1,0 +1,12 @@
+C:\projects\NGMAT\src\Notification\Notification.Core\bin\Debug\net8.0\Notification.Core.deps.json
+C:\projects\NGMAT\src\Notification\Notification.Core\bin\Debug\net8.0\Notification.Core.dll
+C:\projects\NGMAT\src\Notification\Notification.Core\bin\Debug\net8.0\Notification.Core.pdb
+C:\projects\NGMAT\src\Notification\Notification.Core\obj\Debug\net8.0\Notification.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\NGMAT\src\Notification\Notification.Core\obj\Debug\net8.0\Notification.Core.AssemblyInfoInputs.cache
+C:\projects\NGMAT\src\Notification\Notification.Core\obj\Debug\net8.0\Notification.Core.AssemblyInfo.cs
+C:\projects\NGMAT\src\Notification\Notification.Core\obj\Debug\net8.0\Notification.Core.csproj.CoreCompileInputs.cache
+C:\projects\NGMAT\src\Notification\Notification.Core\obj\Debug\net8.0\Notification.Core.sourcelink.json
+C:\projects\NGMAT\src\Notification\Notification.Core\obj\Debug\net8.0\Notification.Core.dll
+C:\projects\NGMAT\src\Notification\Notification.Core\obj\Debug\net8.0\refint\Notification.Core.dll
+C:\projects\NGMAT\src\Notification\Notification.Core\obj\Debug\net8.0\Notification.Core.pdb
+C:\projects\NGMAT\src\Notification\Notification.Core\obj\Debug\net8.0\ref\Notification.Core.dll

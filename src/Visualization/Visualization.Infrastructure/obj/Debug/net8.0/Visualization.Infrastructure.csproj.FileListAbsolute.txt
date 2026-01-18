@@ -1,0 +1,12 @@
+C:\projects\NGMAT\src\Visualization\Visualization.Infrastructure\bin\Debug\net8.0\Visualization.Infrastructure.deps.json
+C:\projects\NGMAT\src\Visualization\Visualization.Infrastructure\bin\Debug\net8.0\Visualization.Infrastructure.dll
+C:\projects\NGMAT\src\Visualization\Visualization.Infrastructure\bin\Debug\net8.0\Visualization.Infrastructure.pdb
+C:\projects\NGMAT\src\Visualization\Visualization.Infrastructure\obj\Debug\net8.0\Visualization.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\NGMAT\src\Visualization\Visualization.Infrastructure\obj\Debug\net8.0\Visualization.Infrastructure.AssemblyInfoInputs.cache
+C:\projects\NGMAT\src\Visualization\Visualization.Infrastructure\obj\Debug\net8.0\Visualization.Infrastructure.AssemblyInfo.cs
+C:\projects\NGMAT\src\Visualization\Visualization.Infrastructure\obj\Debug\net8.0\Visualization.Infrastructure.csproj.CoreCompileInputs.cache
+C:\projects\NGMAT\src\Visualization\Visualization.Infrastructure\obj\Debug\net8.0\Visualization.Infrastructure.sourcelink.json
+C:\projects\NGMAT\src\Visualization\Visualization.Infrastructure\obj\Debug\net8.0\Visualization.Infrastructure.dll
+C:\projects\NGMAT\src\Visualization\Visualization.Infrastructure\obj\Debug\net8.0\refint\Visualization.Infrastructure.dll
+C:\projects\NGMAT\src\Visualization\Visualization.Infrastructure\obj\Debug\net8.0\Visualization.Infrastructure.pdb
+C:\projects\NGMAT\src\Visualization\Visualization.Infrastructure\obj\Debug\net8.0\ref\Visualization.Infrastructure.dll

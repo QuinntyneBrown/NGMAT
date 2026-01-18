@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGMAT - Script Editor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <style>
+    :root {
+      --primary-500: #2196f3;
+      --accent-500: #ff9800;
+      --warn-500: #f44336;
+      --surface-background: #121212;
+      --surface-card: #1e1e1e;
+      --surface-elevated: #2d2d2d;
+      --surface-divider: rgba(255, 255, 255, 0.12);
+      --surface-hover: rgba(255, 255, 255, 0.08);
+      --text-primary: rgba(255, 255, 255, 0.87);
+      --text-secondary: rgba(255, 255, 255, 0.60);
+      --text-disabled: rgba(255, 255, 255, 0.38);
+      --status-success: #4caf50;
+      --status-error: #f44336;
+      --syntax-keyword: #c792ea;
+      --syntax-string: #c3e88d;
+      --syntax-number: #f78c6c;
+      --syntax-comment: #546e7a;
+      --syntax-function: #82aaff;
+      --syntax-variable: #ffcb6b;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --elevation-4: 0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--surface-background);
+      color: var(--text-primary);
+    }
+
+    .app-container { display: flex; flex-direction: column; height: 100vh; }
+
+    .mat-toolbar {
+      display: flex; align-items: center;
+      padding: 0 var(--spacing-md);
+      height: 64px;
+      background-color: var(--surface-card);
+      box-shadow: var(--elevation-4);
+      z-index: 1000;
+    }
+
+    .mat-toolbar__back {
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border: none; border-radius: 50%;
+      background: transparent; color: var(--text-primary); cursor: pointer;
+    }
+
+    .mat-toolbar__title { font-size: 18px; font-weight: 500; margin-left: var(--spacing-md); }
+    .mat-toolbar__spacer { flex: 1; }
+    .mat-toolbar__actions { display: flex; align-items: center; gap: var(--spacing-sm); }
+
+    .icon-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border: none; border-radius: 50%;
+      background: transparent; color: var(--text-primary); cursor: pointer;
+    }
+
+    .icon-btn:hover { background-color: var(--surface-hover); }
+
+    .btn {
+      display: inline-flex; align-items: center; padding: 0 var(--spacing-md);
+      height: 36px; border: none; border-radius: var(--radius-sm);
+      font-family: 'Roboto', sans-serif; font-size: 14px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 1.25px; cursor: pointer; gap: var(--spacing-sm);
+    }
+
+    .btn--primary { background-color: var(--primary-500); color: white; }
+    .btn--success { background-color: var(--status-success); color: white; }
+    .btn--stroked { background: transparent; color: var(--primary-500); border: 1px solid var(--primary-500); }
+
+    .main-content { display: flex; flex: 1; overflow: hidden; }
+
+    /* File Browser */
+    .file-browser {
+      width: 250px;
+      background-color: var(--surface-card);
+      border-right: 1px solid var(--surface-divider);
+      display: flex; flex-direction: column;
+    }
+
+    .file-browser__header {
+      padding: var(--spacing-md);
+      border-bottom: 1px solid var(--surface-divider);
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 12px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--text-secondary);
+    }
+
+    .file-browser__content { flex: 1; overflow-y: auto; padding: var(--spacing-sm); }
+
+    .file-item {
+      display: flex; align-items: center; gap: var(--spacing-sm);
+      padding: var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .file-item:hover { background-color: var(--surface-hover); }
+    .file-item--active { background-color: var(--surface-selected); color: var(--primary-500); }
+
+    .file-item__icon { font-size: 18px; color: var(--text-secondary); }
+    .file-item--active .file-item__icon { color: var(--primary-500); }
+
+    .file-folder { padding-left: var(--spacing-md); }
+
+    /* Editor Area */
+    .editor-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* Tabs */
+    .editor-tabs {
+      display: flex;
+      background-color: var(--surface-card);
+      border-bottom: 1px solid var(--surface-divider);
+    }
+
+    .editor-tab {
+      display: flex; align-items: center; gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      background-color: var(--surface-elevated);
+      border: none;
+      color: var(--text-secondary);
+      font-family: 'Roboto', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      border-right: 1px solid var(--surface-divider);
+    }
+
+    .editor-tab--active {
+      background-color: #1e1e1e;
+      color: var(--text-primary);
+    }
+
+    .editor-tab__close {
+      width: 16px; height: 16px;
+      border: none; background: none;
+      color: var(--text-disabled);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+    }
+
+    .editor-tab__close:hover { background-color: var(--surface-hover); color: var(--text-primary); }
+
+    /* Code Editor */
+    .code-editor {
+      flex: 1;
+      display: flex;
+      background-color: #1e1e1e;
+      overflow: hidden;
+    }
+
+    .line-numbers {
+      padding: var(--spacing-md);
+      padding-right: var(--spacing-sm);
+      background-color: #1e1e1e;
+      color: var(--text-disabled);
+      font-family: 'Roboto Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      text-align: right;
+      user-select: none;
+      border-right: 1px solid var(--surface-divider);
+    }
+
+    .code-content {
+      flex: 1;
+      padding: var(--spacing-md);
+      font-family: 'Roboto Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      overflow: auto;
+      white-space: pre;
+    }
+
+    .code-line { display: block; }
+    .code-line:hover { background-color: rgba(255, 255, 255, 0.03); }
+
+    .keyword { color: var(--syntax-keyword); }
+    .string { color: var(--syntax-string); }
+    .number { color: var(--syntax-number); }
+    .comment { color: var(--syntax-comment); font-style: italic; }
+    .function { color: var(--syntax-function); }
+    .variable { color: var(--syntax-variable); }
+    .operator { color: var(--text-secondary); }
+
+    /* Minimap */
+    .minimap {
+      width: 80px;
+      background-color: #252526;
+      border-left: 1px solid var(--surface-divider);
+      padding: var(--spacing-sm);
+      overflow: hidden;
+    }
+
+    .minimap-content {
+      font-size: 2px;
+      line-height: 1.2;
+      color: var(--text-disabled);
+      opacity: 0.5;
+    }
+
+    /* Console */
+    .console-panel {
+      height: 200px;
+      background-color: var(--surface-background);
+      border-top: 1px solid var(--surface-divider);
+      display: flex; flex-direction: column;
+    }
+
+    .console-header {
+      display: flex;
+      background-color: var(--surface-card);
+      border-bottom: 1px solid var(--surface-divider);
+    }
+
+    .console-tab {
+      padding: var(--spacing-sm) var(--spacing-md);
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-family: 'Roboto', sans-serif;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .console-tab--active {
+      color: var(--primary-500);
+      border-bottom: 2px solid var(--primary-500);
+    }
+
+    .console-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--spacing-md);
+      font-family: 'Roboto Mono', monospace;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .console-line { padding: 2px 0; }
+    .console-line--info { color: var(--primary-500); }
+    .console-line--success { color: var(--status-success); }
+    .console-line--error { color: var(--status-error); }
+    .console-line--warn { color: var(--accent-500); }
+
+    .console-line__prefix {
+      color: var(--text-disabled);
+      margin-right: var(--spacing-sm);
+    }
+
+    /* Status Bar */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      padding: 0 var(--spacing-md);
+      height: 24px;
+      background-color: #007acc;
+      font-size: 12px;
+      color: white;
+      gap: var(--spacing-lg);
+    }
+
+    .status-bar__item {
+      display: flex; align-items: center; gap: var(--spacing-xs);
+    }
+
+    .status-bar__spacer { flex: 1; }
+
+    /* Autocomplete dropdown */
+    .autocomplete {
+      position: absolute;
+      top: 280px;
+      left: 400px;
+      background-color: var(--surface-card);
+      border: 1px solid var(--surface-divider);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--elevation-4);
+      min-width: 250px;
+      z-index: 100;
+    }
+
+    .autocomplete-item {
+      display: flex; align-items: center; gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .autocomplete-item:hover { background-color: var(--surface-hover); }
+    .autocomplete-item--selected { background-color: var(--primary-500); color: white; }
+
+    .autocomplete-item__icon {
+      width: 16px; height: 16px;
+      background-color: var(--syntax-function);
+      color: white;
+      border-radius: 2px;
+      font-size: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .autocomplete-item__icon--keyword { background-color: var(--syntax-keyword); }
+    .autocomplete-item__icon--variable { background-color: var(--syntax-variable); }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header class="mat-toolbar">
+      <button class="mat-toolbar__back">
+        <span class="material-icons-outlined">arrow_back</span>
+      </button>
+      <span class="mat-toolbar__title">Script Editor</span>
+      <div class="mat-toolbar__spacer"></div>
+      <div class="mat-toolbar__actions">
+        <button class="icon-btn">
+          <span class="material-icons-outlined">search</span>
+        </button>
+        <button class="icon-btn">
+          <span class="material-icons-outlined">find_replace</span>
+        </button>
+        <button class="btn btn--stroked">
+          <span class="material-icons-outlined" style="font-size: 18px;">check_circle</span>
+          Validate
+        </button>
+        <button class="btn btn--success">
+          <span class="material-icons-outlined" style="font-size: 18px;">play_arrow</span>
+          Run Script
+        </button>
+        <button class="btn btn--primary">
+          <span class="material-icons-outlined" style="font-size: 18px;">save</span>
+          Save
+        </button>
+      </div>
+    </header>
+
+    <div class="main-content">
+      <!-- File Browser -->
+      <aside class="file-browser">
+        <div class="file-browser__header">
+          <span>Explorer</span>
+          <button class="icon-btn" style="width: 24px; height: 24px;">
+            <span class="material-icons-outlined" style="font-size: 16px;">add</span>
+          </button>
+        </div>
+        <div class="file-browser__content">
+          <div class="file-item">
+            <span class="material-icons-outlined file-item__icon">folder</span>
+            <span>LEO_Constellation</span>
+          </div>
+          <div class="file-folder">
+            <div class="file-item file-item--active">
+              <span class="material-icons-outlined file-item__icon">description</span>
+              <span>main.gmat</span>
+            </div>
+            <div class="file-item">
+              <span class="material-icons-outlined file-item__icon">description</span>
+              <span>spacecraft.gmat</span>
+            </div>
+            <div class="file-item">
+              <span class="material-icons-outlined file-item__icon">description</span>
+              <span>maneuvers.gmat</span>
+            </div>
+            <div class="file-item">
+              <span class="material-icons-outlined file-item__icon">description</span>
+              <span>propagator.gmat</span>
+            </div>
+          </div>
+          <div class="file-item">
+            <span class="material-icons-outlined file-item__icon">folder</span>
+            <span>Templates</span>
+          </div>
+          <div class="file-item">
+            <span class="material-icons-outlined file-item__icon">folder</span>
+            <span>Output</span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="editor-area">
+        <!-- Tabs -->
+        <div class="editor-tabs">
+          <button class="editor-tab editor-tab--active">
+            <span class="material-icons-outlined" style="font-size: 16px;">description</span>
+            main.gmat
+            <button class="editor-tab__close">
+              <span class="material-icons-outlined" style="font-size: 14px;">close</span>
+            </button>
+          </button>
+          <button class="editor-tab">
+            <span class="material-icons-outlined" style="font-size: 16px;">description</span>
+            spacecraft.gmat
+            <button class="editor-tab__close">
+              <span class="material-icons-outlined" style="font-size: 14px;">close</span>
+            </button>
+          </button>
+        </div>
+
+        <!-- Code Editor -->
+        <div class="code-editor">
+          <div class="line-numbers">
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+          </div>
+          <div class="code-content">
+<span class="code-line"><span class="comment">%----------------------------------------</span></span>
+<span class="code-line"><span class="comment">% LEO Constellation Deploy - Main Script</span></span>
+<span class="code-line"><span class="comment">%----------------------------------------</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="comment">% Create Spacecraft</span></span>
+<span class="code-line"><span class="keyword">Create</span> <span class="function">Spacecraft</span> <span class="variable">SAT001</span><span class="operator">;</span></span>
+<span class="code-line"><span class="variable">SAT001</span><span class="operator">.</span><span class="variable">DateFormat</span> <span class="operator">=</span> <span class="string">'UTCGregorian'</span><span class="operator">;</span></span>
+<span class="code-line"><span class="variable">SAT001</span><span class="operator">.</span><span class="variable">Epoch</span> <span class="operator">=</span> <span class="string">'15 Mar 2025 12:00:00.000'</span><span class="operator">;</span></span>
+<span class="code-line"><span class="variable">SAT001</span><span class="operator">.</span><span class="variable">CoordinateSystem</span> <span class="operator">=</span> <span class="variable">EarthMJ2000Eq</span><span class="operator">;</span></span>
+<span class="code-line"><span class="variable">SAT001</span><span class="operator">.</span><span class="variable">SMA</span> <span class="operator">=</span> <span class="number">6928.14</span><span class="operator">;</span></span>
+<span class="code-line"><span class="variable">SAT001</span><span class="operator">.</span><span class="variable">ECC</span> <span class="operator">=</span> <span class="number">0.0001</span><span class="operator">;</span></span>
+<span class="code-line"><span class="variable">SAT001</span><span class="operator">.</span><span class="variable">INC</span> <span class="operator">=</span> <span class="number">53.0</span><span class="operator">;</span></span>
+<span class="code-line"><span class="variable">SAT001</span><span class="operator">.</span><span class="variable">RAAN</span> <span class="operator">=</span> <span class="number">120.5</span><span class="operator">;</span></span>
+<span class="code-line"><span class="variable">SAT001</span><span class="operator">.</span><span class="variable">AOP</span> <span class="operator">=</span> <span class="number">0.0</span><span class="operator">;</span></span>
+<span class="code-line"><span class="variable">SAT001</span><span class="operator">.</span><span class="variable">TA</span> <span class="operator">=</span> <span class="number">0.0</span><span class="operator">;</span></span>
+<span class="code-line"><span class="variable">SAT001</span><span class="operator">.</span><span class="variable">DryMass</span> <span class="operator">=</span> <span class="number">850</span><span class="operator">;</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="comment">% Create Propagator</span></span>
+<span class="code-line"><span class="keyword">Create</span> <span class="function">Propagator</span> <span class="variable">DefaultProp</span><span class="operator">;</span></span>
+<span class="code-line"><span class="variable">DefaultProp</span><span class="operator">.</span><span class="variable">FM</span> <span class="operator">=</span> <span class="variable">DefaultFM</span><span class="operator">;</span></span>
+<span class="code-line"><span class="variable">DefaultProp</span><span class="operator">.</span><span class="variable">Type</span> <span class="operator">=</span> <span class="string">'RungeKutta89'</span><span class="operator">;</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="comment">% Mission Sequence</span></span>
+<span class="code-line"><span class="keyword">BeginMissionSequence</span><span class="operator">;</span></span>
+<span class="code-line"><span class="keyword">Propagate</span> <span class="variable">DefaultProp</span><span class="operator">(</span><span class="variable">SAT001</span><span class="operator">)</span> <span class="operator">{</span><span class="variable">SAT001</span><span class="operator">.</span><span class="variable">ElapsedDays</span> <span class="operator">=</span> <span class="number">2</span><span class="operator">};</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="keyword">Report</span> <span class="variable">ReportFile</span> <span class="variable">SAT001</span><span class="operator">.</span><span class="variable">A1ModJulian</span> <span class="variable">SAT001</span><span class="operator">.</span><span class="variable">EarthMJ2000Eq</span><span class="operator">.</span><span class="variable">X</span><span class="operator">;</span></span>
+          </div>
+          <div class="minimap">
+            <div class="minimap-content">
+              ████████████████████
+              ████████████████
+              ██████████████████
+
+              ████████████
+              █████████████████████
+              ████████████████████
+              ██████████████████████
+              ████████████████████
+              ████████████████
+              ██████████████
+              ████████████████
+              ██████████████
+              ██████████████
+              ████████████████
+
+              ██████████████████
+              █████████████████████
+              ██████████████████
+              ██████████████████████
+
+              ████████████████████
+              ████████████████████
+              ████████████████████████
+
+              ██████████████████████████
+            </div>
+          </div>
+        </div>
+
+        <!-- Autocomplete (positioned absolutely) -->
+        <div class="autocomplete" style="display: none;">
+          <div class="autocomplete-item autocomplete-item--selected">
+            <div class="autocomplete-item__icon autocomplete-item__icon--keyword">K</div>
+            <span>Create</span>
+          </div>
+          <div class="autocomplete-item">
+            <div class="autocomplete-item__icon">F</div>
+            <span>Spacecraft</span>
+          </div>
+          <div class="autocomplete-item">
+            <div class="autocomplete-item__icon">F</div>
+            <span>Propagator</span>
+          </div>
+          <div class="autocomplete-item">
+            <div class="autocomplete-item__icon autocomplete-item__icon--variable">V</div>
+            <span>SAT001</span>
+          </div>
+        </div>
+
+        <!-- Console -->
+        <div class="console-panel">
+          <div class="console-header">
+            <button class="console-tab console-tab--active">Output</button>
+            <button class="console-tab">Problems</button>
+            <button class="console-tab">Terminal</button>
+          </div>
+          <div class="console-content">
+            <div class="console-line console-line--info">
+              <span class="console-line__prefix">[12:00:00]</span>
+              Script validation started...
+            </div>
+            <div class="console-line console-line--success">
+              <span class="console-line__prefix">[12:00:01]</span>
+              Syntax check passed. No errors found.
+            </div>
+            <div class="console-line console-line--info">
+              <span class="console-line__prefix">[12:00:01]</span>
+              Running script: main.gmat
+            </div>
+            <div class="console-line console-line--info">
+              <span class="console-line__prefix">[12:00:01]</span>
+              Creating Spacecraft: SAT001
+            </div>
+            <div class="console-line console-line--info">
+              <span class="console-line__prefix">[12:00:01]</span>
+              Creating Propagator: DefaultProp
+            </div>
+            <div class="console-line console-line--info">
+              <span class="console-line__prefix">[12:00:02]</span>
+              Beginning mission sequence...
+            </div>
+            <div class="console-line console-line--info">
+              <span class="console-line__prefix">[12:00:02]</span>
+              Propagating SAT001 for 2 days...
+            </div>
+            <div class="console-line console-line--success">
+              <span class="console-line__prefix">[12:00:15]</span>
+              Script execution completed successfully.
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <div class="status-bar__item">
+        <span class="material-icons-outlined" style="font-size: 14px;">check_circle</span>
+        <span>No Errors</span>
+      </div>
+      <div class="status-bar__item">
+        <span class="material-icons-outlined" style="font-size: 14px;">warning</span>
+        <span>0 Warnings</span>
+      </div>
+      <div class="status-bar__spacer"></div>
+      <div class="status-bar__item">Ln 25, Col 42</div>
+      <div class="status-bar__item">UTF-8</div>
+      <div class="status-bar__item">GMAT Script</div>
+    </div>
+  </div>
+</body>
+</html>

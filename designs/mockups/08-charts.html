@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGMAT - Time-Series Charts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <style>
+    :root {
+      --primary-500: #2196f3;
+      --accent-500: #ff9800;
+      --warn-500: #f44336;
+      --surface-background: #121212;
+      --surface-card: #1e1e1e;
+      --surface-elevated: #2d2d2d;
+      --surface-divider: rgba(255, 255, 255, 0.12);
+      --surface-hover: rgba(255, 255, 255, 0.08);
+      --text-primary: rgba(255, 255, 255, 0.87);
+      --text-secondary: rgba(255, 255, 255, 0.60);
+      --text-disabled: rgba(255, 255, 255, 0.38);
+      --chart-1: #2196f3;
+      --chart-2: #ff9800;
+      --chart-3: #4caf50;
+      --chart-4: #9c27b0;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --elevation-4: 0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--surface-background);
+      color: var(--text-primary);
+    }
+
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    /* Toolbar */
+    .mat-toolbar {
+      display: flex;
+      align-items: center;
+      padding: 0 var(--spacing-md);
+      height: 64px;
+      background-color: var(--surface-card);
+      box-shadow: var(--elevation-4);
+      z-index: 1000;
+    }
+
+    .mat-toolbar__back {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    .mat-toolbar__title { font-size: 18px; font-weight: 500; margin-left: var(--spacing-md); }
+    .mat-toolbar__spacer { flex: 1; }
+    .mat-toolbar__actions { display: flex; align-items: center; gap: var(--spacing-sm); }
+
+    .icon-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    .icon-btn:hover { background-color: var(--surface-hover); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 0 var(--spacing-md);
+      height: 36px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1.25px;
+      cursor: pointer;
+      gap: var(--spacing-sm);
+    }
+
+    .btn--primary { background-color: var(--primary-500); color: white; }
+    .btn--stroked { background: transparent; color: var(--primary-500); border: 1px solid var(--primary-500); }
+
+    /* Main Layout */
+    .main-content {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* Parameters Panel */
+    .params-panel {
+      width: 280px;
+      background-color: var(--surface-card);
+      border-right: 1px solid var(--surface-divider);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .params-panel__header {
+      padding: var(--spacing-md);
+      border-bottom: 1px solid var(--surface-divider);
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+    }
+
+    .params-panel__content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--spacing-md);
+    }
+
+    .param-group {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .param-group__title {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-disabled);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .param-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+
+    .param-item:hover { background-color: var(--surface-hover); }
+
+    .param-checkbox {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--text-secondary);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .param-checkbox--checked {
+      border-color: var(--primary-500);
+      background-color: var(--primary-500);
+    }
+
+    .param-checkbox--checked::after {
+      content: '';
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .param-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+    }
+
+    .param-label { font-size: 13px; flex: 1; }
+
+    /* Chart Area */
+    .chart-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .chart-toolbar {
+      padding: var(--spacing-md);
+      background-color: var(--surface-card);
+      border-bottom: 1px solid var(--surface-divider);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .chart-tabs {
+      display: flex;
+      gap: var(--spacing-xs);
+    }
+
+    .chart-tab {
+      padding: var(--spacing-sm) var(--spacing-md);
+      background-color: var(--surface-elevated);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-family: 'Roboto', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .chart-tab--active {
+      background-color: var(--primary-500);
+      color: white;
+    }
+
+    .time-range {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      margin-left: auto;
+    }
+
+    .time-range__label { font-size: 12px; color: var(--text-secondary); }
+
+    .time-range__input {
+      padding: var(--spacing-sm);
+      background-color: var(--surface-elevated);
+      border: 1px solid var(--surface-divider);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: 'Roboto Mono', monospace;
+      font-size: 12px;
+      width: 150px;
+    }
+
+    /* Chart Container */
+    .chart-container {
+      flex: 1;
+      padding: var(--spacing-lg);
+      overflow: auto;
+    }
+
+    .chart-card {
+      background-color: var(--surface-card);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .chart-card__header {
+      padding: var(--spacing-md) var(--spacing-lg);
+      background-color: var(--surface-elevated);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chart-card__title { font-size: 14px; font-weight: 500; }
+    .chart-card__actions { display: flex; gap: var(--spacing-xs); }
+
+    .chart-card__content {
+      padding: var(--spacing-lg);
+      height: 300px;
+      position: relative;
+    }
+
+    /* Chart SVG Mockup */
+    .chart-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .chart-grid-line {
+      stroke: var(--surface-divider);
+      stroke-width: 1;
+    }
+
+    .chart-axis {
+      stroke: var(--text-disabled);
+      stroke-width: 1;
+    }
+
+    .chart-axis-label {
+      fill: var(--text-secondary);
+      font-size: 10px;
+    }
+
+    .chart-line {
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .chart-line--1 { stroke: var(--chart-1); }
+    .chart-line--2 { stroke: var(--chart-2); }
+    .chart-line--3 { stroke: var(--chart-3); }
+
+    /* Legend */
+    .chart-legend {
+      display: flex;
+      justify-content: center;
+      gap: var(--spacing-lg);
+      padding: var(--spacing-md);
+      border-top: 1px solid var(--surface-divider);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .legend-item__line {
+      width: 24px;
+      height: 3px;
+      border-radius: 1px;
+    }
+
+    /* Hover tooltip */
+    .chart-tooltip {
+      position: absolute;
+      padding: var(--spacing-sm) var(--spacing-md);
+      background-color: rgba(0, 0, 0, 0.9);
+      border: 1px solid var(--surface-divider);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      top: 100px;
+      left: 400px;
+      z-index: 10;
+    }
+
+    .chart-tooltip__time {
+      font-family: 'Roboto Mono', monospace;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .chart-tooltip__row {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: 2px 0;
+    }
+
+    .chart-tooltip__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .chart-tooltip__value {
+      font-family: 'Roboto Mono', monospace;
+      margin-left: auto;
+    }
+
+    /* Zoom controls */
+    .zoom-controls {
+      position: absolute;
+      top: var(--spacing-md);
+      right: var(--spacing-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-xs);
+    }
+
+    .zoom-btn {
+      width: 32px;
+      height: 32px;
+      background-color: var(--surface-elevated);
+      border: 1px solid var(--surface-divider);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .zoom-btn:hover { background-color: var(--surface-hover); }
+
+    /* Stats Panel */
+    .stats-panel {
+      width: 250px;
+      background-color: var(--surface-card);
+      border-left: 1px solid var(--surface-divider);
+      overflow-y: auto;
+    }
+
+    .stats-panel__header {
+      padding: var(--spacing-md);
+      border-bottom: 1px solid var(--surface-divider);
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+    }
+
+    .stats-panel__content { padding: var(--spacing-md); }
+
+    .stats-group {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .stats-group__title {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-disabled);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: var(--spacing-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .stats-group__color {
+      width: 12px;
+      height: 3px;
+      border-radius: 1px;
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      padding: var(--spacing-xs) 0;
+    }
+
+    .stat-item__label { font-size: 12px; color: var(--text-secondary); }
+    .stat-item__value { font-size: 12px; font-family: 'Roboto Mono', monospace; }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Toolbar -->
+    <header class="mat-toolbar">
+      <button class="mat-toolbar__back">
+        <span class="material-icons-outlined">arrow_back</span>
+      </button>
+      <span class="mat-toolbar__title">Time-Series Charts - LEO Constellation Deploy</span>
+      <div class="mat-toolbar__spacer"></div>
+      <div class="mat-toolbar__actions">
+        <button class="icon-btn">
+          <span class="material-icons-outlined">refresh</span>
+        </button>
+        <button class="btn btn--stroked">
+          <span class="material-icons-outlined" style="font-size: 18px;">image</span>
+          Export PNG
+        </button>
+        <button class="btn btn--primary">
+          <span class="material-icons-outlined" style="font-size: 18px;">download</span>
+          Export Data
+        </button>
+      </div>
+    </header>
+
+    <div class="main-content">
+      <!-- Parameters Panel -->
+      <aside class="params-panel">
+        <div class="params-panel__header">Parameters</div>
+        <div class="params-panel__content">
+          <div class="param-group">
+            <div class="param-group__title">Spacecraft</div>
+            <div class="param-item">
+              <div class="param-checkbox param-checkbox--checked"></div>
+              <div class="param-color" style="background-color: var(--chart-1);"></div>
+              <span class="param-label">SAT-001</span>
+            </div>
+            <div class="param-item">
+              <div class="param-checkbox param-checkbox--checked"></div>
+              <div class="param-color" style="background-color: var(--chart-2);"></div>
+              <span class="param-label">SAT-002</span>
+            </div>
+            <div class="param-item">
+              <div class="param-checkbox param-checkbox--checked"></div>
+              <div class="param-color" style="background-color: var(--chart-3);"></div>
+              <span class="param-label">SAT-003</span>
+            </div>
+          </div>
+          <div class="param-group">
+            <div class="param-group__title">Orbital Elements</div>
+            <div class="param-item">
+              <div class="param-checkbox param-checkbox--checked"></div>
+              <span class="param-label">Altitude</span>
+            </div>
+            <div class="param-item">
+              <div class="param-checkbox"></div>
+              <span class="param-label">Semi-major Axis</span>
+            </div>
+            <div class="param-item">
+              <div class="param-checkbox"></div>
+              <span class="param-label">Eccentricity</span>
+            </div>
+            <div class="param-item">
+              <div class="param-checkbox"></div>
+              <span class="param-label">Inclination</span>
+            </div>
+            <div class="param-item">
+              <div class="param-checkbox"></div>
+              <span class="param-label">RAAN</span>
+            </div>
+            <div class="param-item">
+              <div class="param-checkbox"></div>
+              <span class="param-label">True Anomaly</span>
+            </div>
+          </div>
+          <div class="param-group">
+            <div class="param-group__title">Velocity</div>
+            <div class="param-item">
+              <div class="param-checkbox"></div>
+              <span class="param-label">Velocity Magnitude</span>
+            </div>
+            <div class="param-item">
+              <div class="param-checkbox"></div>
+              <span class="param-label">Radial Velocity</span>
+            </div>
+            <div class="param-item">
+              <div class="param-checkbox"></div>
+              <span class="param-label">Tangential Velocity</span>
+            </div>
+          </div>
+          <div class="param-group">
+            <div class="param-group__title">Resources</div>
+            <div class="param-item">
+              <div class="param-checkbox"></div>
+              <span class="param-label">Fuel Remaining</span>
+            </div>
+            <div class="param-item">
+              <div class="param-checkbox"></div>
+              <span class="param-label">Power Generation</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Chart Area -->
+      <main class="chart-area">
+        <div class="chart-toolbar">
+          <div class="chart-tabs">
+            <button class="chart-tab chart-tab--active">Line Chart</button>
+            <button class="chart-tab">Area Chart</button>
+            <button class="chart-tab">Scatter</button>
+          </div>
+          <div class="time-range">
+            <span class="time-range__label">From:</span>
+            <input type="text" class="time-range__input" value="2025-03-15 12:00:00">
+            <span class="time-range__label">To:</span>
+            <input type="text" class="time-range__input" value="2025-03-17 12:00:00">
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <!-- Altitude Chart -->
+          <div class="chart-card">
+            <div class="chart-card__header">
+              <span class="chart-card__title">Altitude vs Time</span>
+              <div class="chart-card__actions">
+                <button class="icon-btn" style="width: 32px; height: 32px;">
+                  <span class="material-icons-outlined" style="font-size: 18px;">fullscreen</span>
+                </button>
+                <button class="icon-btn" style="width: 32px; height: 32px;">
+                  <span class="material-icons-outlined" style="font-size: 18px;">settings</span>
+                </button>
+              </div>
+            </div>
+            <div class="chart-card__content">
+              <svg class="chart-svg" viewBox="0 0 800 250">
+                <!-- Grid lines -->
+                <line x1="50" y1="30" x2="780" y2="30" class="chart-grid-line" />
+                <line x1="50" y1="80" x2="780" y2="80" class="chart-grid-line" />
+                <line x1="50" y1="130" x2="780" y2="130" class="chart-grid-line" />
+                <line x1="50" y1="180" x2="780" y2="180" class="chart-grid-line" />
+                <line x1="50" y1="230" x2="780" y2="230" class="chart-grid-line" />
+
+                <!-- Y Axis -->
+                <line x1="50" y1="20" x2="50" y2="230" class="chart-axis" />
+                <text x="10" y="35" class="chart-axis-label">600</text>
+                <text x="10" y="85" class="chart-axis-label">575</text>
+                <text x="10" y="135" class="chart-axis-label">550</text>
+                <text x="10" y="185" class="chart-axis-label">525</text>
+                <text x="10" y="235" class="chart-axis-label">500</text>
+
+                <!-- X Axis -->
+                <line x1="50" y1="230" x2="780" y2="230" class="chart-axis" />
+                <text x="50" y="248" class="chart-axis-label">12:00</text>
+                <text x="230" y="248" class="chart-axis-label">18:00</text>
+                <text x="410" y="248" class="chart-axis-label">00:00</text>
+                <text x="590" y="248" class="chart-axis-label">06:00</text>
+                <text x="770" y="248" class="chart-axis-label">12:00</text>
+
+                <!-- SAT-001 Line -->
+                <path d="M50,130 Q100,110 150,120 T250,100 T350,110 T450,90 T550,100 T650,80 T780,90" class="chart-line chart-line--1" />
+
+                <!-- SAT-002 Line -->
+                <path d="M50,150 Q100,140 150,160 T250,140 T350,150 T450,130 T550,140 T650,120 T780,130" class="chart-line chart-line--2" />
+
+                <!-- SAT-003 Line -->
+                <path d="M50,100 Q100,85 150,95 T250,75 T350,85 T450,65 T550,75 T650,55 T780,65" class="chart-line chart-line--3" />
+              </svg>
+
+              <!-- Tooltip -->
+              <div class="chart-tooltip">
+                <div class="chart-tooltip__time">2025-03-16 03:24:00</div>
+                <div class="chart-tooltip__row">
+                  <div class="chart-tooltip__dot" style="background-color: var(--chart-1);"></div>
+                  <span>SAT-001</span>
+                  <span class="chart-tooltip__value">552.3 km</span>
+                </div>
+                <div class="chart-tooltip__row">
+                  <div class="chart-tooltip__dot" style="background-color: var(--chart-2);"></div>
+                  <span>SAT-002</span>
+                  <span class="chart-tooltip__value">545.8 km</span>
+                </div>
+                <div class="chart-tooltip__row">
+                  <div class="chart-tooltip__dot" style="background-color: var(--chart-3);"></div>
+                  <span>SAT-003</span>
+                  <span class="chart-tooltip__value">558.1 km</span>
+                </div>
+              </div>
+
+              <!-- Zoom controls -->
+              <div class="zoom-controls">
+                <button class="zoom-btn">
+                  <span class="material-icons-outlined" style="font-size: 18px;">zoom_in</span>
+                </button>
+                <button class="zoom-btn">
+                  <span class="material-icons-outlined" style="font-size: 18px;">zoom_out</span>
+                </button>
+                <button class="zoom-btn">
+                  <span class="material-icons-outlined" style="font-size: 18px;">center_focus_strong</span>
+                </button>
+              </div>
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <div class="legend-item__line" style="background-color: var(--chart-1);"></div>
+                <span>SAT-001</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-item__line" style="background-color: var(--chart-2);"></div>
+                <span>SAT-002</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-item__line" style="background-color: var(--chart-3);"></div>
+                <span>SAT-003</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Velocity Chart -->
+          <div class="chart-card">
+            <div class="chart-card__header">
+              <span class="chart-card__title">Velocity Magnitude vs Time</span>
+              <div class="chart-card__actions">
+                <button class="icon-btn" style="width: 32px; height: 32px;">
+                  <span class="material-icons-outlined" style="font-size: 18px;">fullscreen</span>
+                </button>
+                <button class="icon-btn" style="width: 32px; height: 32px;">
+                  <span class="material-icons-outlined" style="font-size: 18px;">settings</span>
+                </button>
+              </div>
+            </div>
+            <div class="chart-card__content">
+              <svg class="chart-svg" viewBox="0 0 800 250">
+                <!-- Grid lines -->
+                <line x1="50" y1="30" x2="780" y2="30" class="chart-grid-line" />
+                <line x1="50" y1="80" x2="780" y2="80" class="chart-grid-line" />
+                <line x1="50" y1="130" x2="780" y2="130" class="chart-grid-line" />
+                <line x1="50" y1="180" x2="780" y2="180" class="chart-grid-line" />
+                <line x1="50" y1="230" x2="780" y2="230" class="chart-grid-line" />
+
+                <!-- Y Axis -->
+                <line x1="50" y1="20" x2="50" y2="230" class="chart-axis" />
+                <text x="10" y="35" class="chart-axis-label">7.70</text>
+                <text x="10" y="85" class="chart-axis-label">7.65</text>
+                <text x="10" y="135" class="chart-axis-label">7.60</text>
+                <text x="10" y="185" class="chart-axis-label">7.55</text>
+                <text x="10" y="235" class="chart-axis-label">7.50</text>
+
+                <!-- X Axis -->
+                <line x1="50" y1="230" x2="780" y2="230" class="chart-axis" />
+
+                <!-- Lines -->
+                <path d="M50,130 L150,125 L250,135 L350,130 L450,140 L550,135 L650,145 L780,140" class="chart-line chart-line--1" />
+                <path d="M50,140 L150,135 L250,145 L350,140 L450,150 L550,145 L650,155 L780,150" class="chart-line chart-line--2" />
+                <path d="M50,115 L150,110 L250,120 L350,115 L450,125 L550,120 L650,130 L780,125" class="chart-line chart-line--3" />
+              </svg>
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <div class="legend-item__line" style="background-color: var(--chart-1);"></div>
+                <span>SAT-001</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-item__line" style="background-color: var(--chart-2);"></div>
+                <span>SAT-002</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-item__line" style="background-color: var(--chart-3);"></div>
+                <span>SAT-003</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Stats Panel -->
+      <aside class="stats-panel">
+        <div class="stats-panel__header">Statistics</div>
+        <div class="stats-panel__content">
+          <div class="stats-group">
+            <div class="stats-group__title">
+              <div class="stats-group__color" style="background-color: var(--chart-1);"></div>
+              SAT-001 Altitude
+            </div>
+            <div class="stat-item">
+              <span class="stat-item__label">Min</span>
+              <span class="stat-item__value">548.2 km</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-item__label">Max</span>
+              <span class="stat-item__value">556.8 km</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-item__label">Mean</span>
+              <span class="stat-item__value">552.4 km</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-item__label">Std Dev</span>
+              <span class="stat-item__value">2.31 km</span>
+            </div>
+          </div>
+          <div class="stats-group">
+            <div class="stats-group__title">
+              <div class="stats-group__color" style="background-color: var(--chart-2);"></div>
+              SAT-002 Altitude
+            </div>
+            <div class="stat-item">
+              <span class="stat-item__label">Min</span>
+              <span class="stat-item__value">543.5 km</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-item__label">Max</span>
+              <span class="stat-item__value">548.9 km</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-item__label">Mean</span>
+              <span class="stat-item__value">546.1 km</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-item__label">Std Dev</span>
+              <span class="stat-item__value">1.87 km</span>
+            </div>
+          </div>
+          <div class="stats-group">
+            <div class="stats-group__title">
+              <div class="stats-group__color" style="background-color: var(--chart-3);"></div>
+              SAT-003 Altitude
+            </div>
+            <div class="stat-item">
+              <span class="stat-item__label">Min</span>
+              <span class="stat-item__value">556.1 km</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-item__label">Max</span>
+              <span class="stat-item__value">562.3 km</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-item__label">Mean</span>
+              <span class="stat-item__value">559.0 km</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-item__label">Std Dev</span>
+              <span class="stat-item__value">2.12 km</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</body>
+</html>

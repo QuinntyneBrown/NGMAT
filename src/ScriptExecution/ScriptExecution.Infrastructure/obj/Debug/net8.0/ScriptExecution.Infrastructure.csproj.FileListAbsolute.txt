@@ -1,0 +1,12 @@
+C:\projects\NGMAT\src\ScriptExecution\ScriptExecution.Infrastructure\bin\Debug\net8.0\ScriptExecution.Infrastructure.deps.json
+C:\projects\NGMAT\src\ScriptExecution\ScriptExecution.Infrastructure\bin\Debug\net8.0\ScriptExecution.Infrastructure.dll
+C:\projects\NGMAT\src\ScriptExecution\ScriptExecution.Infrastructure\bin\Debug\net8.0\ScriptExecution.Infrastructure.pdb
+C:\projects\NGMAT\src\ScriptExecution\ScriptExecution.Infrastructure\obj\Debug\net8.0\ScriptExecution.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\NGMAT\src\ScriptExecution\ScriptExecution.Infrastructure\obj\Debug\net8.0\ScriptExecution.Infrastructure.AssemblyInfoInputs.cache
+C:\projects\NGMAT\src\ScriptExecution\ScriptExecution.Infrastructure\obj\Debug\net8.0\ScriptExecution.Infrastructure.AssemblyInfo.cs
+C:\projects\NGMAT\src\ScriptExecution\ScriptExecution.Infrastructure\obj\Debug\net8.0\ScriptExecution.Infrastructure.csproj.CoreCompileInputs.cache
+C:\projects\NGMAT\src\ScriptExecution\ScriptExecution.Infrastructure\obj\Debug\net8.0\ScriptExecution.Infrastructure.sourcelink.json
+C:\projects\NGMAT\src\ScriptExecution\ScriptExecution.Infrastructure\obj\Debug\net8.0\ScriptExecution.Infrastructure.dll
+C:\projects\NGMAT\src\ScriptExecution\ScriptExecution.Infrastructure\obj\Debug\net8.0\refint\ScriptExecution.Infrastructure.dll
+C:\projects\NGMAT\src\ScriptExecution\ScriptExecution.Infrastructure\obj\Debug\net8.0\ScriptExecution.Infrastructure.pdb
+C:\projects\NGMAT\src\ScriptExecution\ScriptExecution.Infrastructure\obj\Debug\net8.0\ref\ScriptExecution.Infrastructure.dll

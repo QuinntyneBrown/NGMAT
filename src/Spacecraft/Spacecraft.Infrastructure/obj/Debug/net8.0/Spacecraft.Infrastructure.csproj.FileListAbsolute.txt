@@ -1,0 +1,12 @@
+C:\projects\NGMAT\src\Spacecraft\Spacecraft.Infrastructure\bin\Debug\net8.0\Spacecraft.Infrastructure.deps.json
+C:\projects\NGMAT\src\Spacecraft\Spacecraft.Infrastructure\bin\Debug\net8.0\Spacecraft.Infrastructure.dll
+C:\projects\NGMAT\src\Spacecraft\Spacecraft.Infrastructure\bin\Debug\net8.0\Spacecraft.Infrastructure.pdb
+C:\projects\NGMAT\src\Spacecraft\Spacecraft.Infrastructure\obj\Debug\net8.0\Spacecraft.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\NGMAT\src\Spacecraft\Spacecraft.Infrastructure\obj\Debug\net8.0\Spacecraft.Infrastructure.AssemblyInfoInputs.cache
+C:\projects\NGMAT\src\Spacecraft\Spacecraft.Infrastructure\obj\Debug\net8.0\Spacecraft.Infrastructure.AssemblyInfo.cs
+C:\projects\NGMAT\src\Spacecraft\Spacecraft.Infrastructure\obj\Debug\net8.0\Spacecraft.Infrastructure.csproj.CoreCompileInputs.cache
+C:\projects\NGMAT\src\Spacecraft\Spacecraft.Infrastructure\obj\Debug\net8.0\Spacecraft.Infrastructure.sourcelink.json
+C:\projects\NGMAT\src\Spacecraft\Spacecraft.Infrastructure\obj\Debug\net8.0\Spacecraft.Infrastructure.dll
+C:\projects\NGMAT\src\Spacecraft\Spacecraft.Infrastructure\obj\Debug\net8.0\refint\Spacecraft.Infrastructure.dll
+C:\projects\NGMAT\src\Spacecraft\Spacecraft.Infrastructure\obj\Debug\net8.0\Spacecraft.Infrastructure.pdb
+C:\projects\NGMAT\src\Spacecraft\Spacecraft.Infrastructure\obj\Debug\net8.0\ref\Spacecraft.Infrastructure.dll

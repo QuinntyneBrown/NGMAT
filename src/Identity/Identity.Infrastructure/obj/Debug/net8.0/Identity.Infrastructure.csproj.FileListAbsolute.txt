@@ -1,0 +1,12 @@
+C:\projects\NGMAT\src\Identity\Identity.Infrastructure\bin\Debug\net8.0\Identity.Infrastructure.deps.json
+C:\projects\NGMAT\src\Identity\Identity.Infrastructure\bin\Debug\net8.0\Identity.Infrastructure.dll
+C:\projects\NGMAT\src\Identity\Identity.Infrastructure\bin\Debug\net8.0\Identity.Infrastructure.pdb
+C:\projects\NGMAT\src\Identity\Identity.Infrastructure\obj\Debug\net8.0\Identity.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\NGMAT\src\Identity\Identity.Infrastructure\obj\Debug\net8.0\Identity.Infrastructure.AssemblyInfoInputs.cache
+C:\projects\NGMAT\src\Identity\Identity.Infrastructure\obj\Debug\net8.0\Identity.Infrastructure.AssemblyInfo.cs
+C:\projects\NGMAT\src\Identity\Identity.Infrastructure\obj\Debug\net8.0\Identity.Infrastructure.csproj.CoreCompileInputs.cache
+C:\projects\NGMAT\src\Identity\Identity.Infrastructure\obj\Debug\net8.0\Identity.Infrastructure.sourcelink.json
+C:\projects\NGMAT\src\Identity\Identity.Infrastructure\obj\Debug\net8.0\Identity.Infrastructure.dll
+C:\projects\NGMAT\src\Identity\Identity.Infrastructure\obj\Debug\net8.0\refint\Identity.Infrastructure.dll
+C:\projects\NGMAT\src\Identity\Identity.Infrastructure\obj\Debug\net8.0\Identity.Infrastructure.pdb
+C:\projects\NGMAT\src\Identity\Identity.Infrastructure\obj\Debug\net8.0\ref\Identity.Infrastructure.dll

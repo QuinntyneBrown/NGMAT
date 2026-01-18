@@ -1,0 +1,12 @@
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Core\bin\Debug\net8.0\CalculationEngine.Core.deps.json
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Core\bin\Debug\net8.0\CalculationEngine.Core.dll
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Core\bin\Debug\net8.0\CalculationEngine.Core.pdb
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Core\obj\Debug\net8.0\CalculationEngine.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Core\obj\Debug\net8.0\CalculationEngine.Core.AssemblyInfoInputs.cache
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Core\obj\Debug\net8.0\CalculationEngine.Core.AssemblyInfo.cs
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Core\obj\Debug\net8.0\CalculationEngine.Core.csproj.CoreCompileInputs.cache
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Core\obj\Debug\net8.0\CalculationEngine.Core.sourcelink.json
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Core\obj\Debug\net8.0\CalculationEngine.Core.dll
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Core\obj\Debug\net8.0\refint\CalculationEngine.Core.dll
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Core\obj\Debug\net8.0\CalculationEngine.Core.pdb
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Core\obj\Debug\net8.0\ref\CalculationEngine.Core.dll

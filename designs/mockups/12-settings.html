@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGMAT - Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <style>
+    :root {
+      --primary-500: #2196f3;
+      --surface-background: #121212;
+      --surface-card: #1e1e1e;
+      --surface-elevated: #2d2d2d;
+      --surface-divider: rgba(255, 255, 255, 0.12);
+      --surface-hover: rgba(255, 255, 255, 0.08);
+      --surface-selected: rgba(33, 150, 243, 0.16);
+      --text-primary: rgba(255, 255, 255, 0.87);
+      --text-secondary: rgba(255, 255, 255, 0.60);
+      --text-disabled: rgba(255, 255, 255, 0.38);
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --elevation-4: 0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--surface-background);
+      color: var(--text-primary);
+    }
+
+    .app-container { display: flex; flex-direction: column; height: 100vh; }
+
+    .mat-toolbar {
+      display: flex; align-items: center;
+      padding: 0 var(--spacing-md);
+      height: 64px;
+      background-color: var(--surface-card);
+      box-shadow: var(--elevation-4);
+      z-index: 1000;
+    }
+
+    .mat-toolbar__back {
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border: none; border-radius: 50%;
+      background: transparent; color: var(--text-primary); cursor: pointer;
+    }
+
+    .mat-toolbar__title { font-size: 18px; font-weight: 500; margin-left: var(--spacing-md); }
+    .mat-toolbar__spacer { flex: 1; }
+
+    .btn {
+      display: inline-flex; align-items: center; padding: 0 var(--spacing-md);
+      height: 36px; border: none; border-radius: var(--radius-sm);
+      font-family: 'Roboto', sans-serif; font-size: 14px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 1.25px; cursor: pointer; gap: var(--spacing-sm);
+    }
+
+    .btn--primary { background-color: var(--primary-500); color: white; }
+
+    .main-content { display: flex; flex: 1; overflow: hidden; }
+
+    /* Settings Nav */
+    .settings-nav {
+      width: 280px;
+      background-color: var(--surface-card);
+      border-right: 1px solid var(--surface-divider);
+      overflow-y: auto;
+      padding: var(--spacing-md);
+    }
+
+    .nav-section { margin-bottom: var(--spacing-lg); }
+
+    .nav-section__title {
+      font-size: 11px; font-weight: 500;
+      color: var(--text-disabled);
+      text-transform: uppercase; letter-spacing: 1.5px;
+      padding: var(--spacing-sm);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .nav-item {
+      display: flex; align-items: center; gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--text-primary);
+    }
+
+    .nav-item:hover { background-color: var(--surface-hover); }
+
+    .nav-item--active {
+      background-color: var(--surface-selected);
+      color: var(--primary-500);
+    }
+
+    .nav-item__icon { font-size: 20px; color: var(--text-secondary); }
+    .nav-item--active .nav-item__icon { color: var(--primary-500); }
+    .nav-item__text { font-size: 14px; }
+
+    /* Settings Content */
+    .settings-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--spacing-xl);
+    }
+
+    .settings-header {
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .settings-header__title { font-size: 24px; font-weight: 400; margin-bottom: var(--spacing-xs); }
+    .settings-header__desc { font-size: 14px; color: var(--text-secondary); }
+
+    .settings-section {
+      background-color: var(--surface-card);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-lg);
+      overflow: hidden;
+    }
+
+    .settings-section__header {
+      padding: var(--spacing-md) var(--spacing-lg);
+      background-color: var(--surface-elevated);
+      font-size: 14px; font-weight: 500;
+    }
+
+    .settings-section__content { padding: var(--spacing-lg); }
+
+    .setting-item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: var(--spacing-md) 0;
+      border-bottom: 1px solid var(--surface-divider);
+    }
+
+    .setting-item:last-child { border-bottom: none; }
+
+    .setting-item__info { flex: 1; padding-right: var(--spacing-lg); }
+    .setting-item__title { font-size: 14px; font-weight: 500; margin-bottom: var(--spacing-xs); }
+    .setting-item__desc { font-size: 13px; color: var(--text-secondary); }
+
+    .setting-item__control { flex-shrink: 0; }
+
+    /* Toggle */
+    .toggle-switch {
+      width: 44px; height: 24px;
+      background-color: var(--surface-elevated);
+      border-radius: 12px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .toggle-switch__thumb {
+      width: 20px; height: 20px;
+      background-color: #fafafa;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px; left: 2px;
+      transition: all 0.2s;
+    }
+
+    .toggle-switch--active { background-color: rgba(33, 150, 243, 0.5); }
+    .toggle-switch--active .toggle-switch__thumb { background-color: var(--primary-500); left: 22px; }
+
+    /* Select */
+    .select-control {
+      min-width: 200px;
+      padding: var(--spacing-sm) var(--spacing-md);
+      background-color: var(--surface-elevated);
+      border: 1px solid var(--surface-divider);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='rgba(255,255,255,0.6)'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+
+    .select-control:focus { outline: none; border-color: var(--primary-500); }
+
+    /* Theme Preview */
+    .theme-options {
+      display: flex;
+      gap: var(--spacing-md);
+    }
+
+    .theme-option {
+      width: 80px;
+      padding: var(--spacing-sm);
+      border: 2px solid var(--surface-divider);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .theme-option:hover { border-color: var(--text-secondary); }
+    .theme-option--active { border-color: var(--primary-500); }
+
+    .theme-option__preview {
+      height: 48px;
+      border-radius: var(--radius-sm);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .theme-option__preview--dark { background: linear-gradient(135deg, #1e1e1e 50%, #2d2d2d 50%); }
+    .theme-option__preview--light { background: linear-gradient(135deg, #ffffff 50%, #f5f5f5 50%); }
+    .theme-option__preview--auto { background: linear-gradient(135deg, #1e1e1e 50%, #ffffff 50%); }
+
+    .theme-option__label { font-size: 12px; }
+
+    /* Radio Group */
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+
+    .radio-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      cursor: pointer;
+    }
+
+    .radio-outer {
+      width: 20px; height: 20px;
+      border: 2px solid var(--text-secondary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .radio-item--checked .radio-outer { border-color: var(--primary-500); }
+
+    .radio-inner {
+      width: 10px; height: 10px;
+      background-color: var(--primary-500);
+      border-radius: 50%;
+      display: none;
+    }
+
+    .radio-item--checked .radio-inner { display: block; }
+
+    .radio-label { font-size: 14px; }
+
+    /* Slider */
+    .slider-control {
+      width: 200px;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .slider-track {
+      flex: 1;
+      height: 4px;
+      background-color: var(--surface-elevated);
+      border-radius: 2px;
+      position: relative;
+    }
+
+    .slider-fill {
+      height: 100%;
+      background-color: var(--primary-500);
+      border-radius: 2px;
+      width: 60%;
+    }
+
+    .slider-thumb {
+      width: 16px; height: 16px;
+      background-color: var(--primary-500);
+      border-radius: 50%;
+      position: absolute;
+      top: 50%; left: 60%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+    }
+
+    .slider-value {
+      font-size: 14px;
+      font-family: 'Roboto Mono', monospace;
+      min-width: 40px;
+      text-align: right;
+    }
+
+    /* Hotkey */
+    .hotkey-display {
+      display: flex;
+      gap: var(--spacing-xs);
+    }
+
+    .hotkey-key {
+      padding: var(--spacing-xs) var(--spacing-sm);
+      background-color: var(--surface-elevated);
+      border: 1px solid var(--surface-divider);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-family: 'Roboto Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header class="mat-toolbar">
+      <button class="mat-toolbar__back">
+        <span class="material-icons-outlined">arrow_back</span>
+      </button>
+      <span class="mat-toolbar__title">Settings</span>
+      <div class="mat-toolbar__spacer"></div>
+      <button class="btn btn--primary">
+        <span class="material-icons-outlined" style="font-size: 18px;">save</span>
+        Save Changes
+      </button>
+    </header>
+
+    <div class="main-content">
+      <!-- Navigation -->
+      <nav class="settings-nav">
+        <div class="nav-section">
+          <div class="nav-section__title">General</div>
+          <div class="nav-item nav-item--active">
+            <span class="material-icons-outlined nav-item__icon">palette</span>
+            <span class="nav-item__text">Appearance</span>
+          </div>
+          <div class="nav-item">
+            <span class="material-icons-outlined nav-item__icon">straighten</span>
+            <span class="nav-item__text">Units</span>
+          </div>
+          <div class="nav-item">
+            <span class="material-icons-outlined nav-item__icon">language</span>
+            <span class="nav-item__text">Language</span>
+          </div>
+          <div class="nav-item">
+            <span class="material-icons-outlined nav-item__icon">schedule</span>
+            <span class="nav-item__text">Time Zone</span>
+          </div>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section__title">Editor</div>
+          <div class="nav-item">
+            <span class="material-icons-outlined nav-item__icon">code</span>
+            <span class="nav-item__text">Script Editor</span>
+          </div>
+          <div class="nav-item">
+            <span class="material-icons-outlined nav-item__icon">keyboard</span>
+            <span class="nav-item__text">Keyboard Shortcuts</span>
+          </div>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section__title">Notifications</div>
+          <div class="nav-item">
+            <span class="material-icons-outlined nav-item__icon">notifications</span>
+            <span class="nav-item__text">Notifications</span>
+          </div>
+          <div class="nav-item">
+            <span class="material-icons-outlined nav-item__icon">email</span>
+            <span class="nav-item__text">Email Alerts</span>
+          </div>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section__title">Advanced</div>
+          <div class="nav-item">
+            <span class="material-icons-outlined nav-item__icon">memory</span>
+            <span class="nav-item__text">Performance</span>
+          </div>
+          <div class="nav-item">
+            <span class="material-icons-outlined nav-item__icon">storage</span>
+            <span class="nav-item__text">Data & Storage</span>
+          </div>
+          <div class="nav-item">
+            <span class="material-icons-outlined nav-item__icon">download</span>
+            <span class="nav-item__text">Import/Export</span>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Content -->
+      <main class="settings-content">
+        <div class="settings-header">
+          <h1 class="settings-header__title">Appearance</h1>
+          <p class="settings-header__desc">Customize the look and feel of the application</p>
+        </div>
+
+        <!-- Theme -->
+        <section class="settings-section">
+          <div class="settings-section__header">Theme</div>
+          <div class="settings-section__content">
+            <div class="setting-item">
+              <div class="setting-item__info">
+                <div class="setting-item__title">Color Theme</div>
+                <div class="setting-item__desc">Choose between dark, light, or system theme</div>
+              </div>
+              <div class="theme-options">
+                <div class="theme-option theme-option--active">
+                  <div class="theme-option__preview theme-option__preview--dark"></div>
+                  <span class="theme-option__label">Dark</span>
+                </div>
+                <div class="theme-option">
+                  <div class="theme-option__preview theme-option__preview--light"></div>
+                  <span class="theme-option__label">Light</span>
+                </div>
+                <div class="theme-option">
+                  <div class="theme-option__preview theme-option__preview--auto"></div>
+                  <span class="theme-option__label">Auto</span>
+                </div>
+              </div>
+            </div>
+            <div class="setting-item">
+              <div class="setting-item__info">
+                <div class="setting-item__title">Accent Color</div>
+                <div class="setting-item__desc">Primary accent color for buttons and highlights</div>
+              </div>
+              <select class="select-control">
+                <option>Blue (Default)</option>
+                <option>Cyan</option>
+                <option>Teal</option>
+                <option>Green</option>
+                <option>Orange</option>
+                <option>Purple</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- Display -->
+        <section class="settings-section">
+          <div class="settings-section__header">Display</div>
+          <div class="settings-section__content">
+            <div class="setting-item">
+              <div class="setting-item__info">
+                <div class="setting-item__title">Font Size</div>
+                <div class="setting-item__desc">Adjust the base font size for the interface</div>
+              </div>
+              <div class="slider-control">
+                <div class="slider-track">
+                  <div class="slider-fill"></div>
+                  <div class="slider-thumb"></div>
+                </div>
+                <span class="slider-value">14px</span>
+              </div>
+            </div>
+            <div class="setting-item">
+              <div class="setting-item__info">
+                <div class="setting-item__title">Sidebar Position</div>
+                <div class="setting-item__desc">Show navigation sidebar on left or right</div>
+              </div>
+              <div class="radio-group">
+                <label class="radio-item radio-item--checked">
+                  <div class="radio-outer"><div class="radio-inner"></div></div>
+                  <span class="radio-label">Left</span>
+                </label>
+                <label class="radio-item">
+                  <div class="radio-outer"><div class="radio-inner"></div></div>
+                  <span class="radio-label">Right</span>
+                </label>
+              </div>
+            </div>
+            <div class="setting-item">
+              <div class="setting-item__info">
+                <div class="setting-item__title">Compact Mode</div>
+                <div class="setting-item__desc">Reduce padding and spacing for more content</div>
+              </div>
+              <div class="toggle-switch">
+                <div class="toggle-switch__thumb"></div>
+              </div>
+            </div>
+            <div class="setting-item">
+              <div class="setting-item__info">
+                <div class="setting-item__title">Show Tooltips</div>
+                <div class="setting-item__desc">Display helpful tooltips on hover</div>
+              </div>
+              <div class="toggle-switch toggle-switch--active">
+                <div class="toggle-switch__thumb"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Animations -->
+        <section class="settings-section">
+          <div class="settings-section__header">Animations</div>
+          <div class="settings-section__content">
+            <div class="setting-item">
+              <div class="setting-item__info">
+                <div class="setting-item__title">Enable Animations</div>
+                <div class="setting-item__desc">Smooth transitions and visual effects</div>
+              </div>
+              <div class="toggle-switch toggle-switch--active">
+                <div class="toggle-switch__thumb"></div>
+              </div>
+            </div>
+            <div class="setting-item">
+              <div class="setting-item__info">
+                <div class="setting-item__title">Reduce Motion</div>
+                <div class="setting-item__desc">Minimize animations for accessibility</div>
+              </div>
+              <div class="toggle-switch">
+                <div class="toggle-switch__thumb"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Accessibility -->
+        <section class="settings-section">
+          <div class="settings-section__header">Accessibility</div>
+          <div class="settings-section__content">
+            <div class="setting-item">
+              <div class="setting-item__info">
+                <div class="setting-item__title">High Contrast Mode</div>
+                <div class="setting-item__desc">Increase contrast for better visibility</div>
+              </div>
+              <div class="toggle-switch">
+                <div class="toggle-switch__thumb"></div>
+              </div>
+            </div>
+            <div class="setting-item">
+              <div class="setting-item__info">
+                <div class="setting-item__title">Focus Indicators</div>
+                <div class="setting-item__desc">Show visible focus outlines for keyboard navigation</div>
+              </div>
+              <div class="toggle-switch toggle-switch--active">
+                <div class="toggle-switch__thumb"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

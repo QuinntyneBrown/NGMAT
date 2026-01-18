@@ -1,0 +1,12 @@
+C:\projects\NGMAT\src\Propagation\Propagation.Infrastructure\bin\Debug\net8.0\Propagation.Infrastructure.deps.json
+C:\projects\NGMAT\src\Propagation\Propagation.Infrastructure\bin\Debug\net8.0\Propagation.Infrastructure.dll
+C:\projects\NGMAT\src\Propagation\Propagation.Infrastructure\bin\Debug\net8.0\Propagation.Infrastructure.pdb
+C:\projects\NGMAT\src\Propagation\Propagation.Infrastructure\obj\Debug\net8.0\Propagation.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\NGMAT\src\Propagation\Propagation.Infrastructure\obj\Debug\net8.0\Propagation.Infrastructure.AssemblyInfoInputs.cache
+C:\projects\NGMAT\src\Propagation\Propagation.Infrastructure\obj\Debug\net8.0\Propagation.Infrastructure.AssemblyInfo.cs
+C:\projects\NGMAT\src\Propagation\Propagation.Infrastructure\obj\Debug\net8.0\Propagation.Infrastructure.csproj.CoreCompileInputs.cache
+C:\projects\NGMAT\src\Propagation\Propagation.Infrastructure\obj\Debug\net8.0\Propagation.Infrastructure.sourcelink.json
+C:\projects\NGMAT\src\Propagation\Propagation.Infrastructure\obj\Debug\net8.0\Propagation.Infrastructure.dll
+C:\projects\NGMAT\src\Propagation\Propagation.Infrastructure\obj\Debug\net8.0\refint\Propagation.Infrastructure.dll
+C:\projects\NGMAT\src\Propagation\Propagation.Infrastructure\obj\Debug\net8.0\Propagation.Infrastructure.pdb
+C:\projects\NGMAT\src\Propagation\Propagation.Infrastructure\obj\Debug\net8.0\ref\Propagation.Infrastructure.dll

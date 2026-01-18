@@ -1,0 +1,12 @@
+C:\projects\NGMAT\src\Desktop\Desktop.Infrastructure\bin\Debug\net8.0\Desktop.Infrastructure.deps.json
+C:\projects\NGMAT\src\Desktop\Desktop.Infrastructure\bin\Debug\net8.0\Desktop.Infrastructure.dll
+C:\projects\NGMAT\src\Desktop\Desktop.Infrastructure\bin\Debug\net8.0\Desktop.Infrastructure.pdb
+C:\projects\NGMAT\src\Desktop\Desktop.Infrastructure\obj\Debug\net8.0\Desktop.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\NGMAT\src\Desktop\Desktop.Infrastructure\obj\Debug\net8.0\Desktop.Infrastructure.AssemblyInfoInputs.cache
+C:\projects\NGMAT\src\Desktop\Desktop.Infrastructure\obj\Debug\net8.0\Desktop.Infrastructure.AssemblyInfo.cs
+C:\projects\NGMAT\src\Desktop\Desktop.Infrastructure\obj\Debug\net8.0\Desktop.Infrastructure.csproj.CoreCompileInputs.cache
+C:\projects\NGMAT\src\Desktop\Desktop.Infrastructure\obj\Debug\net8.0\Desktop.Infrastructure.sourcelink.json
+C:\projects\NGMAT\src\Desktop\Desktop.Infrastructure\obj\Debug\net8.0\Desktop.Infrastructure.dll
+C:\projects\NGMAT\src\Desktop\Desktop.Infrastructure\obj\Debug\net8.0\refint\Desktop.Infrastructure.dll
+C:\projects\NGMAT\src\Desktop\Desktop.Infrastructure\obj\Debug\net8.0\Desktop.Infrastructure.pdb
+C:\projects\NGMAT\src\Desktop\Desktop.Infrastructure\obj\Debug\net8.0\ref\Desktop.Infrastructure.dll

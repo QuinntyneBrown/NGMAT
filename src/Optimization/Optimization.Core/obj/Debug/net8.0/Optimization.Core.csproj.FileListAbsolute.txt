@@ -1,0 +1,12 @@
+C:\projects\NGMAT\src\Optimization\Optimization.Core\bin\Debug\net8.0\Optimization.Core.deps.json
+C:\projects\NGMAT\src\Optimization\Optimization.Core\bin\Debug\net8.0\Optimization.Core.dll
+C:\projects\NGMAT\src\Optimization\Optimization.Core\bin\Debug\net8.0\Optimization.Core.pdb
+C:\projects\NGMAT\src\Optimization\Optimization.Core\obj\Debug\net8.0\Optimization.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\NGMAT\src\Optimization\Optimization.Core\obj\Debug\net8.0\Optimization.Core.AssemblyInfoInputs.cache
+C:\projects\NGMAT\src\Optimization\Optimization.Core\obj\Debug\net8.0\Optimization.Core.AssemblyInfo.cs
+C:\projects\NGMAT\src\Optimization\Optimization.Core\obj\Debug\net8.0\Optimization.Core.csproj.CoreCompileInputs.cache
+C:\projects\NGMAT\src\Optimization\Optimization.Core\obj\Debug\net8.0\Optimization.Core.sourcelink.json
+C:\projects\NGMAT\src\Optimization\Optimization.Core\obj\Debug\net8.0\Optimization.Core.dll
+C:\projects\NGMAT\src\Optimization\Optimization.Core\obj\Debug\net8.0\refint\Optimization.Core.dll
+C:\projects\NGMAT\src\Optimization\Optimization.Core\obj\Debug\net8.0\Optimization.Core.pdb
+C:\projects\NGMAT\src\Optimization\Optimization.Core\obj\Debug\net8.0\ref\Optimization.Core.dll

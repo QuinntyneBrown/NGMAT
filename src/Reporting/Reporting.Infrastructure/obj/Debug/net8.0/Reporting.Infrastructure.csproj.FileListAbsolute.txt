@@ -1,0 +1,12 @@
+C:\projects\NGMAT\src\Reporting\Reporting.Infrastructure\bin\Debug\net8.0\Reporting.Infrastructure.deps.json
+C:\projects\NGMAT\src\Reporting\Reporting.Infrastructure\bin\Debug\net8.0\Reporting.Infrastructure.dll
+C:\projects\NGMAT\src\Reporting\Reporting.Infrastructure\bin\Debug\net8.0\Reporting.Infrastructure.pdb
+C:\projects\NGMAT\src\Reporting\Reporting.Infrastructure\obj\Debug\net8.0\Reporting.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\NGMAT\src\Reporting\Reporting.Infrastructure\obj\Debug\net8.0\Reporting.Infrastructure.AssemblyInfoInputs.cache
+C:\projects\NGMAT\src\Reporting\Reporting.Infrastructure\obj\Debug\net8.0\Reporting.Infrastructure.AssemblyInfo.cs
+C:\projects\NGMAT\src\Reporting\Reporting.Infrastructure\obj\Debug\net8.0\Reporting.Infrastructure.csproj.CoreCompileInputs.cache
+C:\projects\NGMAT\src\Reporting\Reporting.Infrastructure\obj\Debug\net8.0\Reporting.Infrastructure.sourcelink.json
+C:\projects\NGMAT\src\Reporting\Reporting.Infrastructure\obj\Debug\net8.0\Reporting.Infrastructure.dll
+C:\projects\NGMAT\src\Reporting\Reporting.Infrastructure\obj\Debug\net8.0\refint\Reporting.Infrastructure.dll
+C:\projects\NGMAT\src\Reporting\Reporting.Infrastructure\obj\Debug\net8.0\Reporting.Infrastructure.pdb
+C:\projects\NGMAT\src\Reporting\Reporting.Infrastructure\obj\Debug\net8.0\ref\Reporting.Infrastructure.dll

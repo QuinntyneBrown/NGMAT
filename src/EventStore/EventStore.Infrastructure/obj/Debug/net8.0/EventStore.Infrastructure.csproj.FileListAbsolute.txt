@@ -1,0 +1,12 @@
+C:\projects\NGMAT\src\EventStore\EventStore.Infrastructure\bin\Debug\net8.0\EventStore.Infrastructure.deps.json
+C:\projects\NGMAT\src\EventStore\EventStore.Infrastructure\bin\Debug\net8.0\EventStore.Infrastructure.dll
+C:\projects\NGMAT\src\EventStore\EventStore.Infrastructure\bin\Debug\net8.0\EventStore.Infrastructure.pdb
+C:\projects\NGMAT\src\EventStore\EventStore.Infrastructure\obj\Debug\net8.0\EventStore.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\NGMAT\src\EventStore\EventStore.Infrastructure\obj\Debug\net8.0\EventStore.Infrastructure.AssemblyInfoInputs.cache
+C:\projects\NGMAT\src\EventStore\EventStore.Infrastructure\obj\Debug\net8.0\EventStore.Infrastructure.AssemblyInfo.cs
+C:\projects\NGMAT\src\EventStore\EventStore.Infrastructure\obj\Debug\net8.0\EventStore.Infrastructure.csproj.CoreCompileInputs.cache
+C:\projects\NGMAT\src\EventStore\EventStore.Infrastructure\obj\Debug\net8.0\EventStore.Infrastructure.sourcelink.json
+C:\projects\NGMAT\src\EventStore\EventStore.Infrastructure\obj\Debug\net8.0\EventStore.Infrastructure.dll
+C:\projects\NGMAT\src\EventStore\EventStore.Infrastructure\obj\Debug\net8.0\refint\EventStore.Infrastructure.dll
+C:\projects\NGMAT\src\EventStore\EventStore.Infrastructure\obj\Debug\net8.0\EventStore.Infrastructure.pdb
+C:\projects\NGMAT\src\EventStore\EventStore.Infrastructure\obj\Debug\net8.0\ref\EventStore.Infrastructure.dll

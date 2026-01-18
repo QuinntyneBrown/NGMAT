@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGMAT - Reporting</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <style>
+    :root {
+      --primary-500: #2196f3;
+      --accent-500: #ff9800;
+      --surface-background: #121212;
+      --surface-card: #1e1e1e;
+      --surface-elevated: #2d2d2d;
+      --surface-divider: rgba(255, 255, 255, 0.12);
+      --surface-hover: rgba(255, 255, 255, 0.08);
+      --surface-selected: rgba(33, 150, 243, 0.16);
+      --text-primary: rgba(255, 255, 255, 0.87);
+      --text-secondary: rgba(255, 255, 255, 0.60);
+      --text-disabled: rgba(255, 255, 255, 0.38);
+      --status-success: #4caf50;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --elevation-4: 0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--surface-background);
+      color: var(--text-primary);
+    }
+
+    .app-container { display: flex; flex-direction: column; height: 100vh; }
+
+    .mat-toolbar {
+      display: flex;
+      align-items: center;
+      padding: 0 var(--spacing-md);
+      height: 64px;
+      background-color: var(--surface-card);
+      box-shadow: var(--elevation-4);
+      z-index: 1000;
+    }
+
+    .mat-toolbar__back {
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border: none; border-radius: 50%;
+      background: transparent; color: var(--text-primary); cursor: pointer;
+    }
+
+    .mat-toolbar__title { font-size: 18px; font-weight: 500; margin-left: var(--spacing-md); }
+    .mat-toolbar__spacer { flex: 1; }
+
+    .btn {
+      display: inline-flex; align-items: center; padding: 0 var(--spacing-md);
+      height: 36px; border: none; border-radius: var(--radius-sm);
+      font-family: 'Roboto', sans-serif; font-size: 14px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 1.25px; cursor: pointer; gap: var(--spacing-sm);
+    }
+
+    .btn--primary { background-color: var(--primary-500); color: white; }
+
+    .main-content { display: flex; flex: 1; overflow: hidden; }
+
+    /* Report Types */
+    .types-panel {
+      width: 300px;
+      background-color: var(--surface-card);
+      border-right: 1px solid var(--surface-divider);
+      display: flex; flex-direction: column;
+    }
+
+    .types-panel__header {
+      padding: var(--spacing-md);
+      border-bottom: 1px solid var(--surface-divider);
+      font-size: 14px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--text-secondary);
+    }
+
+    .types-panel__content { flex: 1; overflow-y: auto; padding: var(--spacing-sm); }
+
+    .report-type {
+      display: flex; align-items: center; gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      margin-bottom: var(--spacing-sm);
+      border: 2px solid transparent;
+    }
+
+    .report-type:hover { background-color: var(--surface-hover); }
+    .report-type--selected {
+      background-color: var(--surface-selected);
+      border-color: var(--primary-500);
+    }
+
+    .report-type__icon {
+      width: 48px; height: 48px;
+      background-color: var(--surface-elevated);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--primary-500);
+    }
+
+    .report-type__info { flex: 1; }
+    .report-type__name { font-size: 14px; font-weight: 500; }
+    .report-type__desc { font-size: 12px; color: var(--text-secondary); margin-top: var(--spacing-xs); }
+
+    /* Config Panel */
+    .config-panel {
+      width: 350px;
+      background-color: var(--surface-card);
+      border-right: 1px solid var(--surface-divider);
+      display: flex; flex-direction: column;
+    }
+
+    .config-panel__header {
+      padding: var(--spacing-md);
+      border-bottom: 1px solid var(--surface-divider);
+      font-size: 14px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--text-secondary);
+    }
+
+    .config-panel__content { flex: 1; overflow-y: auto; padding: var(--spacing-md); }
+
+    .form-field { margin-bottom: var(--spacing-lg); }
+
+    .form-field__label {
+      font-size: 12px; font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-xs);
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    .form-field__input {
+      width: 100%; padding: var(--spacing-md);
+      background-color: var(--surface-background);
+      border: 1px solid var(--surface-divider);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: 'Roboto', sans-serif; font-size: 14px;
+    }
+
+    .form-field__input:focus { outline: none; border-color: var(--primary-500); }
+
+    select.form-field__input {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='rgba(255,255,255,0.6)'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      padding-right: 40px;
+    }
+
+    .checkbox-list { margin-top: var(--spacing-sm); }
+
+    .checkbox-item {
+      display: flex; align-items: center; gap: var(--spacing-sm);
+      padding: var(--spacing-sm) 0; cursor: pointer;
+    }
+
+    .checkbox {
+      width: 18px; height: 18px;
+      border: 2px solid var(--text-secondary);
+      border-radius: 2px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .checkbox--checked {
+      background-color: var(--primary-500);
+      border-color: var(--primary-500);
+    }
+
+    .checkbox--checked::after {
+      content: '';
+      width: 5px; height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .config-panel__footer {
+      padding: var(--spacing-md);
+      border-top: 1px solid var(--surface-divider);
+    }
+
+    /* Preview Panel */
+    .preview-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+    .preview-panel__header {
+      padding: var(--spacing-md);
+      background-color: var(--surface-card);
+      border-bottom: 1px solid var(--surface-divider);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .preview-panel__title { font-size: 14px; font-weight: 500; }
+    .preview-panel__actions { display: flex; gap: var(--spacing-sm); }
+
+    .icon-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border: none; border-radius: var(--radius-sm);
+      background: transparent; color: var(--text-primary); cursor: pointer;
+    }
+
+    .icon-btn:hover { background-color: var(--surface-hover); }
+
+    .preview-panel__content {
+      flex: 1; overflow: auto;
+      background-color: #2d2d2d;
+      padding: var(--spacing-xl);
+    }
+
+    /* Report Preview */
+    .report-preview {
+      background-color: white;
+      color: #333;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .report-header { text-align: center; margin-bottom: 40px; border-bottom: 2px solid #2196f3; padding-bottom: 20px; }
+    .report-logo { font-size: 24px; font-weight: 700; color: #2196f3; margin-bottom: 10px; }
+    .report-title { font-size: 28px; font-weight: 500; margin-bottom: 5px; }
+    .report-subtitle { font-size: 14px; color: #666; }
+
+    .report-section { margin-bottom: 30px; }
+    .report-section-title { font-size: 16px; font-weight: 500; color: #2196f3; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+
+    .report-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    .report-table th, .report-table td { padding: 10px; text-align: left; border-bottom: 1px solid #eee; font-size: 13px; }
+    .report-table th { background-color: #f5f5f5; font-weight: 500; color: #666; }
+    .report-table td.mono { font-family: 'Roboto Mono', monospace; }
+
+    .report-summary { background-color: #e3f2fd; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+    .report-summary-title { font-size: 14px; font-weight: 500; color: #1976d2; margin-bottom: 10px; }
+    .report-summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .report-summary-item { text-align: center; }
+    .report-summary-value { font-size: 24px; font-weight: 500; color: #1976d2; }
+    .report-summary-label { font-size: 12px; color: #666; }
+
+    .report-footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #999; }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header class="mat-toolbar">
+      <button class="mat-toolbar__back">
+        <span class="material-icons-outlined">arrow_back</span>
+      </button>
+      <span class="mat-toolbar__title">Reporting - LEO Constellation Deploy</span>
+      <div class="mat-toolbar__spacer"></div>
+      <button class="btn btn--primary">
+        <span class="material-icons-outlined" style="font-size: 18px;">download</span>
+        Download PDF
+      </button>
+    </header>
+
+    <div class="main-content">
+      <!-- Report Types -->
+      <aside class="types-panel">
+        <div class="types-panel__header">Report Type</div>
+        <div class="types-panel__content">
+          <div class="report-type report-type--selected">
+            <div class="report-type__icon">
+              <span class="material-icons-outlined">summarize</span>
+            </div>
+            <div class="report-type__info">
+              <div class="report-type__name">Mission Summary</div>
+              <div class="report-type__desc">Complete mission overview with all spacecraft</div>
+            </div>
+          </div>
+          <div class="report-type">
+            <div class="report-type__icon">
+              <span class="material-icons-outlined">speed</span>
+            </div>
+            <div class="report-type__info">
+              <div class="report-type__name">Delta-V Budget</div>
+              <div class="report-type__desc">Fuel consumption and maneuver analysis</div>
+            </div>
+          </div>
+          <div class="report-type">
+            <div class="report-type__icon">
+              <span class="material-icons-outlined">timeline</span>
+            </div>
+            <div class="report-type__info">
+              <div class="report-type__name">Event Timeline</div>
+              <div class="report-type__desc">Chronological list of mission events</div>
+            </div>
+          </div>
+          <div class="report-type">
+            <div class="report-type__icon">
+              <span class="material-icons-outlined">warning</span>
+            </div>
+            <div class="report-type__info">
+              <div class="report-type__name">Conjunction Analysis</div>
+              <div class="report-type__desc">Close approach and collision risk</div>
+            </div>
+          </div>
+          <div class="report-type">
+            <div class="report-type__icon">
+              <span class="material-icons-outlined">table_chart</span>
+            </div>
+            <div class="report-type__info">
+              <div class="report-type__name">Orbital Elements</div>
+              <div class="report-type__desc">Time history of orbital parameters</div>
+            </div>
+          </div>
+          <div class="report-type">
+            <div class="report-type__icon">
+              <span class="material-icons-outlined">edit_note</span>
+            </div>
+            <div class="report-type__info">
+              <div class="report-type__name">Custom Template</div>
+              <div class="report-type__desc">Create your own report format</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Configuration -->
+      <aside class="config-panel">
+        <div class="config-panel__header">Configuration</div>
+        <div class="config-panel__content">
+          <div class="form-field">
+            <label class="form-field__label">Report Title</label>
+            <input type="text" class="form-field__input" value="LEO Constellation Deploy - Mission Summary">
+          </div>
+          <div class="form-field">
+            <label class="form-field__label">Time Range</label>
+            <select class="form-field__input">
+              <option>Full Mission Duration</option>
+              <option>Last 24 Hours</option>
+              <option>Last 7 Days</option>
+              <option>Custom Range</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-field__label">Output Format</label>
+            <select class="form-field__input">
+              <option>PDF Document</option>
+              <option>HTML Report</option>
+              <option>CSV Data Export</option>
+              <option>JSON Data Export</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-field__label">Include Sections</label>
+            <div class="checkbox-list">
+              <div class="checkbox-item">
+                <div class="checkbox checkbox--checked"></div>
+                <span>Mission Overview</span>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox checkbox--checked"></div>
+                <span>Spacecraft Summary</span>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox checkbox--checked"></div>
+                <span>Orbital Parameters</span>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox checkbox--checked"></div>
+                <span>Maneuver Summary</span>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox"></div>
+                <span>Detailed Ephemeris</span>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox checkbox--checked"></div>
+                <span>Charts and Graphs</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="form-field__label">Spacecraft</label>
+            <div class="checkbox-list">
+              <div class="checkbox-item">
+                <div class="checkbox checkbox--checked"></div>
+                <span>SAT-001</span>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox checkbox--checked"></div>
+                <span>SAT-002</span>
+              </div>
+              <div class="checkbox-item">
+                <div class="checkbox checkbox--checked"></div>
+                <span>SAT-003</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="config-panel__footer">
+          <button class="btn btn--primary" style="width: 100%;">
+            <span class="material-icons-outlined" style="font-size: 18px;">refresh</span>
+            Generate Report
+          </button>
+        </div>
+      </aside>
+
+      <!-- Preview -->
+      <main class="preview-panel">
+        <div class="preview-panel__header">
+          <span class="preview-panel__title">Preview</span>
+          <div class="preview-panel__actions">
+            <button class="icon-btn">
+              <span class="material-icons-outlined">zoom_in</span>
+            </button>
+            <button class="icon-btn">
+              <span class="material-icons-outlined">zoom_out</span>
+            </button>
+            <button class="icon-btn">
+              <span class="material-icons-outlined">print</span>
+            </button>
+          </div>
+        </div>
+        <div class="preview-panel__content">
+          <div class="report-preview">
+            <div class="report-header">
+              <div class="report-logo">NGMAT</div>
+              <div class="report-title">LEO Constellation Deploy</div>
+              <div class="report-subtitle">Mission Summary Report - Generated January 18, 2025</div>
+            </div>
+
+            <div class="report-summary">
+              <div class="report-summary-title">Mission Statistics</div>
+              <div class="report-summary-grid">
+                <div class="report-summary-item">
+                  <div class="report-summary-value">3</div>
+                  <div class="report-summary-label">Spacecraft</div>
+                </div>
+                <div class="report-summary-item">
+                  <div class="report-summary-value">342.5</div>
+                  <div class="report-summary-label">Total Delta-V (m/s)</div>
+                </div>
+                <div class="report-summary-item">
+                  <div class="report-summary-value">48h</div>
+                  <div class="report-summary-label">Mission Duration</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="report-section">
+              <div class="report-section-title">Mission Overview</div>
+              <p style="font-size: 14px; line-height: 1.6; color: #555;">
+                This mission deploys a constellation of 3 satellites to low Earth orbit for global coverage operations. The mission begins with the spacecraft in a 550km circular parking orbit and includes orbit raising and plane change maneuvers to achieve the final operational configuration.
+              </p>
+            </div>
+
+            <div class="report-section">
+              <div class="report-section-title">Spacecraft Summary</div>
+              <table class="report-table">
+                <thead>
+                  <tr>
+                    <th>Spacecraft</th>
+                    <th>Altitude (km)</th>
+                    <th>Inclination</th>
+                    <th>Period (min)</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>SAT-001</td>
+                    <td class="mono">552.3</td>
+                    <td class="mono">53.0°</td>
+                    <td class="mono">95.6</td>
+                    <td><span style="color: #4caf50;">Active</span></td>
+                  </tr>
+                  <tr>
+                    <td>SAT-002</td>
+                    <td class="mono">548.9</td>
+                    <td class="mono">53.0°</td>
+                    <td class="mono">95.4</td>
+                    <td><span style="color: #4caf50;">Active</span></td>
+                  </tr>
+                  <tr>
+                    <td>SAT-003</td>
+                    <td class="mono">556.1</td>
+                    <td class="mono">53.0°</td>
+                    <td class="mono">95.8</td>
+                    <td><span style="color: #4caf50;">Active</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="report-section">
+              <div class="report-section-title">Maneuver Summary</div>
+              <table class="report-table">
+                <thead>
+                  <tr>
+                    <th>Maneuver</th>
+                    <th>Epoch (UTC)</th>
+                    <th>Delta-V (m/s)</th>
+                    <th>Fuel (kg)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Orbit Raise</td>
+                    <td class="mono">2025-03-15 14:30:00</td>
+                    <td class="mono">156.3</td>
+                    <td class="mono">45.2</td>
+                  </tr>
+                  <tr>
+                    <td>Plane Change</td>
+                    <td class="mono">2025-03-16 08:15:00</td>
+                    <td class="mono">186.2</td>
+                    <td class="mono">53.8</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="report-footer">
+              Generated by NGMAT - Next Generation Mission Analysis Tool<br>
+              Page 1 of 3
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

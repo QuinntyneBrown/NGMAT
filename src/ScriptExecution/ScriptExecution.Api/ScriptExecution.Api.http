@@ -1,0 +1,6 @@
+@ScriptExecution.Api_HostAddress = http://localhost:5145
+
+GET {{ScriptExecution.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
