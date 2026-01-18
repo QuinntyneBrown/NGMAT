@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "yOlmdH6S9oY=",
+  "dgSpecHash": "hCp5Rl5PUOg=",
   "success": true,
-  "projectFilePath": "C:\\projects\\NGMAT\\src\\Reporting\\Reporting.Core\\Reporting.Core.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "/home/runner/work/NGMAT/NGMAT/src/Reporting/Reporting.Core/Reporting.Core.csproj",
+  "expectedPackageFiles": [
+    "/home/runner/work/NGMAT/.codeql-scratch/dbs/csharp/working/packages/microsoft.netcore.app.ref/8.0.22/microsoft.netcore.app.ref.8.0.22.nupkg.sha512",
+    "/home/runner/work/NGMAT/.codeql-scratch/dbs/csharp/working/packages/microsoft.aspnetcore.app.ref/8.0.22/microsoft.aspnetcore.app.ref.8.0.22.nupkg.sha512"
+  ],
   "logs": []
 }
