@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "97/cHyjgIIo=",
+  "dgSpecHash": "YXXO+uCfn/g=",
   "success": true,
-  "projectFilePath": "C:\\projects\\NGMAT\\src\\CoordinateSystem\\CoordinateSystem.Core\\CoordinateSystem.Core.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "/home/runner/work/NGMAT/NGMAT/src/CoordinateSystem/CoordinateSystem.Core/CoordinateSystem.Core.csproj",
+  "expectedPackageFiles": [
+    "/home/runner/work/NGMAT/.codeql-scratch/dbs/csharp/working/packages/microsoft.netcore.app.ref/8.0.22/microsoft.netcore.app.ref.8.0.22.nupkg.sha512",
+    "/home/runner/work/NGMAT/.codeql-scratch/dbs/csharp/working/packages/microsoft.aspnetcore.app.ref/8.0.22/microsoft.aspnetcore.app.ref.8.0.22.nupkg.sha512"
+  ],
   "logs": []
 }

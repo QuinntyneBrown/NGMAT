@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "XZLgZspFAu8=",
+  "dgSpecHash": "6wnMwyCnQaY=",
   "success": true,
-  "projectFilePath": "C:\\projects\\NGMAT\\src\\Optimization\\Optimization.Infrastructure\\Optimization.Infrastructure.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "/home/runner/work/NGMAT/NGMAT/src/Optimization/Optimization.Infrastructure/Optimization.Infrastructure.csproj",
+  "expectedPackageFiles": [
+    "/home/runner/work/NGMAT/.codeql-scratch/dbs/csharp/working/packages/microsoft.netcore.app.ref/8.0.22/microsoft.netcore.app.ref.8.0.22.nupkg.sha512",
+    "/home/runner/work/NGMAT/.codeql-scratch/dbs/csharp/working/packages/microsoft.aspnetcore.app.ref/8.0.22/microsoft.aspnetcore.app.ref.8.0.22.nupkg.sha512"
+  ],
   "logs": []
 }

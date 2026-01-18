@@ -1,45 +1,39 @@
 {
   "format": 1,
   "restore": {
-    "C:\\projects\\NGMAT\\src\\EventStore\\EventStore.Api\\EventStore.Api.csproj": {}
+    "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Api/EventStore.Api.csproj": {}
   },
   "projects": {
-    "C:\\projects\\NGMAT\\src\\EventStore\\EventStore.Api\\EventStore.Api.csproj": {
+    "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Api/EventStore.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\projects\\NGMAT\\src\\EventStore\\EventStore.Api\\EventStore.Api.csproj",
+        "projectUniqueName": "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Api/EventStore.Api.csproj",
         "projectName": "EventStore.Api",
-        "projectPath": "C:\\projects\\NGMAT\\src\\EventStore\\EventStore.Api\\EventStore.Api.csproj",
-        "packagesPath": "C:\\Users\\quinn\\.nuget\\packages\\",
-        "outputPath": "C:\\projects\\NGMAT\\src\\EventStore\\EventStore.Api\\obj\\",
+        "projectPath": "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Api/EventStore.Api.csproj",
+        "packagesPath": "/home/runner/work/NGMAT/.codeql-scratch/dbs/csharp/working/packages",
+        "outputPath": "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Api/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\quinn\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\projects\\NGMAT\\src\\EventStore\\EventStore.Core\\EventStore.Core.csproj": {
-                "projectPath": "C:\\projects\\NGMAT\\src\\EventStore\\EventStore.Core\\EventStore.Core.csproj"
+              "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Core/EventStore.Core.csproj": {
+                "projectPath": "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Core/EventStore.Core.csproj"
               },
-              "C:\\projects\\NGMAT\\src\\EventStore\\EventStore.Infrastructure\\EventStore.Infrastructure.csproj": {
-                "projectPath": "C:\\projects\\NGMAT\\src\\EventStore\\EventStore.Infrastructure\\EventStore.Infrastructure.csproj"
+              "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Infrastructure/EventStore.Infrastructure.csproj": {
+                "projectPath": "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Infrastructure/EventStore.Infrastructure.csproj"
               },
-              "C:\\projects\\NGMAT\\src\\Shared\\Shared.Messaging.Abstractions\\Shared.Messaging.Abstractions.csproj": {
-                "projectPath": "C:\\projects\\NGMAT\\src\\Shared\\Shared.Messaging.Abstractions\\Shared.Messaging.Abstractions.csproj"
+              "/home/runner/work/NGMAT/NGMAT/src/Shared/Shared.Messaging.Abstractions/Shared.Messaging.Abstractions.csproj": {
+                "projectPath": "/home/runner/work/NGMAT/NGMAT/src/Shared/Shared.Messaging.Abstractions/Shared.Messaging.Abstractions.csproj"
               }
             }
           }
@@ -84,6 +78,20 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.linux-x64",
+              "version": "[8.0.22, 8.0.22]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -92,43 +100,37 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\projects\\NGMAT\\src\\EventStore\\EventStore.Core\\EventStore.Core.csproj": {
+    "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Core/EventStore.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\projects\\NGMAT\\src\\EventStore\\EventStore.Core\\EventStore.Core.csproj",
+        "projectUniqueName": "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Core/EventStore.Core.csproj",
         "projectName": "EventStore.Core",
-        "projectPath": "C:\\projects\\NGMAT\\src\\EventStore\\EventStore.Core\\EventStore.Core.csproj",
-        "packagesPath": "C:\\Users\\quinn\\.nuget\\packages\\",
-        "outputPath": "C:\\projects\\NGMAT\\src\\EventStore\\EventStore.Core\\obj\\",
+        "projectPath": "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Core/EventStore.Core.csproj",
+        "packagesPath": "/home/runner/work/NGMAT/.codeql-scratch/dbs/csharp/working/packages",
+        "outputPath": "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Core/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\quinn\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\projects\\NGMAT\\src\\Shared\\Shared.Domain\\Shared.Domain.csproj": {
-                "projectPath": "C:\\projects\\NGMAT\\src\\Shared\\Shared.Domain\\Shared.Domain.csproj"
+              "/home/runner/work/NGMAT/NGMAT/src/Shared/Shared.Domain/Shared.Domain.csproj": {
+                "projectPath": "/home/runner/work/NGMAT/NGMAT/src/Shared/Shared.Domain/Shared.Domain.csproj"
               },
-              "C:\\projects\\NGMAT\\src\\Shared\\Shared.Messaging.Abstractions\\Shared.Messaging.Abstractions.csproj": {
-                "projectPath": "C:\\projects\\NGMAT\\src\\Shared\\Shared.Messaging.Abstractions\\Shared.Messaging.Abstractions.csproj"
+              "/home/runner/work/NGMAT/NGMAT/src/Shared/Shared.Messaging.Abstractions/Shared.Messaging.Abstractions.csproj": {
+                "projectPath": "/home/runner/work/NGMAT/NGMAT/src/Shared/Shared.Messaging.Abstractions/Shared.Messaging.Abstractions.csproj"
               }
             }
           }
@@ -159,48 +161,52 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\projects\\NGMAT\\src\\EventStore\\EventStore.Infrastructure\\EventStore.Infrastructure.csproj": {
+    "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Infrastructure/EventStore.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\projects\\NGMAT\\src\\EventStore\\EventStore.Infrastructure\\EventStore.Infrastructure.csproj",
+        "projectUniqueName": "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Infrastructure/EventStore.Infrastructure.csproj",
         "projectName": "EventStore.Infrastructure",
-        "projectPath": "C:\\projects\\NGMAT\\src\\EventStore\\EventStore.Infrastructure\\EventStore.Infrastructure.csproj",
-        "packagesPath": "C:\\Users\\quinn\\.nuget\\packages\\",
-        "outputPath": "C:\\projects\\NGMAT\\src\\EventStore\\EventStore.Infrastructure\\obj\\",
+        "projectPath": "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Infrastructure/EventStore.Infrastructure.csproj",
+        "packagesPath": "/home/runner/work/NGMAT/.codeql-scratch/dbs/csharp/working/packages",
+        "outputPath": "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Infrastructure/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\quinn\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\projects\\NGMAT\\src\\EventStore\\EventStore.Core\\EventStore.Core.csproj": {
-                "projectPath": "C:\\projects\\NGMAT\\src\\EventStore\\EventStore.Core\\EventStore.Core.csproj"
+              "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Core/EventStore.Core.csproj": {
+                "projectPath": "/home/runner/work/NGMAT/NGMAT/src/EventStore/EventStore.Core/EventStore.Core.csproj"
               },
-              "C:\\projects\\NGMAT\\src\\Shared\\Shared.Messaging.Abstractions\\Shared.Messaging.Abstractions.csproj": {
-                "projectPath": "C:\\projects\\NGMAT\\src\\Shared\\Shared.Messaging.Abstractions\\Shared.Messaging.Abstractions.csproj"
+              "/home/runner/work/NGMAT/NGMAT/src/Shared/Shared.Messaging.Abstractions/Shared.Messaging.Abstractions.csproj": {
+                "projectPath": "/home/runner/work/NGMAT/NGMAT/src/Shared/Shared.Messaging.Abstractions/Shared.Messaging.Abstractions.csproj"
               }
             }
           }
@@ -241,37 +247,41 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\projects\\NGMAT\\src\\Shared\\Shared.Domain\\Shared.Domain.csproj": {
+    "/home/runner/work/NGMAT/NGMAT/src/Shared/Shared.Domain/Shared.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\projects\\NGMAT\\src\\Shared\\Shared.Domain\\Shared.Domain.csproj",
+        "projectUniqueName": "/home/runner/work/NGMAT/NGMAT/src/Shared/Shared.Domain/Shared.Domain.csproj",
         "projectName": "Shared.Domain",
-        "projectPath": "C:\\projects\\NGMAT\\src\\Shared\\Shared.Domain\\Shared.Domain.csproj",
-        "packagesPath": "C:\\Users\\quinn\\.nuget\\packages\\",
-        "outputPath": "C:\\projects\\NGMAT\\src\\Shared\\Shared.Domain\\obj\\",
+        "projectPath": "/home/runner/work/NGMAT/NGMAT/src/Shared/Shared.Domain/Shared.Domain.csproj",
+        "packagesPath": "/home/runner/work/NGMAT/.codeql-scratch/dbs/csharp/working/packages",
+        "outputPath": "/home/runner/work/NGMAT/NGMAT/src/Shared/Shared.Domain/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\quinn\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -316,37 +326,41 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\projects\\NGMAT\\src\\Shared\\Shared.Messaging.Abstractions\\Shared.Messaging.Abstractions.csproj": {
+    "/home/runner/work/NGMAT/NGMAT/src/Shared/Shared.Messaging.Abstractions/Shared.Messaging.Abstractions.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\projects\\NGMAT\\src\\Shared\\Shared.Messaging.Abstractions\\Shared.Messaging.Abstractions.csproj",
+        "projectUniqueName": "/home/runner/work/NGMAT/NGMAT/src/Shared/Shared.Messaging.Abstractions/Shared.Messaging.Abstractions.csproj",
         "projectName": "Shared.Messaging.Abstractions",
-        "projectPath": "C:\\projects\\NGMAT\\src\\Shared\\Shared.Messaging.Abstractions\\Shared.Messaging.Abstractions.csproj",
-        "packagesPath": "C:\\Users\\quinn\\.nuget\\packages\\",
-        "outputPath": "C:\\projects\\NGMAT\\src\\Shared\\Shared.Messaging.Abstractions\\obj\\",
+        "projectPath": "/home/runner/work/NGMAT/NGMAT/src/Shared/Shared.Messaging.Abstractions/Shared.Messaging.Abstractions.csproj",
+        "packagesPath": "/home/runner/work/NGMAT/.codeql-scratch/dbs/csharp/working/packages",
+        "outputPath": "/home/runner/work/NGMAT/NGMAT/src/Shared/Shared.Messaging.Abstractions/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\quinn\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -403,12 +417,22 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
