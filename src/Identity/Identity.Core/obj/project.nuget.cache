@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "9l1+sRSruH8=",
+  "dgSpecHash": "JoLSekjVoII=",
   "success": true,
   "projectFilePath": "C:\\projects\\NGMAT\\src\\Identity\\Identity.Core\\Identity.Core.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\quinn\\.nuget\\packages\\fluentvalidation\\12.1.1\\fluentvalidation.12.1.1.nupkg.sha512"
+  ],
   "logs": []
 }
