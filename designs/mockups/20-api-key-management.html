@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGMAT - API Key Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <style>
+    :root {
+      --primary-500: #2196f3;
+      --accent-500: #ff9800;
+      --warn-500: #f44336;
+      --surface-background: #121212;
+      --surface-card: #1e1e1e;
+      --surface-elevated: #2d2d2d;
+      --surface-divider: rgba(255, 255, 255, 0.12);
+      --surface-hover: rgba(255, 255, 255, 0.08);
+      --text-primary: rgba(255, 255, 255, 0.87);
+      --text-secondary: rgba(255, 255, 255, 0.60);
+      --text-disabled: rgba(255, 255, 255, 0.38);
+      --status-success: #4caf50;
+      --status-warning: #ff9800;
+      --status-error: #f44336;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --elevation-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      --elevation-2: 0 3px 6px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.12);
+      --elevation-4: 0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--surface-background);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .app-container { display: flex; flex-direction: column; height: 100vh; }
+
+    /* Toolbar */
+    .mat-toolbar {
+      display: flex; align-items: center;
+      padding: 0 var(--spacing-md);
+      height: 64px;
+      background-color: var(--surface-card);
+      box-shadow: var(--elevation-4);
+      z-index: 1000;
+    }
+
+    .icon-button {
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border: none; border-radius: 50%;
+      background: transparent; color: var(--text-primary); cursor: pointer;
+    }
+
+    .icon-button:hover { background-color: var(--surface-hover); }
+
+    .mat-toolbar__title { font-size: 20px; font-weight: 500; margin-left: var(--spacing-md); }
+    .mat-toolbar__spacer { flex: 1; }
+
+    .layout-container { display: flex; flex: 1; overflow: hidden; }
+
+    /* Sidenav */
+    .mat-sidenav {
+      width: 256px;
+      background-color: var(--surface-card);
+      border-right: 1px solid var(--surface-divider);
+      overflow-y: auto;
+    }
+
+    .mat-nav-list { list-style: none; padding: var(--spacing-sm) 0; }
+
+    .mat-list-item {
+      display: flex; align-items: center;
+      padding: var(--spacing-md) var(--spacing-lg);
+      color: var(--text-primary);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .mat-list-item:hover { background-color: var(--surface-hover); }
+    .mat-list-item--active {
+      background-color: rgba(33, 150, 243, 0.16);
+      color: var(--primary-500);
+    }
+
+    .mat-list-item__icon {
+      margin-right: var(--spacing-md);
+      color: var(--text-secondary);
+    }
+
+    .mat-list-item--active .mat-list-item__icon {
+      color: var(--primary-500);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--spacing-xl);
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .page-subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center;
+      padding: 0 var(--spacing-md);
+      height: 36px; border: none; border-radius: var(--radius-sm);
+      font-family: 'Roboto', sans-serif; font-size: 14px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 1.25px; cursor: pointer;
+      gap: var(--spacing-sm); transition: all 0.2s;
+    }
+
+    .btn--primary {
+      background-color: var(--primary-500);
+      color: white;
+      box-shadow: var(--elevation-2);
+    }
+
+    .btn--primary:hover {
+      background-color: #1976d2;
+      box-shadow: var(--elevation-4);
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .stat-card {
+      background-color: var(--surface-card);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-lg);
+      box-shadow: var(--elevation-1);
+    }
+
+    .stat-card__header {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .stat-card__icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .stat-card__icon--primary {
+      background-color: rgba(33, 150, 243, 0.2);
+      color: var(--primary-500);
+    }
+
+    .stat-card__icon--success {
+      background-color: rgba(76, 175, 80, 0.2);
+      color: var(--status-success);
+    }
+
+    .stat-card__icon--warning {
+      background-color: rgba(255, 152, 0, 0.2);
+      color: var(--status-warning);
+    }
+
+    .stat-card__value {
+      font-size: 32px;
+      font-weight: 300;
+      color: var(--text-primary);
+    }
+
+    .stat-card__label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Card */
+    .mat-card {
+      background-color: var(--surface-card);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-lg);
+      box-shadow: var(--elevation-1);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .mat-card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .mat-card__title {
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    /* Table */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    .mat-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .mat-table thead {
+      border-bottom: 1px solid var(--surface-divider);
+    }
+
+    .mat-table th {
+      text-align: left;
+      padding: var(--spacing-md);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .mat-table td {
+      padding: var(--spacing-md);
+      border-bottom: 1px solid var(--surface-divider);
+    }
+
+    .mat-table tbody tr {
+      transition: background-color 0.2s;
+    }
+
+    .mat-table tbody tr:hover {
+      background-color: var(--surface-hover);
+    }
+
+    .table-cell--name {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .table-cell--key {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 13px;
+      color: var(--primary-500);
+      background-color: rgba(33, 150, 243, 0.1);
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      display: inline-block;
+    }
+
+    .table-cell--scopes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-xs);
+    }
+
+    .scope-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      background-color: rgba(33, 150, 243, 0.2);
+      color: var(--primary-500);
+    }
+
+    .table-cell--date {
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    /* Status Chip */
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-chip--active {
+      background-color: rgba(76, 175, 80, 0.2);
+      color: var(--status-success);
+    }
+
+    .status-chip--expired {
+      background-color: rgba(255, 152, 0, 0.2);
+      color: var(--status-warning);
+    }
+
+    .status-chip--revoked {
+      background-color: rgba(244, 67, 54, 0.2);
+      color: var(--status-error);
+    }
+
+    /* Actions */
+    .table-actions {
+      display: flex;
+      gap: var(--spacing-xs);
+    }
+
+    .material-icons-outlined {
+      font-size: 20px;
+    }
+
+    .info-notice {
+      background-color: rgba(33, 150, 243, 0.1);
+      border-left: 3px solid var(--primary-500);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-sm);
+      margin-bottom: var(--spacing-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .info-notice__icon {
+      color: var(--primary-500);
+    }
+
+    .info-notice__text {
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Toolbar -->
+    <header class="mat-toolbar">
+      <button class="icon-button" aria-label="Menu">
+        <span class="material-icons-outlined">menu</span>
+      </button>
+      <h1 class="mat-toolbar__title">NGMAT</h1>
+      <div class="mat-toolbar__spacer"></div>
+      <button class="icon-button" aria-label="Notifications">
+        <span class="material-icons-outlined">notifications</span>
+      </button>
+      <button class="icon-button" aria-label="User Profile">
+        <span class="material-icons-outlined">account_circle</span>
+      </button>
+    </header>
+
+    <div class="layout-container">
+      <!-- Sidenav -->
+      <nav class="mat-sidenav">
+        <ul class="mat-nav-list">
+          <li class="mat-list-item">
+            <span class="material-icons-outlined mat-list-item__icon">dashboard</span>
+            <span>Dashboard</span>
+          </li>
+          <li class="mat-list-item">
+            <span class="material-icons-outlined mat-list-item__icon">people</span>
+            <span>Users</span>
+          </li>
+          <li class="mat-list-item">
+            <span class="material-icons-outlined mat-list-item__icon">admin_panel_settings</span>
+            <span>Roles</span>
+          </li>
+          <li class="mat-list-item">
+            <span class="material-icons-outlined mat-list-item__icon">security</span>
+            <span>Permissions</span>
+          </li>
+          <li class="mat-list-item mat-list-item--active">
+            <span class="material-icons-outlined mat-list-item__icon">vpn_key</span>
+            <span>API Keys</span>
+          </li>
+          <li class="mat-list-item">
+            <span class="material-icons-outlined mat-list-item__icon">settings</span>
+            <span>Settings</span>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">API Key Management</h1>
+            <p class="page-subtitle">Manage API keys for programmatic access</p>
+          </div>
+          <button class="btn btn--primary">
+            <span class="material-icons-outlined">add</span>
+            Generate API Key
+          </button>
+        </div>
+
+        <!-- Info Notice -->
+        <div class="info-notice">
+          <span class="material-icons-outlined info-notice__icon">info</span>
+          <span class="info-notice__text">API keys provide programmatic access to NGMAT. Keep your keys secure and never share them publicly. You can only view the full key once during creation.</span>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card__header">
+              <div class="stat-card__icon stat-card__icon--primary">
+                <span class="material-icons-outlined">vpn_key</span>
+              </div>
+              <div>
+                <div class="stat-card__value">7</div>
+                <div class="stat-card__label">Total Keys</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card__header">
+              <div class="stat-card__icon stat-card__icon--success">
+                <span class="material-icons-outlined">check_circle</span>
+              </div>
+              <div>
+                <div class="stat-card__value">5</div>
+                <div class="stat-card__label">Active Keys</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card__header">
+              <div class="stat-card__icon stat-card__icon--warning">
+                <span class="material-icons-outlined">schedule</span>
+              </div>
+              <div>
+                <div class="stat-card__value">2</div>
+                <div class="stat-card__label">Expired/Revoked</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- API Keys Table -->
+        <div class="mat-card">
+          <div class="mat-card__header">
+            <h2 class="mat-card__title">API Keys</h2>
+          </div>
+
+          <div class="table-container">
+            <table class="mat-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Key Prefix</th>
+                  <th>Scopes</th>
+                  <th>Created</th>
+                  <th>Last Used</th>
+                  <th>Expires</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="table-cell--name">Production API Key</td>
+                  <td><span class="table-cell--key">ngmat_prod_abc123...</span></td>
+                  <td>
+                    <div class="table-cell--scopes">
+                      <span class="scope-chip">missions:read</span>
+                      <span class="scope-chip">spacecraft:read</span>
+                      <span class="scope-chip">propagation:execute</span>
+                    </div>
+                  </td>
+                  <td class="table-cell--date">2024-01-15</td>
+                  <td class="table-cell--date">2024-01-19 14:32</td>
+                  <td class="table-cell--date">2025-01-15</td>
+                  <td>
+                    <span class="status-chip status-chip--active">Active</span>
+                  </td>
+                  <td>
+                    <div class="table-actions">
+                      <button class="icon-button" aria-label="View">
+                        <span class="material-icons-outlined">visibility</span>
+                      </button>
+                      <button class="icon-button" aria-label="Copy">
+                        <span class="material-icons-outlined">content_copy</span>
+                      </button>
+                      <button class="icon-button" aria-label="Revoke">
+                        <span class="material-icons-outlined">block</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="table-cell--name">Development Key</td>
+                  <td><span class="table-cell--key">ngmat_dev_xyz789...</span></td>
+                  <td>
+                    <div class="table-cell--scopes">
+                      <span class="scope-chip">missions:read</span>
+                      <span class="scope-chip">spacecraft:read</span>
+                    </div>
+                  </td>
+                  <td class="table-cell--date">2024-01-10</td>
+                  <td class="table-cell--date">2024-01-18 09:15</td>
+                  <td class="table-cell--date">2024-07-10</td>
+                  <td>
+                    <span class="status-chip status-chip--active">Active</span>
+                  </td>
+                  <td>
+                    <div class="table-actions">
+                      <button class="icon-button" aria-label="View">
+                        <span class="material-icons-outlined">visibility</span>
+                      </button>
+                      <button class="icon-button" aria-label="Copy">
+                        <span class="material-icons-outlined">content_copy</span>
+                      </button>
+                      <button class="icon-button" aria-label="Revoke">
+                        <span class="material-icons-outlined">block</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="table-cell--name">Integration Testing</td>
+                  <td><span class="table-cell--key">ngmat_test_def456...</span></td>
+                  <td>
+                    <div class="table-cell--scopes">
+                      <span class="scope-chip">missions:create</span>
+                      <span class="scope-chip">missions:read</span>
+                      <span class="scope-chip">spacecraft:create</span>
+                      <span class="scope-chip">spacecraft:read</span>
+                      <span class="scope-chip">propagation:execute</span>
+                    </div>
+                  </td>
+                  <td class="table-cell--date">2023-12-20</td>
+                  <td class="table-cell--date">2024-01-17 16:45</td>
+                  <td class="table-cell--date">2024-06-20</td>
+                  <td>
+                    <span class="status-chip status-chip--active">Active</span>
+                  </td>
+                  <td>
+                    <div class="table-actions">
+                      <button class="icon-button" aria-label="View">
+                        <span class="material-icons-outlined">visibility</span>
+                      </button>
+                      <button class="icon-button" aria-label="Copy">
+                        <span class="material-icons-outlined">content_copy</span>
+                      </button>
+                      <button class="icon-button" aria-label="Revoke">
+                        <span class="material-icons-outlined">block</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="table-cell--name">Automation Scripts</td>
+                  <td><span class="table-cell--key">ngmat_auto_ghi012...</span></td>
+                  <td>
+                    <div class="table-cell--scopes">
+                      <span class="scope-chip">missions:read</span>
+                      <span class="scope-chip">propagation:execute</span>
+                    </div>
+                  </td>
+                  <td class="table-cell--date">2024-01-05</td>
+                  <td class="table-cell--date">2024-01-19 08:20</td>
+                  <td class="table-cell--date">Never</td>
+                  <td>
+                    <span class="status-chip status-chip--active">Active</span>
+                  </td>
+                  <td>
+                    <div class="table-actions">
+                      <button class="icon-button" aria-label="View">
+                        <span class="material-icons-outlined">visibility</span>
+                      </button>
+                      <button class="icon-button" aria-label="Copy">
+                        <span class="material-icons-outlined">content_copy</span>
+                      </button>
+                      <button class="icon-button" aria-label="Revoke">
+                        <span class="material-icons-outlined">block</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="table-cell--name">CI/CD Pipeline</td>
+                  <td><span class="table-cell--key">ngmat_ci_jkl345...</span></td>
+                  <td>
+                    <div class="table-cell--scopes">
+                      <span class="scope-chip">missions:read</span>
+                      <span class="scope-chip">spacecraft:read</span>
+                    </div>
+                  </td>
+                  <td class="table-cell--date">2023-11-30</td>
+                  <td class="table-cell--date">2024-01-16 22:10</td>
+                  <td class="table-cell--date">2024-05-30</td>
+                  <td>
+                    <span class="status-chip status-chip--active">Active</span>
+                  </td>
+                  <td>
+                    <div class="table-actions">
+                      <button class="icon-button" aria-label="View">
+                        <span class="material-icons-outlined">visibility</span>
+                      </button>
+                      <button class="icon-button" aria-label="Copy">
+                        <span class="material-icons-outlined">content_copy</span>
+                      </button>
+                      <button class="icon-button" aria-label="Revoke">
+                        <span class="material-icons-outlined">block</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="table-cell--name">Legacy Integration</td>
+                  <td><span class="table-cell--key">ngmat_legacy_mno678...</span></td>
+                  <td>
+                    <div class="table-cell--scopes">
+                      <span class="scope-chip">missions:read</span>
+                    </div>
+                  </td>
+                  <td class="table-cell--date">2023-08-15</td>
+                  <td class="table-cell--date">2023-12-20 11:30</td>
+                  <td class="table-cell--date">2024-01-01</td>
+                  <td>
+                    <span class="status-chip status-chip--expired">Expired</span>
+                  </td>
+                  <td>
+                    <div class="table-actions">
+                      <button class="icon-button" aria-label="View">
+                        <span class="material-icons-outlined">visibility</span>
+                      </button>
+                      <button class="icon-button" disabled aria-label="Copy">
+                        <span class="material-icons-outlined">content_copy</span>
+                      </button>
+                      <button class="icon-button" disabled aria-label="Revoke">
+                        <span class="material-icons-outlined">block</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="table-cell--name">Old Testing Key</td>
+                  <td><span class="table-cell--key">ngmat_test_pqr901...</span></td>
+                  <td>
+                    <div class="table-cell--scopes">
+                      <span class="scope-chip">missions:read</span>
+                      <span class="scope-chip">spacecraft:read</span>
+                    </div>
+                  </td>
+                  <td class="table-cell--date">2023-10-01</td>
+                  <td class="table-cell--date">2023-11-15 14:50</td>
+                  <td class="table-cell--date">2024-04-01</td>
+                  <td>
+                    <span class="status-chip status-chip--revoked">Revoked</span>
+                  </td>
+                  <td>
+                    <div class="table-actions">
+                      <button class="icon-button" aria-label="View">
+                        <span class="material-icons-outlined">visibility</span>
+                      </button>
+                      <button class="icon-button" disabled aria-label="Copy">
+                        <span class="material-icons-outlined">content_copy</span>
+                      </button>
+                      <button class="icon-button" disabled aria-label="Revoke">
+                        <span class="material-icons-outlined">block</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

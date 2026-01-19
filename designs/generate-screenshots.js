@@ -43,7 +43,13 @@ const CONFIG = {
         '11-script-editor.html',
         '12-settings.html',
         '13-profile.html',
-        '14-notifications.html'
+        '14-notifications.html',
+        '15-user-management.html',
+        '16-user-detail.html',
+        '17-role-management.html',
+        '18-role-detail.html',
+        '19-permission-management.html',
+        '20-api-key-management.html'
     ]
 };
 

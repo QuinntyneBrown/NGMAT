@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGMAT - Permission Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <style>
+    :root {
+      --primary-500: #2196f3;
+      --accent-500: #ff9800;
+      --warn-500: #f44336;
+      --surface-background: #121212;
+      --surface-card: #1e1e1e;
+      --surface-elevated: #2d2d2d;
+      --surface-divider: rgba(255, 255, 255, 0.12);
+      --surface-hover: rgba(255, 255, 255, 0.08);
+      --text-primary: rgba(255, 255, 255, 0.87);
+      --text-secondary: rgba(255, 255, 255, 0.60);
+      --text-disabled: rgba(255, 255, 255, 0.38);
+      --status-success: #4caf50;
+      --status-warning: #ff9800;
+      --status-error: #f44336;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --elevation-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      --elevation-2: 0 3px 6px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.12);
+      --elevation-4: 0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--surface-background);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .app-container { display: flex; flex-direction: column; height: 100vh; }
+
+    /* Toolbar */
+    .mat-toolbar {
+      display: flex; align-items: center;
+      padding: 0 var(--spacing-md);
+      height: 64px;
+      background-color: var(--surface-card);
+      box-shadow: var(--elevation-4);
+      z-index: 1000;
+    }
+
+    .icon-button {
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border: none; border-radius: 50%;
+      background: transparent; color: var(--text-primary); cursor: pointer;
+    }
+
+    .icon-button:hover { background-color: var(--surface-hover); }
+
+    .mat-toolbar__title { font-size: 20px; font-weight: 500; margin-left: var(--spacing-md); }
+    .mat-toolbar__spacer { flex: 1; }
+
+    .layout-container { display: flex; flex: 1; overflow: hidden; }
+
+    /* Sidenav */
+    .mat-sidenav {
+      width: 256px;
+      background-color: var(--surface-card);
+      border-right: 1px solid var(--surface-divider);
+      overflow-y: auto;
+    }
+
+    .mat-nav-list { list-style: none; padding: var(--spacing-sm) 0; }
+
+    .mat-list-item {
+      display: flex; align-items: center;
+      padding: var(--spacing-md) var(--spacing-lg);
+      color: var(--text-primary);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .mat-list-item:hover { background-color: var(--surface-hover); }
+    .mat-list-item--active {
+      background-color: rgba(33, 150, 243, 0.16);
+      color: var(--primary-500);
+    }
+
+    .mat-list-item__icon {
+      margin-right: var(--spacing-md);
+      color: var(--text-secondary);
+    }
+
+    .mat-list-item--active .mat-list-item__icon {
+      color: var(--primary-500);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--spacing-xl);
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .page-subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* Search and Filter Bar */
+    .search-filter-bar {
+      display: flex;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .search-box {
+      flex: 1;
+      position: relative;
+    }
+
+    .search-box__input {
+      width: 100%;
+      padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) 48px;
+      background-color: var(--surface-card);
+      border: 1px solid var(--surface-divider);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+    }
+
+    .search-box__input:focus {
+      outline: none;
+      border-color: var(--primary-500);
+    }
+
+    .search-box__icon {
+      position: absolute;
+      left: var(--spacing-md);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+
+    .filter-select {
+      padding: var(--spacing-md);
+      background-color: var(--surface-card);
+      border: 1px solid var(--surface-divider);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      min-width: 200px;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--primary-500);
+    }
+
+    /* Card */
+    .mat-card {
+      background-color: var(--surface-card);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-lg);
+      box-shadow: var(--elevation-1);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .mat-card__header {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+      padding-bottom: var(--spacing-md);
+      border-bottom: 1px solid var(--surface-divider);
+    }
+
+    .mat-card__icon {
+      color: var(--primary-500);
+      font-size: 24px;
+    }
+
+    .mat-card__title {
+      font-size: 18px;
+      font-weight: 500;
+      flex: 1;
+    }
+
+    /* Permission List */
+    .permission-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+
+    .permission-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      background-color: var(--surface-elevated);
+      border-radius: var(--radius-sm);
+      transition: background-color 0.2s;
+    }
+
+    .permission-item:hover {
+      background-color: var(--surface-hover);
+    }
+
+    .permission-item__code {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 13px;
+      color: var(--primary-500);
+      background-color: rgba(33, 150, 243, 0.1);
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      min-width: 200px;
+    }
+
+    .permission-item__content {
+      flex: 1;
+    }
+
+    .permission-item__description {
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-xs);
+      font-size: 14px;
+    }
+
+    .permission-item__roles {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      flex-wrap: wrap;
+    }
+
+    .permission-item__roles-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .role-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      background-color: rgba(33, 150, 243, 0.2);
+      color: var(--primary-500);
+    }
+
+    .material-icons-outlined {
+      font-size: 20px;
+    }
+
+    .info-notice {
+      background-color: rgba(33, 150, 243, 0.1);
+      border-left: 3px solid var(--primary-500);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-sm);
+      margin-bottom: var(--spacing-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .info-notice__icon {
+      color: var(--primary-500);
+    }
+
+    .info-notice__text {
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Toolbar -->
+    <header class="mat-toolbar">
+      <button class="icon-button" aria-label="Menu">
+        <span class="material-icons-outlined">menu</span>
+      </button>
+      <h1 class="mat-toolbar__title">NGMAT</h1>
+      <div class="mat-toolbar__spacer"></div>
+      <button class="icon-button" aria-label="Notifications">
+        <span class="material-icons-outlined">notifications</span>
+      </button>
+      <button class="icon-button" aria-label="User Profile">
+        <span class="material-icons-outlined">account_circle</span>
+      </button>
+    </header>
+
+    <div class="layout-container">
+      <!-- Sidenav -->
+      <nav class="mat-sidenav">
+        <ul class="mat-nav-list">
+          <li class="mat-list-item">
+            <span class="material-icons-outlined mat-list-item__icon">dashboard</span>
+            <span>Dashboard</span>
+          </li>
+          <li class="mat-list-item">
+            <span class="material-icons-outlined mat-list-item__icon">people</span>
+            <span>Users</span>
+          </li>
+          <li class="mat-list-item">
+            <span class="material-icons-outlined mat-list-item__icon">admin_panel_settings</span>
+            <span>Roles</span>
+          </li>
+          <li class="mat-list-item mat-list-item--active">
+            <span class="material-icons-outlined mat-list-item__icon">security</span>
+            <span>Permissions</span>
+          </li>
+          <li class="mat-list-item">
+            <span class="material-icons-outlined mat-list-item__icon">vpn_key</span>
+            <span>API Keys</span>
+          </li>
+          <li class="mat-list-item">
+            <span class="material-icons-outlined mat-list-item__icon">settings</span>
+            <span>Settings</span>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Permission Management</h1>
+            <p class="page-subtitle">View and manage system permissions</p>
+          </div>
+        </div>
+
+        <!-- Info Notice -->
+        <div class="info-notice">
+          <span class="material-icons-outlined info-notice__icon">info</span>
+          <span class="info-notice__text">Permissions are predefined by the system and cannot be created or deleted. Assign permissions to roles in Role Management.</span>
+        </div>
+
+        <!-- Search and Filter Bar -->
+        <div class="search-filter-bar">
+          <div class="search-box">
+            <span class="material-icons-outlined search-box__icon">search</span>
+            <input type="text" class="search-box__input" placeholder="Search permissions...">
+          </div>
+          <select class="filter-select">
+            <option value="">All Resources</option>
+            <option value="missions">Missions</option>
+            <option value="spacecraft">Spacecraft</option>
+            <option value="propagation">Propagation</option>
+            <option value="users">Users</option>
+            <option value="roles">Roles</option>
+            <option value="settings">Settings</option>
+          </select>
+        </div>
+
+        <!-- Missions Permissions -->
+        <div class="mat-card">
+          <div class="mat-card__header">
+            <span class="material-icons-outlined mat-card__icon">rocket_launch</span>
+            <h2 class="mat-card__title">Missions</h2>
+          </div>
+          <div class="permission-list">
+            <div class="permission-item">
+              <div class="permission-item__code">missions:create</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Create new mission configurations</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                  <span class="role-chip">Mission Engineer</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">missions:read</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">View mission configurations and data</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                  <span class="role-chip">Mission Engineer</span>
+                  <span class="role-chip">Operator</span>
+                  <span class="role-chip">Analyst</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">missions:update</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Modify existing mission configurations</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                  <span class="role-chip">Mission Engineer</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">missions:delete</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Delete mission configurations</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">missions:admin</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Full administrative access to missions</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spacecraft Permissions -->
+        <div class="mat-card">
+          <div class="mat-card__header">
+            <span class="material-icons-outlined mat-card__icon">satellite</span>
+            <h2 class="mat-card__title">Spacecraft</h2>
+          </div>
+          <div class="permission-list">
+            <div class="permission-item">
+              <div class="permission-item__code">spacecraft:create</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Create new spacecraft configurations</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                  <span class="role-chip">Mission Engineer</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">spacecraft:read</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">View spacecraft configurations and telemetry</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                  <span class="role-chip">Mission Engineer</span>
+                  <span class="role-chip">Operator</span>
+                  <span class="role-chip">Analyst</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">spacecraft:update</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Modify spacecraft configurations</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                  <span class="role-chip">Mission Engineer</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">spacecraft:delete</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Delete spacecraft configurations</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">spacecraft:admin</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Full administrative access to spacecraft</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Propagation Permissions -->
+        <div class="mat-card">
+          <div class="mat-card__header">
+            <span class="material-icons-outlined mat-card__icon">timeline</span>
+            <h2 class="mat-card__title">Propagation</h2>
+          </div>
+          <div class="permission-list">
+            <div class="permission-item">
+              <div class="permission-item__code">propagation:create</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Create propagation scenarios</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                  <span class="role-chip">Mission Engineer</span>
+                  <span class="role-chip">Operator</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">propagation:read</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">View propagation results and histories</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                  <span class="role-chip">Mission Engineer</span>
+                  <span class="role-chip">Operator</span>
+                  <span class="role-chip">Analyst</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">propagation:execute</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Execute propagation computations</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                  <span class="role-chip">Mission Engineer</span>
+                  <span class="role-chip">Operator</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">propagation:delete</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Delete propagation scenarios and results</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                  <span class="role-chip">Mission Engineer</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Users Permissions -->
+        <div class="mat-card">
+          <div class="mat-card__header">
+            <span class="material-icons-outlined mat-card__icon">people</span>
+            <h2 class="mat-card__title">Users</h2>
+          </div>
+          <div class="permission-list">
+            <div class="permission-item">
+              <div class="permission-item__code">users:create</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Create new user accounts</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">users:read</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">View user accounts and profiles</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">users:update</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Modify user accounts and permissions</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">users:delete</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Delete user accounts</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">users:admin</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Full administrative access to user management</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Roles Permissions -->
+        <div class="mat-card">
+          <div class="mat-card__header">
+            <span class="material-icons-outlined mat-card__icon">admin_panel_settings</span>
+            <h2 class="mat-card__title">Roles</h2>
+          </div>
+          <div class="permission-list">
+            <div class="permission-item">
+              <div class="permission-item__code">roles:create</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Create new roles</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">roles:read</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">View roles and their permissions</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">roles:update</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Modify role permissions</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">roles:delete</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Delete custom roles</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">roles:admin</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Full administrative access to role management</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings Permissions -->
+        <div class="mat-card">
+          <div class="mat-card__header">
+            <span class="material-icons-outlined mat-card__icon">settings</span>
+            <h2 class="mat-card__title">Settings</h2>
+          </div>
+          <div class="permission-list">
+            <div class="permission-item">
+              <div class="permission-item__code">settings:read</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">View system settings</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">settings:update</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Modify system settings</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                </div>
+              </div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-item__code">settings:admin</div>
+              <div class="permission-item__content">
+                <div class="permission-item__description">Full administrative access to system settings</div>
+                <div class="permission-item__roles">
+                  <span class="permission-item__roles-label">Roles:</span>
+                  <span class="role-chip">Administrator</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
