@@ -266,4 +266,4 @@ All microservices depend on this shared library:
 - Script Execution Service
 - Notification Service
 - API Gateway
-- Desktop Application
+- Web Interface

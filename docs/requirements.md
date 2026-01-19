@@ -50,11 +50,11 @@ NGMAT aims to bring GMAT's powerful capabilities to the .NET ecosystem with mode
 - **API Gateway Pattern:** Single entry point for external clients
 - **CQRS where applicable:** Separation of read/write operations for complex domains
 - **Event Sourcing for critical data:** Audit trail for mission-critical calculations
-- **Multi-Platform UI:** Web interface and desktop application with shared backend services
+- **Multi-Platform UI:** Web interface with shared backend services
 
 ### User Interface Strategy
 
-NGMAT provides **two frontend interfaces** that consume the same backend microservices:
+NGMAT provides a **web-based frontend interface** that consumes the backend microservices:
 
 1. **Web Application** - Browser-based interface for accessibility and collaboration
    - **Framework:** Angular (latest stable) with Angular Material
@@ -64,14 +64,6 @@ NGMAT provides **two frontend interfaces** that consume the same backend microse
    - **Real-time updates:** SignalR for live notifications and data streaming
    - **Responsive design:** Mobile-first approach for tablets and desktops
    - **Standards:** See [coding-guidelines.md](./coding-guidelines.md) for Angular-specific requirements
-
-2. **Desktop Application** - Native application for advanced features and performance
-   - **Technology:** WPF (Windows), Avalonia UI (cross-platform), or .NET MAUI
-   - **Platform-specific optimizations:** DirectX/OpenGL rendering
-   - **Offline capabilities:** Full local computation with sync to cloud
-   - **Direct GPU access:** High-performance 3D visualization
-   - **File system integration:** Native file dialogs, drag-and-drop, file associations
-   - **Standards:** Three-project structure (Core, Infrastructure, Desktop) per coding guidelines
 
 ---
 
@@ -96,7 +88,6 @@ NGMAT provides **two frontend interfaces** that consume the same backend microse
 | **Notification Service** | User notifications and alerts | Email, webhooks, real-time notifications |
 | **Identity Service** | Authentication and authorization | User management, OAuth2, JWT |
 | **Web Frontend** | Browser-based user interface | Mission planning, visualization, analysis (web) |
-| **Desktop Frontend** | Native desktop application | Advanced 3D graphics, offline work, file integration |
 
 ---
 
@@ -2889,173 +2880,171 @@ NGMAT provides **two frontend interfaces** that consume the same backend microse
 
 ---
 
-## 18. Desktop Frontend Application
+## 18. Web Frontend Application
 
-**Domain:** Native desktop application for advanced users and offline work.
+**Domain:** Browser-based web interface for mission analysis and collaboration.
 
-### MS-DESK-1: Native Application Shell
+### MS-WEB-1: Angular Application Shell
 
-**Description:** Desktop application framework and window management.
+**Description:** Web application framework and navigation structure.
 
 **Acceptance Criteria:**
-- [ ] Native window with title bar, menu, status bar
-- [ ] Multi-window support (optional)
-- [ ] Window state persistence (size, position)
-- [ ] System tray integration
-- [ ] Native file dialogs
-- [ ] Keyboard shortcuts (platform-specific)
-- [ ] Drag-and-drop file support
-- [ ] Application icon and branding
-- [ ] Auto-update mechanism
-- [ ] Splash screen on startup
+- [ ] Angular standalone components with routing
+- [ ] Material Design 3 UI components
+- [ ] Responsive navigation bar and menu
+- [ ] Multi-tab/multi-view support
+- [ ] Browser state persistence (local storage)
+- [ ] Keyboard shortcuts (cross-platform)
+- [ ] Drag-and-drop file upload support
+- [ ] Application branding and theming
+- [ ] Progressive Web App (PWA) capabilities
+- [ ] Loading indicators and splash screen
 
 ---
 
-### MS-DESK-2: Advanced 3D Visualization
+### MS-WEB-2: 3D Visualization in Browser
 
-**Description:** High-performance 3D rendering with GPU acceleration.
+**Description:** WebGL-based 3D rendering for orbit visualization.
 
 **Acceptance Criteria:**
-- [ ] DirectX or OpenGL rendering
-- [ ] 60+ FPS with complex scenes
-- [ ] Support for 100+ spacecraft simultaneously
-- [ ] Realistic lighting and shadows
-- [ ] High-resolution planet textures
-- [ ] Atmospheric effects (optional)
-- [ ] Spacecraft 3D models (OBJ, FBX import)
+- [ ] Three.js or Babylon.js rendering
+- [ ] 30+ FPS with complex scenes
+- [ ] Support for 50+ spacecraft simultaneously
+- [ ] Realistic lighting and basic shadows
+- [ ] Planet textures and models
+- [ ] Orbit paths and ground tracks
+- [ ] Spacecraft 3D models (GLTF import)
 - [ ] Camera modes (orbit, free, spacecraft-relative)
-- [ ] Screenshot and video recording (MP4 export)
-- [ ] VR support (optional, future)
+- [ ] Screenshot capability (PNG export)
+- [ ] Touch/gesture support for mobile devices
 
 ---
 
-### MS-DESK-3: Offline Mode
+### MS-WEB-3: Real-time Data Updates
 
-**Description:** Full functionality without internet connection.
+**Description:** Live updates for mission data and notifications.
 
 **Acceptance Criteria:**
-- [ ] Local database (SQLite or LiteDB)
-- [ ] All mission data stored locally
-- [ ] Propagation runs locally
-- [ ] Sync to cloud when online
-- [ ] Conflict resolution for sync
-- [ ] Offline indicator in UI
-- [ ] Queue API calls when offline
-- [ ] Local ephemeris data cache
+- [ ] SignalR connection to backend
+- [ ] Real-time state vector updates
+- [ ] Live notification center
+- [ ] Propagation progress updates
+- [ ] Multi-user collaboration indicators
+- [ ] Connection status indicator
+- [ ] Automatic reconnection on disconnect
+- [ ] Optimistic UI updates with rollback
 
 ---
 
-### MS-DESK-4: File System Integration
+### MS-WEB-4: Responsive Design
 
-**Description:** Direct file operations with OS file system.
+**Description:** Adaptive layouts for different screen sizes.
 
 **Acceptance Criteria:**
-- [ ] Open mission from file (*.ngmat format)
-- [ ] Save mission to file
+- [ ] Mobile layout (< 768px)
+- [ ] Tablet layout (768px - 1024px)
+- [ ] Web interface layout (1024px+)
+- [ ] Responsive navigation (hamburger menu on mobile)
+- [ ] Touch-friendly controls
+- [ ] Adaptive data tables (card view on mobile)
+- [ ] Fluid typography and spacing
+- [ ] Print-friendly layouts
+
+---
+
+### MS-WEB-5: File Import/Export
+
+**Description:** Upload and download mission files via browser.
+
+**Acceptance Criteria:**
+- [ ] Drag-and-drop file upload
+- [ ] File picker for upload
 - [ ] Import GMAT scripts from file
-- [ ] Export reports to file system
-- [ ] Recent files list
-- [ ] File associations (.ngmat files open in app)
-- [ ] Drag-and-drop files to open
-- [ ] File change watchers (optional)
+- [ ] Export reports as downloads
+- [ ] Recent files stored in local storage
+- [ ] File type validation
+- [ ] Progress indicators for large files
+- [ ] Multiple file upload support
 
 ---
 
-### MS-DESK-5: Multi-Tab Interface
+### MS-WEB-6: Multi-Tab Interface
 
-**Description:** Tabbed interface for multiple missions.
+**Description:** Browser-based tabbed interface for multiple missions.
 
 **Acceptance Criteria:**
-- [ ] Tab control for multiple open missions
+- [ ] Tab component for multiple open missions
 - [ ] Tab close button
-- [ ] Tab reordering (drag-and-drop)
-- [ ] Keyboard shortcuts (Ctrl+Tab, Ctrl+W)
+- [ ] Tab navigation (Ctrl+Tab, Ctrl+W)
 - [ ] Unsaved changes indicator on tab
-- [ ] Pin tab feature
 - [ ] Tab context menu (close others, close all)
+- [ ] Browser tab title updates with active mission
+- [ ] Tab state persistence across sessions
 
 ---
 
-### MS-DESK-6: Docking Panels
+### MS-WEB-7: Flexible Panel Layout
 
-**Description:** Customizable panel layout.
+**Description:** Responsive panel layout system.
 
 **Acceptance Criteria:**
-- [ ] Dockable panels (properties, explorer, console)
-- [ ] Drag-and-drop panel repositioning
-- [ ] Floating panels
-- [ ] Tabbed panel groups
-- [ ] Panel auto-hide
-- [ ] Save/restore layout
-- [ ] Default layouts (Analysis, Visualization, Scripting)
+- [ ] Resizable panels (properties, explorer, console)
+- [ ] Collapsible panels
+- [ ] Panel visibility toggles
+- [ ] Save/restore layout in local storage
+- [ ] Preset layouts (Analysis, Visualization, Scripting)
 - [ ] Reset to default layout
+- [ ] Mobile-friendly panel stacking
 
 ---
 
-### MS-DESK-7: Data Grid for Large Datasets
+### MS-WEB-8: Data Grid Component
 
-**Description:** High-performance data grid for state vectors.
+**Description:** High-performance data grid for mission data.
 
 **Acceptance Criteria:**
-- [ ] Virtual scrolling for millions of rows
+- [ ] Virtual scrolling for large datasets (10,000+ rows)
 - [ ] Column sorting and filtering
 - [ ] Column reordering and resizing
-- [ ] Export to CSV/Excel
+- [ ] Export to CSV
 - [ ] Copy cells to clipboard
 - [ ] Cell formatting (units, precision)
 - [ ] Frozen columns
 - [ ] Search/find in grid
+- [ ] Pagination support
 
 ---
 
-### MS-DESK-8: Advanced Plotting
+### MS-WEB-9: Advanced Charting
 
-**Description:** Publication-quality charts and plots.
+**Description:** Interactive charts and plots using web technologies.
 
 **Acceptance Criteria:**
-- [ ] 2D line plots
-- [ ] 3D surface plots
+- [ ] 2D line plots (Chart.js or Plotly)
+- [ ] Interactive zoom and pan
 - [ ] Scatter plots
-- [ ] Contour plots
 - [ ] Multiple axes
 - [ ] Custom axis labels and titles
 - [ ] Legend customization
-- [ ] Export to PNG, SVG, PDF
-- [ ] LaTeX rendering for equations (optional)
-- [ ] Plot templates/styles
+- [ ] Export to PNG, SVG
+- [ ] Responsive chart resizing
+- [ ] Tooltip on hover
 
 ---
 
-### MS-DESK-9: Batch Processing
+### MS-WEB-10: Mission Management Interface
 
-**Description:** Run multiple missions/analyses in batch.
-
-**Acceptance Criteria:**
-- [ ] Batch job queue
-- [ ] Add missions to batch
-- [ ] Configure batch parameters
-- [ ] Run batch with progress tracking
-- [ ] Pause/resume batch
-- [ ] Batch results aggregation
-- [ ] Export batch results
-- [ ] Parallel execution
-
----
-
-### MS-DESK-10: Plugin System
-
-**Description:** Extensibility through plugins.
+**Description:** Web UI for creating and managing missions.
 
 **Acceptance Criteria:**
-- [ ] Plugin discovery from folder
-- [ ] Plugin metadata (name, version, author)
-- [ ] Plugin enable/disable
-- [ ] Plugin settings UI
-- [ ] Plugin API for custom force models
-- [ ] Plugin API for custom propagators
-- [ ] Plugin API for custom UI panels
-- [ ] Sandboxed plugin execution
-- [ ] Plugin marketplace (future)
+- [ ] Mission creation wizard
+- [ ] Mission list view with search/filter
+- [ ] Mission detail view
+- [ ] Edit mission parameters
+- [ ] Delete missions with confirmation
+- [ ] Duplicate/clone missions
+- [ ] Mission templates
+- [ ] Collaborative editing indicators
 
 ---
 
@@ -3184,9 +3173,8 @@ This requirements document outlines a comprehensive **Event-Driven Microservices
 
 - **21 Global Requirements** covering cross-cutting concerns (infrastructure, security, coding standards)
 - **16 Backend Microservices** with REST APIs and event-driven communication
-- **2 Frontend Applications:**
+- **1 Frontend Application:**
   - Web Application (Angular + Angular Material)
-  - Desktop Application (WPF/Avalonia/.NET MAUI)
 - **100+ Microservice-Specific Requirements** with Given-When-Then acceptance criteria
 - **Adherence to coding guidelines** documented in [coding-guidelines.md](./coding-guidelines.md)
 
@@ -3227,14 +3215,6 @@ This requirements document outlines a comprehensive **Event-Driven Microservices
 - **Code Editor:** Monaco Editor or CodeMirror
 - **Testing:** Jest (unit), Playwright (E2E)
 - **Linting:** ESLint with @angular-eslint plugin
-
-**Frontend - Desktop:**
-- **Framework:** WPF, Avalonia UI, or .NET MAUI
-- **3D Graphics:** DirectX or OpenGL (Silk.NET, Veldrid)
-- **Charts:** OxyPlot, LiveCharts2, or ScottPlot
-- **Data Grid:** DevExpress, Syncfusion, or custom
-- **Local Database:** SQLite or LiteDB
-- **Testing:** xUnit, NUnit
 
 **Numerical Computation:**
 - **Math Library:** MathNet.Numerics or Intel MKL

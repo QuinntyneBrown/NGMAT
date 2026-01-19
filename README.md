@@ -36,7 +36,7 @@ The solution follows Clean Architecture with three layers per service:
 
 ## Applications
 
-- **Desktop.App** - WPF/MAUI desktop application for interactive mission analysis
+- **Web Interface** - Angular-based web application for interactive mission analysis
 
 ## Shared Libraries
 
@@ -72,10 +72,9 @@ dotnet test
 NGMAT/
 ├── src/
 │   ├── ApiGateway/              # API Gateway service
-│   ├── Desktop/                 # Desktop application
-│   │   ├── Desktop.Core/
-│   │   ├── Desktop.Infrastructure/
-│   │   └── Desktop.App/
+│   ├── Workspace/               # Web interface
+│   │   └── projects/
+│   │       └── ui/              # Angular web application
 │   ├── Shared/                  # Shared libraries
 │   │   ├── Shared.Messaging.Abstractions/
 │   │   └── Shared.Messaging.UdpMulticast/
