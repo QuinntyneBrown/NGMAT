@@ -404,7 +404,6 @@ public sealed class ReportingService
             _ => JsonSerializer.SerializeToUtf8Bytes(budget)
         };
     }
-    }
 
     // Helper methods
 

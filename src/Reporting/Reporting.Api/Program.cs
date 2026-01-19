@@ -67,7 +67,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 // Add Reporting services
-builder.Services.AddReportingInfrastructure();
+builder.Services.AddReportingInfrastructure(builder.Configuration);
 
 // Add event publisher (null implementation for now)
 builder.Services.AddSingleton<IEventPublisher, NullEventPublisher>();

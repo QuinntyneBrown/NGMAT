@@ -39,45 +39,30 @@ public sealed class PdfGenerator
                         column.Spacing(10);
 
                         // Mission Information
-                        column.Item().Element(c => RenderSection(c, "Mission Information", container =>
+                        column.Item().Element(c => RenderSection(c, "Mission Information", contentColumn =>
                         {
-                            container.Row(row =>
-                            {
-                                row.RelativeItem().Text($"Mission ID: {report.MissionId}");
-                            });
-                            container.Row(row =>
-                            {
-                                row.RelativeItem().Text($"Mission Name: {report.MissionName}");
-                            });
+                            contentColumn.Item().Text($"Mission ID: {report.MissionId}");
+                            contentColumn.Item().Text($"Mission Name: {report.MissionName}");
                             if (!string.IsNullOrEmpty(report.Description))
                             {
-                                container.Row(row =>
-                                {
-                                    row.RelativeItem().Text($"Description: {report.Description}");
-                                });
+                                contentColumn.Item().Text($"Description: {report.Description}");
                             }
                             if (report.StartDate.HasValue)
                             {
-                                container.Row(row =>
-                                {
-                                    row.RelativeItem().Text($"Start Date: {report.StartDate:yyyy-MM-dd HH:mm:ss} UTC");
-                                });
+                                contentColumn.Item().Text($"Start Date: {report.StartDate:yyyy-MM-dd HH:mm:ss} UTC");
                             }
                             if (report.EndDate.HasValue)
                             {
-                                container.Row(row =>
-                                {
-                                    row.RelativeItem().Text($"End Date: {report.EndDate:yyyy-MM-dd HH:mm:ss} UTC");
-                                });
+                                contentColumn.Item().Text($"End Date: {report.EndDate:yyyy-MM-dd HH:mm:ss} UTC");
                             }
                         }));
 
                         // Spacecraft
                         if (report.Spacecraft.Any())
                         {
-                            column.Item().Element(c => RenderSection(c, "Spacecraft", container =>
+                            column.Item().Element(c => RenderSection(c, "Spacecraft", contentColumn =>
                             {
-                                container.Table(table =>
+                                contentColumn.Item().Table(table =>
                                 {
                                     table.ColumnsDefinition(columns =>
                                     {
@@ -112,9 +97,9 @@ public sealed class PdfGenerator
                         // Maneuvers
                         if (report.Maneuvers.Any())
                         {
-                            column.Item().Element(c => RenderSection(c, "Maneuvers", container =>
+                            column.Item().Element(c => RenderSection(c, "Maneuvers", contentColumn =>
                             {
-                                container.Table(table =>
+                                contentColumn.Item().Table(table =>
                                 {
                                     table.ColumnsDefinition(columns =>
                                     {
@@ -188,32 +173,23 @@ public sealed class PdfGenerator
                         column.Spacing(10);
 
                         // Summary
-                        column.Item().Element(c => RenderSection(c, "Fuel Summary", container =>
+                        column.Item().Element(c => RenderSection(c, "Fuel Summary", contentColumn =>
                         {
-                            container.Row(row =>
+                            contentColumn.Item().Text($"Initial Fuel: {budget.InitialFuelKg:F2} kg");
+                            contentColumn.Item().Text($"Remaining Fuel: {budget.RemainingFuelKg:F2} kg");
+                            contentColumn.Item().Text($"Fuel Used: {budget.TotalFuelUsedKg:F2} kg");
+                            contentColumn.Item().Text(text =>
                             {
-                                row.RelativeItem().Text($"Initial Fuel: {budget.InitialFuelKg:F2} kg");
-                            });
-                            container.Row(row =>
-                            {
-                                row.RelativeItem().Text($"Remaining Fuel: {budget.RemainingFuelKg:F2} kg");
-                            });
-                            container.Row(row =>
-                            {
-                                row.RelativeItem().Text($"Fuel Used: {budget.TotalFuelUsedKg:F2} kg");
-                            });
-                            container.Row(row =>
-                            {
-                                row.RelativeItem().Text($"Total Delta-V: {budget.TotalDeltaV:F3} m/s").Bold();
+                                text.Span($"Total Delta-V: {budget.TotalDeltaVMps:F3} m/s").Bold();
                             });
                         }));
 
                         // Maneuvers
                         if (budget.Maneuvers.Any())
                         {
-                            column.Item().Element(c => RenderSection(c, "Maneuver Breakdown", container =>
+                            column.Item().Element(c => RenderSection(c, "Maneuver Breakdown", contentColumn =>
                             {
-                                container.Table(table =>
+                                contentColumn.Item().Table(table =>
                                 {
                                     table.ColumnsDefinition(columns =>
                                     {
@@ -267,7 +243,7 @@ public sealed class PdfGenerator
         }).GeneratePdf();
     }
 
-    private static void RenderSection(IContainer container, string title, Action<IContainer> content)
+    private static void RenderSection(IContainer container, string title, Action<ColumnDescriptor> content)
     {
         container.Column(column =>
         {
