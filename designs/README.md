@@ -23,7 +23,13 @@ designs/
 │   ├── 11-script-editor.html   # GMAT Script Editor
 │   ├── 12-settings.html        # Settings/Preferences
 │   ├── 13-profile.html         # User Profile
-│   └── 14-notifications.html   # Notifications Panel
+│   ├── 14-notifications.html   # Notifications Panel
+│   ├── 15-user-management.html # User Management (Admin)
+│   ├── 16-user-detail.html     # User Details/Edit (Admin)
+│   ├── 17-role-management.html # Role Management (Admin)
+│   ├── 18-role-detail.html     # Role Details/Edit (Admin)
+│   ├── 19-permission-management.html # Permission Management (Admin)
+│   └── 20-api-key-management.html   # API Key Management (Admin)
 ├── screenshots/                # PNG screenshots (generated)
 │   └── (generated PNG files)
 └── generate-screenshots.js     # Screenshot generation script
@@ -139,6 +145,78 @@ designs/
 - Unread indicators
 - Toast notification example
 
+### 15. User Management (15-user-management.html)
+- Admin navigation with Users active
+- Statistics cards (total, active, inactive, locked users)
+- Search and filter bar (by status, role)
+- User table with columns:
+  - User info (avatar, name, email)
+  - Assigned roles
+  - Status (active/inactive/locked)
+  - Last login timestamp
+  - MFA enabled indicator
+  - Created date
+  - Actions (edit, more options)
+- Pagination controls
+
+### 16. User Detail (16-user-detail.html)
+- Breadcrumb navigation
+- User header with large avatar and status badges
+- Basic Information section (name, email, ID, created date)
+- Security Settings section:
+  - Toggle switches for email verified, MFA, account active
+  - Security stats (last login, failed attempts, sessions, lockout status)
+- Role Assignment section with checkboxes for available roles
+- Recent Activity log showing user actions
+- Action buttons (reset password, deactivate, save changes)
+
+### 17. Role Management (17-role-management.html)
+- Admin navigation with Roles active
+- Search bar for roles
+- Grid layout of role cards, each showing:
+  - Role icon and name
+  - System badge for built-in roles
+  - Role description
+  - Statistics (assigned users count, permissions count)
+  - Key permissions preview
+  - Action buttons (view details, edit, delete)
+- System roles: Admin, User, Read Only
+- Custom roles: Mission Analyst, Spacecraft Engineer, API Integration
+
+### 18. Role Detail (18-role-detail.html)
+- Breadcrumb navigation
+- Role header with icon, name, and system badge
+- Basic Information section (name, description fields)
+- Permission Assignment section grouped by resource:
+  - Missions, Spacecraft, Propagation, Users, Roles, Settings
+  - Each with action checkboxes (create, read, update, delete, execute, admin)
+- Statistics section (assigned users, total permissions)
+- Assigned Users list with avatars and contact info
+- Action buttons (cancel, save, delete, clone)
+
+### 19. Permission Management (19-permission-management.html)
+- Admin navigation with Permissions active
+- Info notice about predefined permissions
+- Search bar and filter by resource dropdown
+- Grouped permission cards by resource:
+  - Missions, Spacecraft, Propagation, Users, Roles, Settings
+  - Each permission shows code (resource:action), description, assigned roles
+- Read-only view (permissions are system-defined)
+
+### 20. API Key Management (20-api-key-management.html)
+- Admin navigation with API Keys active
+- Security info notice about API key handling
+- Statistics cards (total keys, active keys, expired/revoked keys)
+- "Generate API Key" button
+- API keys table with columns:
+  - Name and key prefix (ngmat_...)
+  - Scopes (as chips)
+  - Created date
+  - Last used timestamp
+  - Expires date
+  - Status (active/expired/revoked with color coding)
+  - Actions (view, copy, revoke)
+
 ## Viewing Mockups
 
 ### Option 1: Open in Browser
@@ -246,3 +324,4 @@ When updating designs:
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0.0 | 2025-01-18 | Initial design system and mockups |
+| 1.1.0 | 2025-01-19 | Added admin functionality mockups (User Management, Role Management, Permission Management, API Key Management) |
