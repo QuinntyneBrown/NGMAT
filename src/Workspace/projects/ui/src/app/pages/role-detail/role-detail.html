@@ -1,0 +1,126 @@
+<div class="role-detail-page" *ngIf="viewModel$ | async as vm">
+  <!-- Loading State -->
+  <div *ngIf="vm.loading" class="loading-container">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+
+  <ng-container *ngIf="!vm.loading">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a routerLink="/roles">Role Management</a>
+      <mat-icon>chevron_right</mat-icon>
+      <span>{{ vm.isNew ? 'New Role' : vm.role?.name }}</span>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="role-header">
+        <div class="role-header__icon" [class.role-header__icon--system]="vm.role?.isSystem">
+          <mat-icon>{{ vm.isNew ? 'add' : 'admin_panel_settings' }}</mat-icon>
+        </div>
+        <div class="role-header__info">
+          <h1 class="role-header__name">
+            {{ vm.isNew ? 'Create New Role' : vm.role?.name }}
+            <span class="system-badge" *ngIf="vm.role?.isSystem">System</span>
+          </h1>
+          <p class="role-header__description" *ngIf="!vm.isNew">{{ vm.role?.description || 'No description' }}</p>
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button mat-stroked-button (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+          Cancel
+        </button>
+        <button mat-raised-button color="primary" (click)="saveRole(vm)" [disabled]="vm.saving || vm.role?.isSystem">
+          <mat-icon>save</mat-icon>
+          {{ vm.saving ? 'Saving...' : 'Save Changes' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- System Role Notice -->
+    <div class="system-notice" *ngIf="vm.role?.isSystem">
+      <mat-icon>info</mat-icon>
+      <span>This is a system role and cannot be modified.</span>
+    </div>
+
+    <div class="content-grid">
+      <!-- Basic Information -->
+      <mat-card class="form-card">
+        <mat-card-header>
+          <mat-card-title>Basic Information</mat-card-title>
+          <mat-card-subtitle>Role name and description</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <form [formGroup]="roleForm">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Role Name</mat-label>
+              <input matInput formControlName="name" placeholder="e.g., Mission Analyst">
+              <mat-error *ngIf="roleForm.get('name')?.hasError('required')">Name is required</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Description</mat-label>
+              <textarea matInput formControlName="description" rows="3" placeholder="Describe the role's purpose"></textarea>
+            </mat-form-field>
+          </form>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Permission Assignment -->
+      <mat-card class="form-card">
+        <mat-card-header>
+          <mat-card-title>Permission Assignment</mat-card-title>
+          <mat-card-subtitle>Select permissions for this role</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="permission-groups">
+            <div class="permission-group" *ngFor="let group of vm.permissionGroups">
+              <div class="permission-group__header">
+                <mat-icon>{{ group.icon }}</mat-icon>
+                <h3>{{ group.resource | titlecase }}</h3>
+              </div>
+              <div class="permission-group__items">
+                <div
+                  class="permission-item"
+                  *ngFor="let permission of group.permissions"
+                  [class.permission-item--disabled]="vm.role?.isSystem"
+                  (click)="togglePermission(permission.id, vm)">
+                  <mat-checkbox
+                    [checked]="isPermissionSelected(permission.id)"
+                    [disabled]="vm.role?.isSystem"
+                    (click)="$event.stopPropagation()">
+                  </mat-checkbox>
+                  <div class="permission-item__info">
+                    <div class="permission-item__name">{{ permission.action | titlecase }}</div>
+                    <div class="permission-item__code">{{ permission.name }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Statistics -->
+      <mat-card class="form-card" *ngIf="vm.role">
+        <mat-card-header>
+          <mat-card-title>Statistics</mat-card-title>
+          <mat-card-subtitle>Role usage information</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stats-grid">
+            <div class="stat">
+              <div class="stat__value">{{ vm.role.userCount }}</div>
+              <div class="stat__label">Assigned Users</div>
+            </div>
+            <div class="stat">
+              <div class="stat__value">{{ selectedPermissionIds.length }}</div>
+              <div class="stat__label">Selected Permissions</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </ng-container>
+</div>

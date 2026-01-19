@@ -1,0 +1,85 @@
+<div class="permissions-page" *ngIf="viewModel$ | async as vm">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title-section">
+      <h1 class="page-title">Permission Management</h1>
+      <p class="page-subtitle">View system permissions and their role assignments</p>
+    </div>
+  </div>
+
+  <!-- Info Notice -->
+  <div class="info-notice">
+    <mat-icon>info</mat-icon>
+    <span>Permissions are predefined by the system and cannot be created or deleted. Assign permissions to roles through the Role Management page.</span>
+  </div>
+
+  <!-- Search and Filter Bar -->
+  <mat-card class="filter-card">
+    <div class="filter-bar">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search permissions</mat-label>
+        <input matInput [(ngModel)]="searchTermValue" (keyup.enter)="onSearch()" placeholder="Search by name or description...">
+        <button *ngIf="searchTermValue" matSuffix mat-icon-button (click)="clearSearch()">
+          <mat-icon>close</mat-icon>
+        </button>
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Resource</mat-label>
+        <mat-select [(value)]="resourceFilterValue" (selectionChange)="onResourceFilterChange($event.value)">
+          <mat-option [value]="null">All Resources</mat-option>
+          <mat-option *ngFor="let resource of vm.resources" [value]="resource">{{ resource | titlecase }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </mat-card>
+
+  <!-- Loading State -->
+  <div *ngIf="vm.loading" class="loading-container">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+
+  <!-- Permission Groups -->
+  <ng-container *ngIf="!vm.loading">
+    <div class="permission-groups">
+      <mat-card class="permission-group" *ngFor="let group of vm.permissionGroups">
+        <div class="permission-group__header">
+          <div class="permission-group__icon">
+            <mat-icon>{{ group.icon }}</mat-icon>
+          </div>
+          <div class="permission-group__title">{{ group.resource | titlecase }}</div>
+          <div class="permission-group__count">{{ group.permissions.length }} permissions</div>
+        </div>
+
+        <div class="permission-list">
+          <div class="permission-item" *ngFor="let permission of group.permissions">
+            <div class="permission-item__header">
+              <code class="permission-item__code">{{ permission.name }}</code>
+              <span class="permission-item__action">{{ permission.action | titlecase }}</span>
+            </div>
+            <p class="permission-item__description">{{ permission.description || 'No description' }}</p>
+            <div class="permission-item__roles" *ngIf="permission.roles.length > 0">
+              <span class="roles-label">Assigned to:</span>
+              <mat-chip-set>
+                <mat-chip *ngFor="let role of permission.roles" class="role-chip" [class.role-chip--system]="role.isSystem">
+                  {{ role.name }}
+                </mat-chip>
+              </mat-chip-set>
+            </div>
+            <div class="permission-item__no-roles" *ngIf="permission.roles.length === 0">
+              <mat-icon>warning</mat-icon>
+              <span>Not assigned to any role</span>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+
+    <div *ngIf="vm.permissionGroups.length === 0" class="empty-state">
+      <mat-icon>search_off</mat-icon>
+      <p>No permissions match your search</p>
+      <button mat-stroked-button (click)="clearFilters()">Clear Filters</button>
+    </div>
+  </ng-container>
+</div>

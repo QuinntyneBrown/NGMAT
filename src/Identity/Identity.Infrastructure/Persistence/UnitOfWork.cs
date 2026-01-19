@@ -12,6 +12,8 @@ internal sealed class UnitOfWork : IUnitOfWork
 
     private IUserRepository? _users;
     private IRoleRepository? _roles;
+    private IPermissionRepository? _permissions;
+    private IApiKeyRepository? _apiKeys;
 
     public UnitOfWork(IdentityDbContext context)
     {
@@ -20,6 +22,8 @@ internal sealed class UnitOfWork : IUnitOfWork
 
     public IUserRepository Users => _users ??= new UserRepository(_context);
     public IRoleRepository Roles => _roles ??= new RoleRepository(_context);
+    public IPermissionRepository Permissions => _permissions ??= new PermissionRepository(_context);
+    public IApiKeyRepository ApiKeys => _apiKeys ??= new ApiKeyRepository(_context);
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

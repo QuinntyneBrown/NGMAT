@@ -18,6 +18,11 @@ interface NavItem {
   route: string;
 }
 
+interface NavSection {
+  title: string;
+  items: NavItem[];
+}
+
 @Component({
   selector: 'app-shell',
   imports: [
@@ -46,6 +51,13 @@ export class Shell {
     { label: 'Ground Track', icon: 'map', route: '/ground-track' },
     { label: 'Script Editor', icon: 'code', route: '/scripts' },
     { label: 'Reports', icon: 'assessment', route: '/reports' },
+  ];
+
+  protected readonly adminNavItems: NavItem[] = [
+    { label: 'Users', icon: 'people', route: '/users' },
+    { label: 'Roles', icon: 'admin_panel_settings', route: '/roles' },
+    { label: 'Permissions', icon: 'security', route: '/permissions' },
+    { label: 'API Keys', icon: 'key', route: '/api-keys' },
   ];
 
   protected readonly notificationCount$ = new BehaviorSubject<number>(3);

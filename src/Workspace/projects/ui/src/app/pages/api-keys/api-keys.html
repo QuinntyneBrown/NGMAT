@@ -1,0 +1,208 @@
+<div class="api-keys-page" *ngIf="viewModel$ | async as vm">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title-section">
+      <h1 class="page-title">API Key Management</h1>
+      <p class="page-subtitle">Manage API keys for programmatic access</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="showCreate()" *ngIf="!showCreateForm">
+      <mat-icon>add</mat-icon>
+      Generate API Key
+    </button>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid" *ngIf="vm.stats">
+    <mat-card class="stat-card">
+      <div class="stat-card__header">
+        <div class="stat-card__icon stat-card__icon--primary">
+          <mat-icon>key</mat-icon>
+        </div>
+        <div>
+          <div class="stat-card__value">{{ vm.stats.totalKeys }}</div>
+          <div class="stat-card__label">Total Keys</div>
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <div class="stat-card__header">
+        <div class="stat-card__icon stat-card__icon--success">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+        <div>
+          <div class="stat-card__value">{{ vm.stats.activeKeys }}</div>
+          <div class="stat-card__label">Active Keys</div>
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <div class="stat-card__header">
+        <div class="stat-card__icon stat-card__icon--error">
+          <mat-icon>cancel</mat-icon>
+        </div>
+        <div>
+          <div class="stat-card__value">{{ vm.stats.expiredOrRevokedKeys }}</div>
+          <div class="stat-card__label">Expired/Revoked</div>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- Info Notice -->
+  <div class="info-notice">
+    <mat-icon>warning</mat-icon>
+    <span>API keys provide programmatic access to your account. Keep them secure and never share them publicly. If a key is compromised, revoke it immediately.</span>
+  </div>
+
+  <!-- Create Form -->
+  <mat-card class="create-card" *ngIf="showCreateForm">
+    <mat-card-header>
+      <mat-card-title>Generate New API Key</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div *ngIf="!createdKey">
+        <form [formGroup]="createForm" (ngSubmit)="createApiKey()">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Key Name</mat-label>
+            <input matInput formControlName="name" placeholder="e.g., Production Integration">
+            <mat-error *ngIf="createForm.get('name')?.hasError('required')">Name is required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Key Prefix</mat-label>
+            <input matInput formControlName="prefix" placeholder="api">
+            <mat-hint>Used to identify the key type</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Expires In (Days)</mat-label>
+            <input matInput formControlName="expiresInDays" type="number" min="1" max="365">
+            <mat-hint>Leave empty for no expiration</mat-hint>
+          </mat-form-field>
+
+          <div class="form-actions">
+            <button mat-stroked-button type="button" (click)="cancelCreate()">Cancel</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="createForm.invalid">Generate Key</button>
+          </div>
+        </form>
+      </div>
+
+      <div *ngIf="createdKey" class="created-key">
+        <div class="created-key__icon">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+        <h3>API Key Generated Successfully</h3>
+        <p>Copy your API key now. You won't be able to see it again!</p>
+        <div class="created-key__value">
+          <code>{{ createdKey }}</code>
+          <button mat-icon-button (click)="copyKey(createdKey)" matTooltip="Copy to clipboard">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+        </div>
+        <button mat-stroked-button (click)="cancelCreate()">Done</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- API Keys Table -->
+  <mat-card class="table-card">
+    <div class="table-container">
+      <div *ngIf="vm.loading" class="loading-container">
+        <mat-spinner diameter="48"></mat-spinner>
+      </div>
+
+      <table mat-table [dataSource]="vm.apiKeys" *ngIf="!vm.loading">
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let key">{{ key.name }}</td>
+        </ng-container>
+
+        <!-- Key Prefix Column -->
+        <ng-container matColumnDef="keyPrefix">
+          <th mat-header-cell *matHeaderCellDef>Key Prefix</th>
+          <td mat-cell *matCellDef="let key">
+            <code class="key-prefix">{{ key.keyPrefix }}</code>
+          </td>
+        </ng-container>
+
+        <!-- Scopes Column -->
+        <ng-container matColumnDef="scopes">
+          <th mat-header-cell *matHeaderCellDef>Scopes</th>
+          <td mat-cell *matCellDef="let key">
+            <mat-chip-set *ngIf="key.scopes.length > 0">
+              <mat-chip *ngFor="let scope of key.scopes" class="scope-chip">{{ scope }}</mat-chip>
+            </mat-chip-set>
+            <span *ngIf="key.scopes.length === 0" class="no-scopes">Full access</span>
+          </td>
+        </ng-container>
+
+        <!-- Created Column -->
+        <ng-container matColumnDef="created">
+          <th mat-header-cell *matHeaderCellDef>Created</th>
+          <td mat-cell *matCellDef="let key">{{ formatDate(key.createdAt) }}</td>
+        </ng-container>
+
+        <!-- Last Used Column -->
+        <ng-container matColumnDef="lastUsed">
+          <th mat-header-cell *matHeaderCellDef>Last Used</th>
+          <td mat-cell *matCellDef="let key">{{ formatDateTime(key.lastUsedAt) }}</td>
+        </ng-container>
+
+        <!-- Expires Column -->
+        <ng-container matColumnDef="expires">
+          <th mat-header-cell *matHeaderCellDef>Expires</th>
+          <td mat-cell *matCellDef="let key">{{ key.expiresAt ? formatDate(key.expiresAt) : 'Never' }}</td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let key">
+            <span class="status-chip" [ngClass]="getStatusClass(key.status)">{{ key.status }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let key">
+            <button mat-icon-button [matMenuTriggerFor]="menu" matTooltip="More actions">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="revokeApiKey(key)" [disabled]="key.status !== 'Active'">
+                <mat-icon>block</mat-icon>
+                <span>Revoke</span>
+              </button>
+              <button mat-menu-item (click)="deleteApiKey(key)" class="delete-action">
+                <mat-icon>delete</mat-icon>
+                <span>Delete</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <div *ngIf="!vm.loading && vm.apiKeys.length === 0" class="empty-state">
+        <mat-icon>key_off</mat-icon>
+        <p>No API keys found</p>
+        <button mat-raised-button color="primary" (click)="showCreate()">Generate First Key</button>
+      </div>
+    </div>
+
+    <mat-paginator
+      [length]="vm.totalCount"
+      [pageSize]="vm.pageSize"
+      [pageIndex]="vm.pageIndex"
+      [pageSizeOptions]="[5, 10, 25]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons>
+    </mat-paginator>
+  </mat-card>
+</div>

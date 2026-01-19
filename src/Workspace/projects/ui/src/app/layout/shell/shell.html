@@ -52,6 +52,21 @@
         <mat-icon matListItemIcon class="app-nav-list__icon">{{ item.icon }}</mat-icon>
         <span matListItemTitle class="app-nav-list__label">{{ item.label }}</span>
       </a>
+
+      <!-- Admin Section -->
+      <div class="app-nav-list__section">
+        <span class="app-nav-list__section-title">Administration</span>
+      </div>
+      <a
+        mat-list-item
+        *ngFor="let item of adminNavItems"
+        [routerLink]="item.route"
+        routerLinkActive="app-nav-list__item--active"
+        class="app-nav-list__item"
+      >
+        <mat-icon matListItemIcon class="app-nav-list__icon">{{ item.icon }}</mat-icon>
+        <span matListItemTitle class="app-nav-list__label">{{ item.label }}</span>
+      </a>
     </mat-nav-list>
   </mat-sidenav>
 

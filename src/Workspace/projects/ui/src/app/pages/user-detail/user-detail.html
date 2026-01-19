@@ -1,0 +1,194 @@
+<div class="user-detail-page" *ngIf="viewModel$ | async as vm">
+  <!-- Loading State -->
+  <div *ngIf="vm.loading" class="loading-container">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+
+  <ng-container *ngIf="!vm.loading">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a routerLink="/users">User Management</a>
+      <mat-icon>chevron_right</mat-icon>
+      <span>{{ vm.isNew ? 'New User' : (vm.user?.displayName || vm.user?.email) }}</span>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="user-header" *ngIf="vm.user">
+        <div class="avatar avatar--large">{{ getInitials(vm.user) }}</div>
+        <div class="user-header__info">
+          <h1 class="user-header__name">
+            {{ vm.user.displayName || vm.user.email }}
+            <span class="status-badge" [ngClass]="getStatusClass(vm.user)">{{ getStatusLabel(vm.user) }}</span>
+          </h1>
+          <p class="user-header__email">{{ vm.user.email }}</p>
+          <div class="user-header__badges">
+            <span class="badge" *ngIf="vm.user.isEmailVerified">
+              <mat-icon>verified</mat-icon>
+              Email Verified
+            </span>
+            <span class="badge" *ngIf="vm.user.isMfaEnabled">
+              <mat-icon>security</mat-icon>
+              MFA Enabled
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="user-header" *ngIf="vm.isNew">
+        <div class="avatar avatar--large">
+          <mat-icon>person_add</mat-icon>
+        </div>
+        <div class="user-header__info">
+          <h1 class="user-header__name">Create New User</h1>
+          <p class="user-header__email">Add a new user to the system</p>
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button mat-stroked-button (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+          Cancel
+        </button>
+        <button mat-stroked-button *ngIf="vm.user" (click)="resetPassword()">
+          <mat-icon>lock_reset</mat-icon>
+          Reset Password
+        </button>
+        <button mat-stroked-button color="warn" *ngIf="vm.user" (click)="toggleStatus(vm.user)">
+          <mat-icon>{{ vm.user.isActive ? 'block' : 'check_circle' }}</mat-icon>
+          {{ vm.user.isActive ? 'Deactivate' : 'Activate' }}
+        </button>
+        <button mat-raised-button color="primary" (click)="saveUser(vm)" [disabled]="vm.saving">
+          <mat-icon>save</mat-icon>
+          {{ vm.saving ? 'Saving...' : 'Save Changes' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <div class="main-content">
+        <!-- Basic Information -->
+        <mat-card class="form-card">
+          <mat-card-header>
+            <mat-card-title>Basic Information</mat-card-title>
+            <mat-card-subtitle>User identity and contact details</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="userForm">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Email Address</mat-label>
+                <input matInput formControlName="email" type="email" placeholder="user@example.com">
+                <mat-error *ngIf="userForm.get('email')?.hasError('required')">Email is required</mat-error>
+                <mat-error *ngIf="userForm.get('email')?.hasError('email')">Invalid email format</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Display Name</mat-label>
+                <input matInput formControlName="displayName" placeholder="John Doe">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width" *ngIf="vm.isNew">
+                <mat-label>Password</mat-label>
+                <input matInput formControlName="password" type="password" placeholder="Enter password">
+                <mat-hint>Min 8 characters with uppercase, lowercase, and numbers</mat-hint>
+              </mat-form-field>
+            </form>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Security Settings -->
+        <mat-card class="form-card" *ngIf="vm.user">
+          <mat-card-header>
+            <mat-card-title>Security Settings</mat-card-title>
+            <mat-card-subtitle>Account security configuration</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="security-toggles">
+              <div class="security-toggle">
+                <div class="security-toggle__info">
+                  <div class="security-toggle__label">Email Verified</div>
+                  <div class="security-toggle__description">User has confirmed their email address</div>
+                </div>
+                <mat-icon [class.enabled]="vm.user.isEmailVerified" [class.disabled]="!vm.user.isEmailVerified">
+                  {{ vm.user.isEmailVerified ? 'check_circle' : 'cancel' }}
+                </mat-icon>
+              </div>
+
+              <mat-divider></mat-divider>
+
+              <div class="security-toggle">
+                <div class="security-toggle__info">
+                  <div class="security-toggle__label">MFA Enabled</div>
+                  <div class="security-toggle__description">Two-factor authentication is active</div>
+                </div>
+                <mat-icon [class.enabled]="vm.user.isMfaEnabled" [class.disabled]="!vm.user.isMfaEnabled">
+                  {{ vm.user.isMfaEnabled ? 'check_circle' : 'cancel' }}
+                </mat-icon>
+              </div>
+
+              <mat-divider></mat-divider>
+
+              <div class="security-toggle">
+                <div class="security-toggle__info">
+                  <div class="security-toggle__label">Account Active</div>
+                  <div class="security-toggle__description">User can log in to the system</div>
+                </div>
+                <mat-icon [class.enabled]="vm.user.isActive" [class.disabled]="!vm.user.isActive">
+                  {{ vm.user.isActive ? 'check_circle' : 'cancel' }}
+                </mat-icon>
+              </div>
+            </div>
+
+            <div class="security-info" *ngIf="vm.user.isLockedOut">
+              <div class="security-info__warning">
+                <mat-icon>warning</mat-icon>
+                <span>Account is locked due to too many failed login attempts</span>
+                <button mat-stroked-button (click)="unlockUser()">Unlock Account</button>
+              </div>
+            </div>
+
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="info-item__label">Last Login</div>
+                <div class="info-item__value">{{ formatDateTime(vm.user.lastLoginAt) }}</div>
+              </div>
+              <div class="info-item">
+                <div class="info-item__label">Failed Attempts</div>
+                <div class="info-item__value">{{ vm.user.failedLoginAttempts }}</div>
+              </div>
+              <div class="info-item">
+                <div class="info-item__label">Active Sessions</div>
+                <div class="info-item__value">{{ vm.user.activeSessions }}</div>
+              </div>
+              <div class="info-item">
+                <div class="info-item__label">Account Created</div>
+                <div class="info-item__value">{{ formatDate(vm.user.createdAt) }}</div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Role Assignment -->
+        <mat-card class="form-card">
+          <mat-card-header>
+            <mat-card-title>Role Assignment</mat-card-title>
+            <mat-card-subtitle>Assign roles to define user permissions</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="role-list">
+              <div class="role-item" *ngFor="let role of vm.roles" (click)="toggleRole(role.id)">
+                <mat-checkbox [checked]="isRoleSelected(role.id)" (click)="$event.stopPropagation()">
+                  <div class="role-item__content">
+                    <div class="role-item__name">
+                      {{ role.name }}
+                      <span class="system-badge" *ngIf="role.isSystem">System</span>
+                    </div>
+                    <div class="role-item__description">{{ role.description || 'No description' }}</div>
+                  </div>
+                </mat-checkbox>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </ng-container>
+</div>

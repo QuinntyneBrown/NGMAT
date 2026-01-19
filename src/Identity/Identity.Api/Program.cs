@@ -106,6 +106,9 @@ app.UseAuthorization();
 // Map endpoints
 app.MapAuthenticationEndpoints();
 app.MapUserEndpoints();
+app.MapRoleEndpoints();
+app.MapPermissionEndpoints();
+app.MapApiKeyEndpoints();
 
 // Health check endpoint
 app.MapGet("/health", () => Results.Ok(new { Status = "Healthy", Service = "Identity" }))

@@ -1,0 +1,112 @@
+<div class="roles-page" *ngIf="viewModel$ | async as vm">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title-section">
+      <h1 class="page-title">Role Management</h1>
+      <p class="page-subtitle">Manage user roles and their permissions</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="createRole()">
+      <mat-icon>add</mat-icon>
+      Create Role
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="vm.loading" class="loading-container">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+
+  <ng-container *ngIf="!vm.loading">
+    <!-- System Roles Section -->
+    <section class="roles-section" *ngIf="getSystemRoles(vm.roles).length > 0">
+      <h2 class="section-title">System Roles</h2>
+      <p class="section-subtitle">Built-in roles that cannot be modified</p>
+      <div class="roles-grid">
+        <mat-card class="role-card" *ngFor="let role of getSystemRoles(vm.roles)" (click)="viewRole(role)">
+          <div class="role-card__header">
+            <div class="role-card__icon">
+              <mat-icon>{{ getRoleIcon(role) }}</mat-icon>
+            </div>
+            <div class="role-card__badges">
+              <span class="system-badge">System</span>
+            </div>
+          </div>
+          <h3 class="role-card__title">{{ role.name }}</h3>
+          <p class="role-card__description">{{ role.description || 'No description' }}</p>
+          <div class="role-card__stats">
+            <div class="stat">
+              <span class="stat__value">{{ role.userCount }}</span>
+              <span class="stat__label">Users</span>
+            </div>
+            <div class="stat">
+              <span class="stat__value">{{ role.permissionCount }}</span>
+              <span class="stat__label">Permissions</span>
+            </div>
+          </div>
+          <div class="role-card__actions">
+            <button mat-stroked-button (click)="viewRole(role); $event.stopPropagation()">
+              <mat-icon>visibility</mat-icon>
+              View Details
+            </button>
+          </div>
+        </mat-card>
+      </div>
+    </section>
+
+    <!-- Custom Roles Section -->
+    <section class="roles-section">
+      <h2 class="section-title">Custom Roles</h2>
+      <p class="section-subtitle">User-defined roles for specific needs</p>
+      <div class="roles-grid" *ngIf="getCustomRoles(vm.roles).length > 0">
+        <mat-card class="role-card" *ngFor="let role of getCustomRoles(vm.roles)" (click)="editRole(role)">
+          <div class="role-card__header">
+            <div class="role-card__icon role-card__icon--custom">
+              <mat-icon>{{ getRoleIcon(role) }}</mat-icon>
+            </div>
+            <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="editRole(role)">
+                <mat-icon>edit</mat-icon>
+                <span>Edit Role</span>
+              </button>
+              <button mat-menu-item (click)="deleteRole(role)" [disabled]="role.userCount > 0" class="delete-action">
+                <mat-icon>delete</mat-icon>
+                <span>Delete Role</span>
+              </button>
+            </mat-menu>
+          </div>
+          <h3 class="role-card__title">{{ role.name }}</h3>
+          <p class="role-card__description">{{ role.description || 'No description' }}</p>
+          <div class="role-card__stats">
+            <div class="stat">
+              <span class="stat__value">{{ role.userCount }}</span>
+              <span class="stat__label">Users</span>
+            </div>
+            <div class="stat">
+              <span class="stat__value">{{ role.permissionCount }}</span>
+              <span class="stat__label">Permissions</span>
+            </div>
+          </div>
+          <div class="role-card__actions">
+            <button mat-stroked-button (click)="editRole(role); $event.stopPropagation()">
+              <mat-icon>edit</mat-icon>
+              Edit
+            </button>
+            <button mat-stroked-button color="warn" (click)="deleteRole(role); $event.stopPropagation()" [disabled]="role.userCount > 0">
+              <mat-icon>delete</mat-icon>
+              Delete
+            </button>
+          </div>
+        </mat-card>
+      </div>
+
+      <div *ngIf="getCustomRoles(vm.roles).length === 0" class="empty-state">
+        <mat-icon>admin_panel_settings</mat-icon>
+        <p>No custom roles created yet</p>
+        <button mat-raised-button color="primary" (click)="createRole()">Create First Role</button>
+      </div>
+    </section>
+  </ng-container>
+</div>
