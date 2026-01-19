@@ -1,13 +1,75 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
+using ScriptExecution.Api.Endpoints;
+using ScriptExecution.Infrastructure;
+using Shared.Messaging.Abstractions;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Add authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "NGMAT",
+            ValidAudience = builder.Configuration["Jwt:Audience"] ?? "NGMAT",
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "NGMAT-Development-Key-Min-32-Chars!!"))
+        };
+    });
+
+builder.Services.AddAuthorization();
+
+// Add Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "NGMAT Script Execution Service",
+        Version = "v1",
+        Description = "GMAT-compatible script parsing and execution service"
+    });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
+
+// Add ScriptExecution infrastructure
+builder.Services.AddScriptExecutionInfrastructure();
+
+// Add null event publisher for standalone operation
+builder.Services.AddSingleton<IEventPublisher, NullEventPublisher>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -15,30 +77,38 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+// Map endpoints
+app.MapScriptEndpoints();
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+// Health check
+app.MapGet("/health", () => Results.Ok(new { Status = "Healthy", Service = "ScriptExecution" }))
+    .WithTags("Health");
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+/// <summary>
+/// Null event publisher for standalone operation
+/// </summary>
+internal class NullEventPublisher : IEventPublisher
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    public Task PublishAsync<TEvent>(TEvent @event, CancellationToken cancellationToken = default)
+        where TEvent : class, IEvent
+    {
+        return Task.CompletedTask;
+    }
+
+    public Task PublishAsync<TEvent>(string channel, TEvent @event, CancellationToken cancellationToken = default)
+        where TEvent : class, IEvent
+    {
+        return Task.CompletedTask;
+    }
+
+    public Task PublishBatchAsync<TEvent>(IEnumerable<TEvent> events, CancellationToken cancellationToken = default)
+        where TEvent : class, IEvent
+    {
+        return Task.CompletedTask;
+    }
 }
