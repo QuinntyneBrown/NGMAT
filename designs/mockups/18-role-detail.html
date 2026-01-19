@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGMAT - Role Details</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <style>
+    :root {
+      --primary-500: #2196f3;
+      --accent-500: #ff9800;
+      --warn-500: #f44336;
+      --surface-background: #121212;
+      --surface-card: #1e1e1e;
+      --surface-elevated: #2d2d2d;
+      --surface-divider: rgba(255, 255, 255, 0.12);
+      --surface-hover: rgba(255, 255, 255, 0.08);
+      --text-primary: rgba(255, 255, 255, 0.87);
+      --text-secondary: rgba(255, 255, 255, 0.60);
+      --text-disabled: rgba(255, 255, 255, 0.38);
+      --status-success: #4caf50;
+      --status-warning: #ff9800;
+      --status-error: #f44336;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --elevation-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      --elevation-2: 0 3px 6px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.12);
+      --elevation-4: 0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--surface-background);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .app-container { display: flex; flex-direction: column; height: 100vh; }
+
+    /* Toolbar */
+    .mat-toolbar {
+      display: flex; align-items: center;
+      padding: 0 var(--spacing-md);
+      height: 64px;
+      background-color: var(--surface-card);
+      box-shadow: var(--elevation-4);
+      z-index: 1000;
+    }
+
+    .icon-button {
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border: none; border-radius: 50%;
+      background: transparent; color: var(--text-primary); cursor: pointer;
+    }
+
+    .icon-button:hover { background-color: var(--surface-hover); }
+
+    .mat-toolbar__title { font-size: 20px; font-weight: 500; margin-left: var(--spacing-md); }
+    .mat-toolbar__spacer { flex: 1; }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--spacing-xl);
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-lg);
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .breadcrumb a {
+      color: var(--primary-500);
+      text-decoration: none;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .page-title-section {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-lg);
+    }
+
+    .role-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--primary-500), var(--accent-500));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+    }
+
+    .page-title-content h1 {
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: var(--spacing-xs);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge--system {
+      background-color: rgba(255, 152, 0, 0.2);
+      color: var(--accent-500);
+    }
+
+    .page-subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: var(--spacing-sm);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center;
+      padding: 0 var(--spacing-md);
+      height: 36px; border: none; border-radius: var(--radius-sm);
+      font-family: 'Roboto', sans-serif; font-size: 14px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 1.25px; cursor: pointer;
+      gap: var(--spacing-sm); transition: all 0.2s;
+    }
+
+    .btn--primary {
+      background-color: var(--primary-500);
+      color: white;
+      box-shadow: var(--elevation-2);
+    }
+
+    .btn--primary:hover {
+      background-color: #1976d2;
+      box-shadow: var(--elevation-4);
+    }
+
+    .btn--outlined {
+      background-color: transparent;
+      color: var(--primary-500);
+      border: 1px solid var(--primary-500);
+    }
+
+    .btn--outlined:hover {
+      background-color: rgba(33, 150, 243, 0.08);
+    }
+
+    .btn--danger {
+      background-color: transparent;
+      color: var(--warn-500);
+      border: 1px solid var(--warn-500);
+    }
+
+    .btn--danger:hover {
+      background-color: rgba(244, 67, 54, 0.08);
+    }
+
+    .btn:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+    }
+
+    /* Card */
+    .mat-card {
+      background-color: var(--surface-card);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-lg);
+      box-shadow: var(--elevation-1);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .mat-card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .mat-card__title {
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .mat-card__subtitle {
+      color: var(--text-secondary);
+      font-size: 12px;
+      margin-top: var(--spacing-xs);
+    }
+
+    /* Form Fields */
+    .form-field {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .form-field__label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-field__input {
+      width: 100%;
+      padding: var(--spacing-md);
+      background-color: var(--surface-elevated);
+      border: 1px solid var(--surface-divider);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+    }
+
+    .form-field__input:focus {
+      outline: none;
+      border-color: var(--primary-500);
+    }
+
+    .form-field__input:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .form-field__textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    /* Permission Groups */
+    .permission-groups {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
+    }
+
+    .permission-group {
+      background-color: var(--surface-elevated);
+      border-radius: var(--radius-sm);
+      padding: var(--spacing-md);
+    }
+
+    .permission-group__header {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .permission-group__icon {
+      color: var(--primary-500);
+    }
+
+    .permission-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: var(--spacing-md);
+      padding-left: var(--spacing-xl);
+    }
+
+    .checkbox-field {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      cursor: pointer;
+    }
+
+    .checkbox-field input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--primary-500);
+    }
+
+    .checkbox-field label {
+      cursor: pointer;
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .checkbox-field input:disabled + label {
+      color: var(--text-disabled);
+      cursor: not-allowed;
+    }
+
+    /* Statistics */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .stat-item {
+      background-color: var(--surface-elevated);
+      border-radius: var(--radius-sm);
+      padding: var(--spacing-md);
+      text-align: center;
+    }
+
+    .stat-item__value {
+      font-size: 32px;
+      font-weight: 300;
+      color: var(--primary-500);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .stat-item__label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* User List */
+    .user-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+
+    .user-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      background-color: var(--surface-elevated);
+      border-radius: var(--radius-sm);
+      transition: background-color 0.2s;
+    }
+
+    .user-item:hover {
+      background-color: var(--surface-hover);
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-500), var(--accent-500));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .user-info {
+      flex: 1;
+    }
+
+    .user-info__name {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .user-info__email {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .material-icons-outlined {
+      font-size: 20px;
+    }
+
+    .disabled-notice {
+      background-color: rgba(255, 152, 0, 0.1);
+      border-left: 3px solid var(--accent-500);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-sm);
+      margin-bottom: var(--spacing-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .disabled-notice__icon {
+      color: var(--accent-500);
+    }
+
+    .disabled-notice__text {
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Toolbar -->
+    <header class="mat-toolbar">
+      <button class="icon-button" aria-label="Menu">
+        <span class="material-icons-outlined">menu</span>
+      </button>
+      <h1 class="mat-toolbar__title">NGMAT</h1>
+      <div class="mat-toolbar__spacer"></div>
+      <button class="icon-button" aria-label="Notifications">
+        <span class="material-icons-outlined">notifications</span>
+      </button>
+      <button class="icon-button" aria-label="User Profile">
+        <span class="material-icons-outlined">account_circle</span>
+      </button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb">
+        <a href="#">User Management</a>
+        <span class="material-icons-outlined" style="font-size: 16px;">chevron_right</span>
+        <a href="#">Role Management</a>
+        <span class="material-icons-outlined" style="font-size: 16px;">chevron_right</span>
+        <span>Administrator</span>
+      </nav>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="page-title-section">
+          <div class="role-icon">
+            <span class="material-icons-outlined">admin_panel_settings</span>
+          </div>
+          <div class="page-title-content">
+            <h1>
+              Administrator
+              <span class="badge badge--system">System Role</span>
+            </h1>
+            <p class="page-subtitle">Full system access with all permissions</p>
+          </div>
+        </div>
+        <div class="action-buttons">
+          <button class="btn btn--outlined">
+            <span class="material-icons-outlined">cancel</span>
+            Cancel
+          </button>
+          <button class="btn btn--primary">
+            <span class="material-icons-outlined">save</span>
+            Save Changes
+          </button>
+        </div>
+      </div>
+
+      <!-- System Role Notice -->
+      <div class="disabled-notice">
+        <span class="material-icons-outlined disabled-notice__icon">info</span>
+        <span class="disabled-notice__text">System roles cannot be modified. Clone this role to create a custom version with similar permissions.</span>
+      </div>
+
+      <!-- Basic Information -->
+      <div class="mat-card">
+        <div class="mat-card__header">
+          <div>
+            <h2 class="mat-card__title">Basic Information</h2>
+            <p class="mat-card__subtitle">Role identity and description</p>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-field__label">Role Name</label>
+          <input type="text" class="form-field__input" value="Administrator" disabled>
+        </div>
+
+        <div class="form-field">
+          <label class="form-field__label">Description</label>
+          <textarea class="form-field__input form-field__textarea" disabled>Full system access with all permissions. Can manage users, roles, missions, spacecraft, and system settings.</textarea>
+        </div>
+      </div>
+
+      <!-- Permission Assignment -->
+      <div class="mat-card">
+        <div class="mat-card__header">
+          <div>
+            <h2 class="mat-card__title">Permission Assignment</h2>
+            <p class="mat-card__subtitle">Select permissions for this role</p>
+          </div>
+        </div>
+
+        <div class="permission-groups">
+          <!-- Missions Permissions -->
+          <div class="permission-group">
+            <div class="permission-group__header">
+              <span class="material-icons-outlined permission-group__icon">rocket_launch</span>
+              <span>Missions</span>
+            </div>
+            <div class="permission-actions">
+              <div class="checkbox-field">
+                <input type="checkbox" id="mission-create" checked disabled>
+                <label for="mission-create">Create</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="mission-read" checked disabled>
+                <label for="mission-read">Read</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="mission-update" checked disabled>
+                <label for="mission-update">Update</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="mission-delete" checked disabled>
+                <label for="mission-delete">Delete</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="mission-admin" checked disabled>
+                <label for="mission-admin">Admin</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Spacecraft Permissions -->
+          <div class="permission-group">
+            <div class="permission-group__header">
+              <span class="material-icons-outlined permission-group__icon">satellite</span>
+              <span>Spacecraft</span>
+            </div>
+            <div class="permission-actions">
+              <div class="checkbox-field">
+                <input type="checkbox" id="spacecraft-create" checked disabled>
+                <label for="spacecraft-create">Create</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="spacecraft-read" checked disabled>
+                <label for="spacecraft-read">Read</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="spacecraft-update" checked disabled>
+                <label for="spacecraft-update">Update</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="spacecraft-delete" checked disabled>
+                <label for="spacecraft-delete">Delete</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="spacecraft-admin" checked disabled>
+                <label for="spacecraft-admin">Admin</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Propagation Permissions -->
+          <div class="permission-group">
+            <div class="permission-group__header">
+              <span class="material-icons-outlined permission-group__icon">timeline</span>
+              <span>Propagation</span>
+            </div>
+            <div class="permission-actions">
+              <div class="checkbox-field">
+                <input type="checkbox" id="propagation-create" checked disabled>
+                <label for="propagation-create">Create</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="propagation-read" checked disabled>
+                <label for="propagation-read">Read</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="propagation-execute" checked disabled>
+                <label for="propagation-execute">Execute</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="propagation-delete" checked disabled>
+                <label for="propagation-delete">Delete</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Users Permissions -->
+          <div class="permission-group">
+            <div class="permission-group__header">
+              <span class="material-icons-outlined permission-group__icon">people</span>
+              <span>Users</span>
+            </div>
+            <div class="permission-actions">
+              <div class="checkbox-field">
+                <input type="checkbox" id="users-create" checked disabled>
+                <label for="users-create">Create</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="users-read" checked disabled>
+                <label for="users-read">Read</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="users-update" checked disabled>
+                <label for="users-update">Update</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="users-delete" checked disabled>
+                <label for="users-delete">Delete</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="users-admin" checked disabled>
+                <label for="users-admin">Admin</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Roles Permissions -->
+          <div class="permission-group">
+            <div class="permission-group__header">
+              <span class="material-icons-outlined permission-group__icon">admin_panel_settings</span>
+              <span>Roles</span>
+            </div>
+            <div class="permission-actions">
+              <div class="checkbox-field">
+                <input type="checkbox" id="roles-create" checked disabled>
+                <label for="roles-create">Create</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="roles-read" checked disabled>
+                <label for="roles-read">Read</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="roles-update" checked disabled>
+                <label for="roles-update">Update</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="roles-delete" checked disabled>
+                <label for="roles-delete">Delete</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="roles-admin" checked disabled>
+                <label for="roles-admin">Admin</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Settings Permissions -->
+          <div class="permission-group">
+            <div class="permission-group__header">
+              <span class="material-icons-outlined permission-group__icon">settings</span>
+              <span>Settings</span>
+            </div>
+            <div class="permission-actions">
+              <div class="checkbox-field">
+                <input type="checkbox" id="settings-read" checked disabled>
+                <label for="settings-read">Read</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="settings-update" checked disabled>
+                <label for="settings-update">Update</label>
+              </div>
+              <div class="checkbox-field">
+                <input type="checkbox" id="settings-admin" checked disabled>
+                <label for="settings-admin">Admin</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistics -->
+      <div class="mat-card">
+        <div class="mat-card__header">
+          <div>
+            <h2 class="mat-card__title">Statistics</h2>
+            <p class="mat-card__subtitle">Role usage metrics</p>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-item__value">3</div>
+            <div class="stat-item__label">Assigned Users</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-item__value">42</div>
+            <div class="stat-item__label">Total Permissions</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Assigned Users -->
+      <div class="mat-card">
+        <div class="mat-card__header">
+          <div>
+            <h2 class="mat-card__title">Assigned Users</h2>
+            <p class="mat-card__subtitle">Users with this role</p>
+          </div>
+        </div>
+
+        <div class="user-list">
+          <div class="user-item">
+            <div class="avatar">JD</div>
+            <div class="user-info">
+              <div class="user-info__name">John Doe</div>
+              <div class="user-info__email">john.doe@nasa.gov</div>
+            </div>
+          </div>
+          <div class="user-item">
+            <div class="avatar">AS</div>
+            <div class="user-info">
+              <div class="user-info__name">Alice Smith</div>
+              <div class="user-info__email">alice.smith@nasa.gov</div>
+            </div>
+          </div>
+          <div class="user-item">
+            <div class="avatar">BJ</div>
+            <div class="user-info">
+              <div class="user-info__name">Bob Johnson</div>
+              <div class="user-info__email">bob.johnson@nasa.gov</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; justify-content: space-between; margin-top: var(--spacing-xl);">
+        <button class="btn btn--danger" disabled>
+          <span class="material-icons-outlined">delete</span>
+          Delete Role
+        </button>
+        <div style="display: flex; gap: var(--spacing-sm);">
+          <button class="btn btn--outlined">
+            <span class="material-icons-outlined">content_copy</span>
+            Clone Role
+          </button>
+          <button class="btn btn--primary">
+            <span class="material-icons-outlined">save</span>
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

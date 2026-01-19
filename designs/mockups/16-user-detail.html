@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGMAT - User Details</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <style>
+    :root {
+      --primary-500: #2196f3;
+      --accent-500: #ff9800;
+      --warn-500: #f44336;
+      --surface-background: #121212;
+      --surface-card: #1e1e1e;
+      --surface-elevated: #2d2d2d;
+      --surface-divider: rgba(255, 255, 255, 0.12);
+      --surface-hover: rgba(255, 255, 255, 0.08);
+      --text-primary: rgba(255, 255, 255, 0.87);
+      --text-secondary: rgba(255, 255, 255, 0.60);
+      --text-disabled: rgba(255, 255, 255, 0.38);
+      --status-success: #4caf50;
+      --status-warning: #ff9800;
+      --status-error: #f44336;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --elevation-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      --elevation-2: 0 3px 6px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.12);
+      --elevation-4: 0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--surface-background);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .app-container { display: flex; flex-direction: column; height: 100vh; }
+
+    /* Toolbar */
+    .mat-toolbar {
+      display: flex; align-items: center;
+      padding: 0 var(--spacing-md);
+      height: 64px;
+      background-color: var(--surface-card);
+      box-shadow: var(--elevation-4);
+      z-index: 1000;
+    }
+
+    .icon-button {
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border: none; border-radius: 50%;
+      background: transparent; color: var(--text-primary); cursor: pointer;
+    }
+
+    .icon-button:hover { background-color: var(--surface-hover); }
+
+    .mat-toolbar__title { font-size: 20px; font-weight: 500; margin-left: var(--spacing-md); }
+    .mat-toolbar__spacer { flex: 1; }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--spacing-xl);
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-lg);
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .breadcrumb a {
+      color: var(--primary-500);
+      text-decoration: none;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .page-title-section {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-lg);
+    }
+
+    .avatar-large {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-500), var(--accent-500));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      font-size: 32px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .page-subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: var(--spacing-sm);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center;
+      padding: 0 var(--spacing-md);
+      height: 36px; border: none; border-radius: var(--radius-sm);
+      font-family: 'Roboto', sans-serif; font-size: 14px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 1.25px; cursor: pointer;
+      gap: var(--spacing-sm); transition: all 0.2s;
+    }
+
+    .btn--primary {
+      background-color: var(--primary-500);
+      color: white;
+      box-shadow: var(--elevation-2);
+    }
+
+    .btn--stroked {
+      background: transparent;
+      color: var(--primary-500);
+      border: 1px solid var(--primary-500);
+    }
+
+    .btn--warn {
+      background: transparent;
+      color: var(--warn-500);
+      border: 1px solid var(--warn-500);
+    }
+
+    /* Cards */
+    .mat-card {
+      background-color: var(--surface-card);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-lg);
+      box-shadow: var(--elevation-1);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .mat-card__header {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: var(--spacing-lg);
+      padding-bottom: var(--spacing-md);
+      border-bottom: 1px solid var(--surface-divider);
+    }
+
+    /* Form Fields */
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-field--full {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: var(--spacing-md);
+      background-color: var(--surface-elevated);
+      border: 1px solid var(--surface-divider);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary-500);
+    }
+
+    .form-input:disabled {
+      color: var(--text-disabled);
+      cursor: not-allowed;
+    }
+
+    .form-hint {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: var(--spacing-xs);
+    }
+
+    /* Toggle Switch */
+    .toggle-field {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--spacing-md);
+      background-color: var(--surface-elevated);
+      border-radius: var(--radius-sm);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .toggle-label {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .toggle-label__title {
+      font-weight: 500;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .toggle-label__description {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .toggle-switch {
+      width: 44px;
+      height: 24px;
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      position: relative;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .toggle-switch--checked {
+      background-color: rgba(33, 150, 243, 0.5);
+    }
+
+    .toggle-switch__thumb {
+      width: 20px;
+      height: 20px;
+      background-color: #fafafa;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      box-shadow: var(--elevation-1);
+      transition: all 0.2s;
+    }
+
+    .toggle-switch--checked .toggle-switch__thumb {
+      background-color: var(--primary-500);
+      left: 22px;
+    }
+
+    /* Chips */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      gap: var(--spacing-xs);
+    }
+
+    .chip--success {
+      background-color: rgba(76, 175, 80, 0.2);
+      color: var(--status-success);
+    }
+
+    .chip--error {
+      background-color: rgba(244, 67, 54, 0.2);
+      color: var(--status-error);
+    }
+
+    .chip--warning {
+      background-color: rgba(255, 152, 0, 0.2);
+      color: var(--status-warning);
+    }
+
+    .chip--info {
+      background-color: rgba(33, 150, 243, 0.2);
+      color: var(--primary-500);
+    }
+
+    .status-badges {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+    }
+
+    /* Role Assignment */
+    .role-assignment {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+    }
+
+    .role-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--spacing-md);
+      background-color: var(--surface-elevated);
+      border-radius: var(--radius-sm);
+    }
+
+    .role-item__info {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .checkbox {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--text-secondary);
+      border-radius: 2px;
+      background-color: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .checkbox--checked {
+      background-color: var(--primary-500);
+      border-color: var(--primary-500);
+    }
+
+    .checkbox--checked::after {
+      content: '✓';
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .role-item__details {
+      flex: 1;
+    }
+
+    .role-item__name {
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .role-item__description {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .role-item__badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background-color: rgba(255, 152, 0, 0.2);
+      color: var(--status-warning);
+    }
+
+    /* Info Grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-lg);
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-item__label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .info-item__value {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* Activity Log */
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+    }
+
+    .activity-item {
+      display: flex;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      background-color: var(--surface-elevated);
+      border-radius: var(--radius-sm);
+    }
+
+    .activity-item__icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: rgba(33, 150, 243, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-500);
+    }
+
+    .activity-item__content {
+      flex: 1;
+    }
+
+    .activity-item__title {
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .activity-item__description {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .activity-item__time {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Toolbar -->
+    <header class="mat-toolbar">
+      <button class="icon-button" aria-label="Menu">
+        <span class="material-icons-outlined">menu</span>
+      </button>
+      <h1 class="mat-toolbar__title">NGMAT - Admin</h1>
+      <div class="mat-toolbar__spacer"></div>
+      <button class="icon-button" aria-label="Notifications">
+        <span class="material-icons-outlined">notifications</span>
+      </button>
+      <button class="icon-button" aria-label="Help">
+        <span class="material-icons-outlined">help_outline</span>
+      </button>
+      <button class="icon-button" aria-label="Account">
+        <span class="material-icons-outlined">account_circle</span>
+      </button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="breadcrumb">
+        <a href="#">Admin</a>
+        <span class="material-icons-outlined" style="font-size: 16px;">chevron_right</span>
+        <a href="#">User Management</a>
+        <span class="material-icons-outlined" style="font-size: 16px;">chevron_right</span>
+        <span>John Smith</span>
+      </div>
+
+      <div class="page-header">
+        <div class="page-title-section">
+          <div class="avatar-large">JS</div>
+          <div>
+            <h2 class="page-title">John Smith</h2>
+            <p class="page-subtitle">john.smith@ngmat.org</p>
+            <div class="status-badges" style="margin-top: var(--spacing-sm);">
+              <span class="chip chip--success">
+                <span class="material-icons-outlined" style="font-size: 16px;">check_circle</span>
+                Active
+              </span>
+              <span class="chip chip--info">
+                <span class="material-icons-outlined" style="font-size: 16px;">verified_user</span>
+                MFA Enabled
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="action-buttons">
+          <button class="btn btn--stroked">
+            <span class="material-icons-outlined">lock_reset</span>
+            Reset Password
+          </button>
+          <button class="btn btn--warn">
+            <span class="material-icons-outlined">block</span>
+            Deactivate
+          </button>
+          <button class="btn btn--primary">
+            <span class="material-icons-outlined">save</span>
+            Save Changes
+          </button>
+        </div>
+      </div>
+
+      <!-- Basic Information -->
+      <div class="mat-card">
+        <div class="mat-card__header">Basic Information</div>
+        
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">Display Name</label>
+            <input type="text" class="form-input" value="John Smith">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-input" value="john.smith@ngmat.org">
+            <div class="form-hint">Email is used for login and notifications</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">User ID</label>
+            <input type="text" class="form-input" value="a1b2c3d4-e5f6-7890-abcd-ef1234567890" disabled>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Created At</label>
+            <input type="text" class="form-input" value="January 15, 2025 10:30 AM UTC" disabled>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security Settings -->
+      <div class="mat-card">
+        <div class="mat-card__header">Security Settings</div>
+        
+        <div class="toggle-field">
+          <div class="toggle-label">
+            <div class="toggle-label__title">Email Verified</div>
+            <div class="toggle-label__description">User has verified their email address</div>
+          </div>
+          <div class="toggle-switch toggle-switch--checked">
+            <div class="toggle-switch__thumb"></div>
+          </div>
+        </div>
+
+        <div class="toggle-field">
+          <div class="toggle-label">
+            <div class="toggle-label__title">Multi-Factor Authentication (MFA)</div>
+            <div class="toggle-label__description">Require additional verification code at login</div>
+          </div>
+          <div class="toggle-switch toggle-switch--checked">
+            <div class="toggle-switch__thumb"></div>
+          </div>
+        </div>
+
+        <div class="toggle-field">
+          <div class="toggle-label">
+            <div class="toggle-label__title">Account Active</div>
+            <div class="toggle-label__description">Allow user to access the system</div>
+          </div>
+          <div class="toggle-switch toggle-switch--checked">
+            <div class="toggle-switch__thumb"></div>
+          </div>
+        </div>
+
+        <div class="info-grid" style="margin-top: var(--spacing-lg);">
+          <div class="info-item">
+            <div class="info-item__label">Last Login</div>
+            <div class="info-item__value">January 19, 2025 at 5:30 AM</div>
+          </div>
+          <div class="info-item">
+            <div class="info-item__label">Failed Login Attempts</div>
+            <div class="info-item__value">0</div>
+          </div>
+          <div class="info-item">
+            <div class="info-item__label">Active Sessions</div>
+            <div class="info-item__value">2</div>
+          </div>
+          <div class="info-item">
+            <div class="info-item__label">Lockout Status</div>
+            <div class="info-item__value" style="color: var(--status-success);">Not Locked</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Role Assignment -->
+      <div class="mat-card">
+        <div class="mat-card__header">Role Assignment</div>
+        
+        <div class="role-assignment">
+          <div class="role-item">
+            <div class="role-item__info">
+              <div class="checkbox checkbox--checked"></div>
+              <div class="role-item__details">
+                <div class="role-item__name">Admin</div>
+                <div class="role-item__description">Full system access with administrative privileges</div>
+              </div>
+            </div>
+            <span class="role-item__badge">SYSTEM</span>
+          </div>
+
+          <div class="role-item">
+            <div class="role-item__info">
+              <div class="checkbox checkbox--checked"></div>
+              <div class="role-item__details">
+                <div class="role-item__name">User</div>
+                <div class="role-item__description">Standard user access for missions and spacecraft</div>
+              </div>
+            </div>
+            <span class="role-item__badge">SYSTEM</span>
+          </div>
+
+          <div class="role-item">
+            <div class="role-item__info">
+              <div class="checkbox"></div>
+              <div class="role-item__details">
+                <div class="role-item__name">Read Only</div>
+                <div class="role-item__description">View-only access to all resources</div>
+              </div>
+            </div>
+            <span class="role-item__badge">SYSTEM</span>
+          </div>
+
+          <div class="role-item">
+            <div class="role-item__info">
+              <div class="checkbox"></div>
+              <div class="role-item__details">
+                <div class="role-item__name">Mission Analyst</div>
+                <div class="role-item__description">Custom role for mission analysis tasks</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="mat-card">
+        <div class="mat-card__header">Recent Activity</div>
+        
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="activity-item__icon">
+              <span class="material-icons-outlined">login</span>
+            </div>
+            <div class="activity-item__content">
+              <div class="activity-item__title">Successful Login</div>
+              <div class="activity-item__description">Logged in from 192.168.1.105</div>
+            </div>
+            <div class="activity-item__time">2 hours ago</div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-item__icon">
+              <span class="material-icons-outlined">edit</span>
+            </div>
+            <div class="activity-item__content">
+              <div class="activity-item__title">Profile Updated</div>
+              <div class="activity-item__description">Changed display name</div>
+            </div>
+            <div class="activity-item__time">1 day ago</div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-item__icon">
+              <span class="material-icons-outlined">security</span>
+            </div>
+            <div class="activity-item__content">
+              <div class="activity-item__title">MFA Enabled</div>
+              <div class="activity-item__description">Enabled two-factor authentication</div>
+            </div>
+            <div class="activity-item__time">3 days ago</div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-item__icon">
+              <span class="material-icons-outlined">key</span>
+            </div>
+            <div class="activity-item__content">
+              <div class="activity-item__title">API Key Created</div>
+              <div class="activity-item__description">Created API key "Production Access"</div>
+            </div>
+            <div class="activity-item__time">1 week ago</div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-item__icon">
+              <span class="material-icons-outlined">admin_panel_settings</span>
+            </div>
+            <div class="activity-item__content">
+              <div class="activity-item__title">Role Assigned</div>
+              <div class="activity-item__description">Assigned "Admin" role by Emily Johnson</div>
+            </div>
+            <div class="activity-item__time">2 weeks ago</div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

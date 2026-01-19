@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGMAT - Role Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <style>
+    :root {
+      --primary-500: #2196f3;
+      --accent-500: #ff9800;
+      --warn-500: #f44336;
+      --surface-background: #121212;
+      --surface-card: #1e1e1e;
+      --surface-elevated: #2d2d2d;
+      --surface-divider: rgba(255, 255, 255, 0.12);
+      --surface-hover: rgba(255, 255, 255, 0.08);
+      --text-primary: rgba(255, 255, 255, 0.87);
+      --text-secondary: rgba(255, 255, 255, 0.60);
+      --text-disabled: rgba(255, 255, 255, 0.38);
+      --status-success: #4caf50;
+      --status-warning: #ff9800;
+      --status-error: #f44336;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --elevation-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      --elevation-2: 0 3px 6px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.12);
+      --elevation-4: 0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--surface-background);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .app-container { display: flex; flex-direction: column; height: 100vh; }
+
+    /* Toolbar */
+    .mat-toolbar {
+      display: flex; align-items: center;
+      padding: 0 var(--spacing-md);
+      height: 64px;
+      background-color: var(--surface-card);
+      box-shadow: var(--elevation-4);
+      z-index: 1000;
+    }
+
+    .icon-button {
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border: none; border-radius: 50%;
+      background: transparent; color: var(--text-primary); cursor: pointer;
+    }
+
+    .icon-button:hover { background-color: var(--surface-hover); }
+
+    .mat-toolbar__title { font-size: 20px; font-weight: 500; margin-left: var(--spacing-md); }
+    .mat-toolbar__spacer { flex: 1; }
+
+    .layout-container { display: flex; flex: 1; overflow: hidden; }
+
+    /* Sidenav */
+    .mat-sidenav {
+      width: 256px;
+      background-color: var(--surface-card);
+      border-right: 1px solid var(--surface-divider);
+      overflow-y: auto;
+    }
+
+    .mat-nav-list { list-style: none; padding: var(--spacing-sm) 0; }
+
+    .mat-list-item {
+      display: flex; align-items: center;
+      padding: var(--spacing-md) var(--spacing-lg);
+      color: var(--text-primary);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .mat-list-item:hover { background-color: var(--surface-hover); }
+    .mat-list-item--active {
+      background-color: rgba(33, 150, 243, 0.16);
+      color: var(--primary-500);
+    }
+
+    .mat-list-item__icon {
+      margin-right: var(--spacing-md);
+      color: var(--text-secondary);
+    }
+
+    .mat-list-item--active .mat-list-item__icon { color: var(--primary-500); }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--spacing-xl);
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 400;
+    }
+
+    .page-subtitle {
+      color: var(--text-secondary);
+      margin-top: var(--spacing-xs);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center;
+      padding: 0 var(--spacing-md);
+      height: 36px; border: none; border-radius: var(--radius-sm);
+      font-family: 'Roboto', sans-serif; font-size: 14px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 1.25px; cursor: pointer;
+      gap: var(--spacing-sm); transition: all 0.2s;
+    }
+
+    .btn--primary {
+      background-color: var(--primary-500);
+      color: white;
+      box-shadow: var(--elevation-2);
+    }
+
+    .btn--primary:hover {
+      background-color: #1976d2;
+      box-shadow: var(--elevation-4);
+    }
+
+    /* Search Bar */
+    .search-bar {
+      margin-bottom: var(--spacing-lg);
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      max-width: 500px;
+      padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) 48px;
+      background-color: var(--surface-card);
+      border: 1px solid var(--surface-divider);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-500);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: var(--spacing-md);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+
+    /* Role Cards Grid */
+    .roles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: var(--spacing-lg);
+    }
+
+    .role-card {
+      background-color: var(--surface-card);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-lg);
+      box-shadow: var(--elevation-1);
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.2s;
+    }
+
+    .role-card:hover {
+      box-shadow: var(--elevation-2);
+    }
+
+    .role-card__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .role-card__icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--primary-500), var(--accent-500));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .role-card__title {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: var(--spacing-xs);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .role-card__description {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: var(--spacing-lg);
+      flex: 1;
+    }
+
+    .role-card__stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+      padding: var(--spacing-md);
+      background-color: var(--surface-elevated);
+      border-radius: var(--radius-sm);
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat__value {
+      font-size: 24px;
+      font-weight: 300;
+      margin-bottom: 2px;
+    }
+
+    .stat__label {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .role-card__permissions {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .permissions-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .permission-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-xs);
+    }
+
+    .permission-chip {
+      background-color: rgba(33, 150, 243, 0.2);
+      color: var(--primary-500);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .role-card__actions {
+      display: flex;
+      gap: var(--spacing-sm);
+      padding-top: var(--spacing-md);
+      border-top: 1px solid var(--surface-divider);
+    }
+
+    .btn--text {
+      background: transparent;
+      color: var(--primary-500);
+      padding: 0 var(--spacing-sm);
+    }
+
+    .btn--text:hover {
+      background-color: var(--surface-hover);
+    }
+
+    /* System Badge */
+    .system-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background-color: rgba(255, 152, 0, 0.2);
+      color: var(--status-warning);
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: var(--spacing-xl);
+      color: var(--text-secondary);
+    }
+
+    .empty-state__icon {
+      font-size: 64px;
+      margin-bottom: var(--spacing-md);
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Toolbar -->
+    <header class="mat-toolbar">
+      <button class="icon-button" aria-label="Menu">
+        <span class="material-icons-outlined">menu</span>
+      </button>
+      <h1 class="mat-toolbar__title">NGMAT - Admin</h1>
+      <div class="mat-toolbar__spacer"></div>
+      <button class="icon-button" aria-label="Notifications">
+        <span class="material-icons-outlined">notifications</span>
+      </button>
+      <button class="icon-button" aria-label="Help">
+        <span class="material-icons-outlined">help_outline</span>
+      </button>
+      <button class="icon-button" aria-label="Account">
+        <span class="material-icons-outlined">account_circle</span>
+      </button>
+    </header>
+
+    <div class="layout-container">
+      <!-- Sidenav -->
+      <nav class="mat-sidenav">
+        <ul class="mat-nav-list">
+          <li class="mat-list-item">
+            <span class="material-icons-outlined mat-list-item__icon">dashboard</span>
+            <span>Dashboard</span>
+          </li>
+          <li class="mat-list-item">
+            <span class="material-icons-outlined mat-list-item__icon">rocket_launch</span>
+            <span>Missions</span>
+          </li>
+          <li class="mat-list-item">
+            <span class="material-icons-outlined mat-list-item__icon">satellite</span>
+            <span>Spacecraft</span>
+          </li>
+          <li class="mat-list-item">
+            <span class="material-icons-outlined mat-list-item__icon">public</span>
+            <span>Visualization</span>
+          </li>
+          <li class="mat-list-item">
+            <span class="material-icons-outlined mat-list-item__icon">analytics</span>
+            <span>Analysis</span>
+          </li>
+          <li style="margin: var(--spacing-md) 0; height: 1px; background-color: var(--surface-divider);"></li>
+          <li class="mat-list-item">
+            <span class="material-icons-outlined mat-list-item__icon">people</span>
+            <span>User Management</span>
+          </li>
+          <li class="mat-list-item mat-list-item--active">
+            <span class="material-icons-outlined mat-list-item__icon">admin_panel_settings</span>
+            <span>Role Management</span>
+          </li>
+          <li class="mat-list-item">
+            <span class="material-icons-outlined mat-list-item__icon">lock</span>
+            <span>Permissions</span>
+          </li>
+          <li class="mat-list-item">
+            <span class="material-icons-outlined mat-list-item__icon">key</span>
+            <span>API Keys</span>
+          </li>
+          <li style="margin: var(--spacing-md) 0; height: 1px; background-color: var(--surface-divider);"></li>
+          <li class="mat-list-item">
+            <span class="material-icons-outlined mat-list-item__icon">settings</span>
+            <span>Settings</span>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <div class="page-header">
+          <div>
+            <h2 class="page-title">Role Management</h2>
+            <p class="page-subtitle">Define roles and assign permissions</p>
+          </div>
+          <button class="btn btn--primary">
+            <span class="material-icons-outlined">add</span>
+            Create Role
+          </button>
+        </div>
+
+        <!-- Search -->
+        <div class="search-bar">
+          <span class="material-icons-outlined search-icon">search</span>
+          <input type="text" class="search-input" placeholder="Search roles...">
+        </div>
+
+        <!-- Roles Grid -->
+        <div class="roles-grid">
+          <!-- Admin Role -->
+          <div class="role-card">
+            <div class="role-card__icon">
+              <span class="material-icons-outlined" style="font-size: 28px; color: white;">admin_panel_settings</span>
+            </div>
+            <div class="role-card__title">
+              Admin
+              <span class="system-badge">SYSTEM</span>
+            </div>
+            <div class="role-card__description">
+              Full system access with administrative privileges. Can manage users, roles, and system settings.
+            </div>
+            <div class="role-card__stats">
+              <div class="stat">
+                <div class="stat__value">24</div>
+                <div class="stat__label">Users</div>
+              </div>
+              <div class="stat">
+                <div class="stat__value">18</div>
+                <div class="stat__label">Permissions</div>
+              </div>
+            </div>
+            <div class="role-card__permissions">
+              <div class="permissions-label">Key Permissions</div>
+              <div class="permission-chips">
+                <span class="permission-chip">users:admin</span>
+                <span class="permission-chip">roles:admin</span>
+                <span class="permission-chip">missions:admin</span>
+                <span class="permission-chip">spacecraft:admin</span>
+                <span class="permission-chip">+14 more</span>
+              </div>
+            </div>
+            <div class="role-card__actions">
+              <button class="btn btn--text">
+                <span class="material-icons-outlined">visibility</span>
+                View Details
+              </button>
+            </div>
+          </div>
+
+          <!-- User Role -->
+          <div class="role-card">
+            <div class="role-card__icon">
+              <span class="material-icons-outlined" style="font-size: 28px; color: white;">person</span>
+            </div>
+            <div class="role-card__title">
+              User
+              <span class="system-badge">SYSTEM</span>
+            </div>
+            <div class="role-card__description">
+              Standard user access for missions and spacecraft. Can create and manage their own resources.
+            </div>
+            <div class="role-card__stats">
+              <div class="stat">
+                <div class="stat__value">189</div>
+                <div class="stat__label">Users</div>
+              </div>
+              <div class="stat">
+                <div class="stat__value">12</div>
+                <div class="stat__label">Permissions</div>
+              </div>
+            </div>
+            <div class="role-card__permissions">
+              <div class="permissions-label">Key Permissions</div>
+              <div class="permission-chips">
+                <span class="permission-chip">missions:create</span>
+                <span class="permission-chip">missions:read</span>
+                <span class="permission-chip">missions:update</span>
+                <span class="permission-chip">spacecraft:create</span>
+                <span class="permission-chip">+8 more</span>
+              </div>
+            </div>
+            <div class="role-card__actions">
+              <button class="btn btn--text">
+                <span class="material-icons-outlined">visibility</span>
+                View Details
+              </button>
+            </div>
+          </div>
+
+          <!-- Read Only Role -->
+          <div class="role-card">
+            <div class="role-card__icon">
+              <span class="material-icons-outlined" style="font-size: 28px; color: white;">visibility</span>
+            </div>
+            <div class="role-card__title">
+              Read Only
+              <span class="system-badge">SYSTEM</span>
+            </div>
+            <div class="role-card__description">
+              View-only access to all resources. Cannot create, edit, or delete any data.
+            </div>
+            <div class="role-card__stats">
+              <div class="stat">
+                <div class="stat__value">34</div>
+                <div class="stat__label">Users</div>
+              </div>
+              <div class="stat">
+                <div class="stat__value">6</div>
+                <div class="stat__label">Permissions</div>
+              </div>
+            </div>
+            <div class="role-card__permissions">
+              <div class="permissions-label">Key Permissions</div>
+              <div class="permission-chips">
+                <span class="permission-chip">missions:read</span>
+                <span class="permission-chip">spacecraft:read</span>
+                <span class="permission-chip">propagation:read</span>
+                <span class="permission-chip">+3 more</span>
+              </div>
+            </div>
+            <div class="role-card__actions">
+              <button class="btn btn--text">
+                <span class="material-icons-outlined">visibility</span>
+                View Details
+              </button>
+            </div>
+          </div>
+
+          <!-- Mission Analyst Role (Custom) -->
+          <div class="role-card">
+            <div class="role-card__icon">
+              <span class="material-icons-outlined" style="font-size: 28px; color: white;">analytics</span>
+            </div>
+            <div class="role-card__title">Mission Analyst</div>
+            <div class="role-card__description">
+              Custom role for mission analysis tasks. Can execute propagations and view detailed mission data.
+            </div>
+            <div class="role-card__stats">
+              <div class="stat">
+                <div class="stat__value">12</div>
+                <div class="stat__label">Users</div>
+              </div>
+              <div class="stat">
+                <div class="stat__value">8</div>
+                <div class="stat__label">Permissions</div>
+              </div>
+            </div>
+            <div class="role-card__permissions">
+              <div class="permissions-label">Key Permissions</div>
+              <div class="permission-chips">
+                <span class="permission-chip">missions:read</span>
+                <span class="permission-chip">propagation:execute</span>
+                <span class="permission-chip">spacecraft:read</span>
+                <span class="permission-chip">+5 more</span>
+              </div>
+            </div>
+            <div class="role-card__actions">
+              <button class="btn btn--text">
+                <span class="material-icons-outlined">edit</span>
+                Edit
+              </button>
+              <button class="btn btn--text" style="color: var(--warn-500);">
+                <span class="material-icons-outlined">delete</span>
+                Delete
+              </button>
+            </div>
+          </div>
+
+          <!-- Spacecraft Engineer Role (Custom) -->
+          <div class="role-card">
+            <div class="role-card__icon">
+              <span class="material-icons-outlined" style="font-size: 28px; color: white;">engineering</span>
+            </div>
+            <div class="role-card__title">Spacecraft Engineer</div>
+            <div class="role-card__description">
+              Custom role for spacecraft design and configuration. Can create and modify spacecraft definitions.
+            </div>
+            <div class="role-card__stats">
+              <div class="stat">
+                <div class="stat__value">8</div>
+                <div class="stat__label">Users</div>
+              </div>
+              <div class="stat">
+                <div class="stat__value">10</div>
+                <div class="stat__label">Permissions</div>
+              </div>
+            </div>
+            <div class="role-card__permissions">
+              <div class="permissions-label">Key Permissions</div>
+              <div class="permission-chips">
+                <span class="permission-chip">spacecraft:create</span>
+                <span class="permission-chip">spacecraft:update</span>
+                <span class="permission-chip">spacecraft:delete</span>
+                <span class="permission-chip">+7 more</span>
+              </div>
+            </div>
+            <div class="role-card__actions">
+              <button class="btn btn--text">
+                <span class="material-icons-outlined">edit</span>
+                Edit
+              </button>
+              <button class="btn btn--text" style="color: var(--warn-500);">
+                <span class="material-icons-outlined">delete</span>
+                Delete
+              </button>
+            </div>
+          </div>
+
+          <!-- API Integration Role (Custom) -->
+          <div class="role-card">
+            <div class="role-card__icon">
+              <span class="material-icons-outlined" style="font-size: 28px; color: white;">integration_instructions</span>
+            </div>
+            <div class="role-card__title">API Integration</div>
+            <div class="role-card__description">
+              Custom role for programmatic API access. Limited permissions for automation and integration tasks.
+            </div>
+            <div class="role-card__stats">
+              <div class="stat">
+                <div class="stat__value">5</div>
+                <div class="stat__label">Users</div>
+              </div>
+              <div class="stat">
+                <div class="stat__value">6</div>
+                <div class="stat__label">Permissions</div>
+              </div>
+            </div>
+            <div class="role-card__permissions">
+              <div class="permissions-label">Key Permissions</div>
+              <div class="permission-chips">
+                <span class="permission-chip">missions:read</span>
+                <span class="permission-chip">spacecraft:read</span>
+                <span class="permission-chip">propagation:read</span>
+                <span class="permission-chip">+3 more</span>
+              </div>
+            </div>
+            <div class="role-card__actions">
+              <button class="btn btn--text">
+                <span class="material-icons-outlined">edit</span>
+                Edit
+              </button>
+              <button class="btn btn--text" style="color: var(--warn-500);">
+                <span class="material-icons-outlined">delete</span>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
