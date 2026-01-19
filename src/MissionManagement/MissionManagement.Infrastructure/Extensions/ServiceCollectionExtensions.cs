@@ -30,6 +30,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<CreateMissionCommandHandler>();
         services.AddScoped<UpdateMissionCommandHandler>();
         services.AddScoped<DeleteMissionCommandHandler>();
+        services.AddScoped<ChangeMissionStatusCommandHandler>();
 
         // Add query handlers
         services.AddScoped<GetMissionByIdQueryHandler>();

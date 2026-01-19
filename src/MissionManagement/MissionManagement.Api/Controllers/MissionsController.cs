@@ -18,6 +18,7 @@ public sealed class MissionsController : ControllerBase
     private readonly CreateMissionCommandHandler _createHandler;
     private readonly UpdateMissionCommandHandler _updateHandler;
     private readonly DeleteMissionCommandHandler _deleteHandler;
+    private readonly ChangeMissionStatusCommandHandler _changeStatusHandler;
     private readonly GetMissionByIdQueryHandler _getByIdHandler;
     private readonly ListMissionsQueryHandler _listHandler;
     private readonly ILogger<MissionsController> _logger;
@@ -26,6 +27,7 @@ public sealed class MissionsController : ControllerBase
         CreateMissionCommandHandler createHandler,
         UpdateMissionCommandHandler updateHandler,
         DeleteMissionCommandHandler deleteHandler,
+        ChangeMissionStatusCommandHandler changeStatusHandler,
         GetMissionByIdQueryHandler getByIdHandler,
         ListMissionsQueryHandler listHandler,
         ILogger<MissionsController> logger)
@@ -33,6 +35,7 @@ public sealed class MissionsController : ControllerBase
         _createHandler = createHandler;
         _updateHandler = updateHandler;
         _deleteHandler = deleteHandler;
+        _changeStatusHandler = changeStatusHandler;
         _getByIdHandler = getByIdHandler;
         _listHandler = listHandler;
         _logger = logger;
@@ -269,6 +272,52 @@ public sealed class MissionsController : ControllerBase
         {
             _logger.LogWarning(ex, "Failed to delete mission {MissionId}", id);
             return NotFound(new { error = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            _logger.LogWarning(ex, "Unauthorized access to mission {MissionId}", id);
+            return Forbid();
+        }
+    }
+
+    /// <summary>
+    /// Changes the status of a mission.
+    /// </summary>
+    /// <param name="id">Mission ID</param>
+    /// <param name="request">Status change request</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>No content on success</returns>
+    [HttpPatch("{id}/status")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> ChangeMissionStatus(
+        [FromRoute] Guid id,
+        [FromBody] ChangeMissionStatusRequest request,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            // TODO: Get user ID from authentication context
+            var userId = Guid.NewGuid(); // Placeholder
+
+            var command = new ChangeMissionStatusCommand(
+                id,
+                request.Status,
+                userId,
+                request.Reason);
+
+            await _changeStatusHandler.HandleAsync(command, cancellationToken);
+
+            _logger.LogInformation("Mission status changed: {MissionId} -> {NewStatus}", id, request.Status);
+
+            return Ok();
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogWarning(ex, "Failed to change mission status {MissionId}", id);
+            return ex.Message.Contains("not found") ? NotFound(new { error = ex.Message }) : BadRequest(new { error = ex.Message });
         }
         catch (UnauthorizedAccessException ex)
         {
