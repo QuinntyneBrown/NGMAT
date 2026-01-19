@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using MissionManagement.Core.Entities;
+using MissionManagement.Core.Models;
 using MissionManagement.Core.Services;
 
 namespace MissionManagement.Api.Endpoints;
@@ -21,6 +22,12 @@ public static class MissionEndpoints
         group.MapPost("/{id:guid}/share", ShareMission).WithName("ShareMission");
         group.MapDelete("/{id:guid}/share/{userId:guid}", RevokeMissionShare).WithName("RevokeMissionShare");
         group.MapPost("/{id:guid}/clone", CloneMission).WithName("CloneMission");
+
+        // Export/Import endpoints
+        group.MapGet("/{id:guid}/export", ExportMission).WithName("ExportMission");
+        group.MapPost("/export", ExportMissions).WithName("ExportMissions");
+        group.MapPost("/import", ImportMission).WithName("ImportMission");
+        group.MapPost("/import/batch", ImportMissions).WithName("ImportMissions");
     }
 
     private static async Task<IResult> CreateMission(
@@ -197,6 +204,80 @@ public static class MissionEndpoints
             : MapError(result.Error);
     }
 
+    private static async Task<IResult> ExportMission(
+        Guid id,
+        MissionService service,
+        HttpContext context)
+    {
+        var userId = GetUserId(context);
+        if (userId == null)
+            return Results.Unauthorized();
+
+        var result = await service.ExportMissionAsync(id, userId.Value);
+
+        return result.IsSuccess
+            ? Results.Ok(result.Value)
+            : MapError(result.Error);
+    }
+
+    private static async Task<IResult> ExportMissions(
+        ExportMissionsRequest? request,
+        MissionService service,
+        HttpContext context)
+    {
+        var userId = GetUserId(context);
+        if (userId == null)
+            return Results.Unauthorized();
+
+        var result = await service.ExportMissionsAsync(
+            userId.Value,
+            request?.MissionIds,
+            request?.Status);
+
+        return result.IsSuccess
+            ? Results.Ok(result.Value)
+            : MapError(result.Error);
+    }
+
+    private static async Task<IResult> ImportMission(
+        ImportMissionRequest request,
+        MissionService service,
+        HttpContext context)
+    {
+        var userId = GetUserId(context);
+        if (userId == null)
+            return Results.Unauthorized();
+
+        var result = await service.ImportMissionAsync(
+            userId.Value,
+            request.Mission,
+            request.OverwriteExisting);
+
+        return result.IsSuccess
+            ? Results.Ok(result.Value)
+            : MapError(result.Error);
+    }
+
+    private static async Task<IResult> ImportMissions(
+        ImportMissionsRequest request,
+        MissionService service,
+        HttpContext context)
+    {
+        var userId = GetUserId(context);
+        if (userId == null)
+            return Results.Unauthorized();
+
+        var result = await service.ImportMissionsAsync(
+            userId.Value,
+            request.Missions,
+            request.OverwriteExisting,
+            request.StopOnError);
+
+        return result.IsSuccess
+            ? Results.Ok(result.Value)
+            : MapError(result.Error);
+    }
+
     private static Guid? GetUserId(HttpContext context)
     {
         var userIdClaim = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
@@ -280,4 +361,23 @@ public sealed class PagedMissionResponse
     public int PageSize { get; init; }
     public int TotalCount { get; init; }
     public int TotalPages { get; init; }
+}
+
+public sealed class ExportMissionsRequest
+{
+    public List<Guid>? MissionIds { get; init; }
+    public MissionStatus? Status { get; init; }
+}
+
+public sealed class ImportMissionRequest
+{
+    public required MissionData Mission { get; init; }
+    public bool OverwriteExisting { get; init; } = false;
+}
+
+public sealed class ImportMissionsRequest
+{
+    public required List<MissionData> Missions { get; init; }
+    public bool OverwriteExisting { get; init; } = false;
+    public bool StopOnError { get; init; } = true;
 }

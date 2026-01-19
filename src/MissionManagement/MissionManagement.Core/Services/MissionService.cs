@@ -1,6 +1,7 @@
 using MissionManagement.Core.Entities;
 using MissionManagement.Core.Events;
 using MissionManagement.Core.Interfaces;
+using MissionManagement.Core.Models;
 using Shared.Domain.Results;
 using Shared.Messaging.Abstractions;
 
@@ -341,6 +342,235 @@ public sealed class MissionService
         }, cancellationToken);
 
         return clonedMission;
+    }
+
+    public async Task<Result<MissionExportData>> ExportMissionAsync(
+        Guid missionId,
+        Guid userId,
+        CancellationToken cancellationToken = default)
+    {
+        var mission = await _unitOfWork.Missions.GetByIdWithSharesAsync(missionId, cancellationToken);
+        if (mission == null || mission.IsDeleted)
+        {
+            return Error.NotFound("Mission", missionId.ToString());
+        }
+
+        if (!mission.HasAccess(userId))
+        {
+            return Error.Forbidden("You do not have access to this mission");
+        }
+
+        var exportData = new MissionExportData
+        {
+            Version = 1,
+            ExportedAt = DateTime.UtcNow.ToString("O"),
+            ExportedBy = userId.ToString(),
+            Mission = mission.ToExportData()
+        };
+
+        await _eventPublisher.PublishAsync(new MissionExportedEvent
+        {
+            MissionId = mission.Id,
+            MissionName = mission.Name,
+            ExportedByUserId = userId,
+            ExportedAt = DateTime.UtcNow,
+            ExportFormat = "JSON"
+        }, cancellationToken);
+
+        return exportData;
+    }
+
+    public async Task<Result<MissionBatchExportData>> ExportMissionsAsync(
+        Guid userId,
+        IEnumerable<Guid>? missionIds = null,
+        MissionStatus? status = null,
+        CancellationToken cancellationToken = default)
+    {
+        List<Mission> missions;
+
+        if (missionIds != null && missionIds.Any())
+        {
+            // Export specific missions
+            missions = new List<Mission>();
+            foreach (var id in missionIds)
+            {
+                var mission = await _unitOfWork.Missions.GetByIdWithSharesAsync(id, cancellationToken);
+                if (mission != null && !mission.IsDeleted && mission.HasAccess(userId))
+                {
+                    missions.Add(mission);
+                }
+            }
+        }
+        else
+        {
+            // Export all accessible missions with optional status filter
+            missions = (await _unitOfWork.Missions.GetAccessibleByUserIdAsync(
+                userId, 1, int.MaxValue, status, null, cancellationToken)).ToList();
+        }
+
+        var exportData = new MissionBatchExportData
+        {
+            Version = 1,
+            ExportedAt = DateTime.UtcNow.ToString("O"),
+            ExportedBy = userId.ToString(),
+            MissionCount = missions.Count,
+            Missions = missions.Select(m => m.ToExportData()).ToList()
+        };
+
+        await _eventPublisher.PublishAsync(new MissionBatchExportedEvent
+        {
+            MissionCount = missions.Count,
+            ExportedByUserId = userId,
+            ExportedAt = DateTime.UtcNow,
+            ExportFormat = "JSON"
+        }, cancellationToken);
+
+        return exportData;
+    }
+
+    public async Task<Result<MissionImportResult>> ImportMissionAsync(
+        Guid userId,
+        MissionData missionData,
+        bool overwriteExisting = false,
+        CancellationToken cancellationToken = default)
+    {
+        // Validate mission type
+        var (missionType, typeValid) = MissionExportExtensions.ParseMissionType(missionData.Type);
+        if (!typeValid)
+        {
+            return new MissionImportResult
+            {
+                MissionId = Guid.Empty,
+                MissionName = missionData.Name,
+                Success = false,
+                ErrorMessage = $"Invalid mission type: {missionData.Type}"
+            };
+        }
+
+        // Check if mission with same name exists
+        var exists = await _unitOfWork.Missions.ExistsByNameAndOwnerAsync(missionData.Name, userId, cancellationToken);
+        bool wasOverwritten = false;
+
+        if (exists)
+        {
+            if (!overwriteExisting)
+            {
+                return new MissionImportResult
+                {
+                    MissionId = Guid.Empty,
+                    MissionName = missionData.Name,
+                    Success = false,
+                    ErrorMessage = $"A mission with the name '{missionData.Name}' already exists. Set overwriteExisting to true to replace it."
+                };
+            }
+
+            // Find and delete existing mission
+            var existingMissions = await _unitOfWork.Missions.GetByOwnerIdAsync(userId, 1, 1, null, missionData.Name, cancellationToken);
+            var existingMission = existingMissions.FirstOrDefault(m => m.Name == missionData.Name);
+            if (existingMission != null)
+            {
+                existingMission.Delete();
+                await _unitOfWork.Missions.UpdateAsync(existingMission, cancellationToken);
+                wasOverwritten = true;
+            }
+        }
+
+        // Create new mission from import data
+        var mission = Mission.Create(
+            missionData.Name,
+            missionType,
+            missionData.StartEpoch,
+            userId,
+            missionData.Description,
+            missionData.EndEpoch);
+
+        await _unitOfWork.Missions.AddAsync(mission, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _eventPublisher.PublishAsync(new MissionImportedEvent
+        {
+            MissionId = mission.Id,
+            MissionName = mission.Name,
+            ImportedByUserId = userId,
+            ImportedAt = DateTime.UtcNow,
+            WasOverwritten = wasOverwritten
+        }, cancellationToken);
+
+        return new MissionImportResult
+        {
+            MissionId = mission.Id,
+            MissionName = mission.Name,
+            Success = true,
+            WasOverwritten = wasOverwritten
+        };
+    }
+
+    public async Task<Result<MissionBatchImportResult>> ImportMissionsAsync(
+        Guid userId,
+        List<MissionData> missions,
+        bool overwriteExisting = false,
+        bool stopOnError = true,
+        CancellationToken cancellationToken = default)
+    {
+        var results = new List<MissionImportResult>();
+        var successCount = 0;
+        var failureCount = 0;
+
+        foreach (var missionData in missions)
+        {
+            var importResult = await ImportMissionAsync(userId, missionData, overwriteExisting, cancellationToken);
+
+            if (importResult.IsSuccess)
+            {
+                results.Add(importResult.Value);
+                if (importResult.Value.Success)
+                {
+                    successCount++;
+                }
+                else
+                {
+                    failureCount++;
+                    if (stopOnError)
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                results.Add(new MissionImportResult
+                {
+                    MissionId = Guid.Empty,
+                    MissionName = missionData.Name,
+                    Success = false,
+                    ErrorMessage = importResult.Error.Message
+                });
+                failureCount++;
+                if (stopOnError)
+                {
+                    break;
+                }
+            }
+        }
+
+        var batchResult = new MissionBatchImportResult
+        {
+            TotalCount = missions.Count,
+            SuccessCount = successCount,
+            FailureCount = failureCount,
+            Results = results
+        };
+
+        await _eventPublisher.PublishAsync(new MissionBatchImportedEvent
+        {
+            TotalCount = missions.Count,
+            SuccessCount = successCount,
+            FailureCount = failureCount,
+            ImportedByUserId = userId,
+            ImportedAt = DateTime.UtcNow
+        }, cancellationToken);
+
+        return batchResult;
     }
 }
 
