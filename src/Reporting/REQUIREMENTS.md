@@ -161,7 +161,7 @@ The Reporting Service generates mission reports, exports data in various formats
 
 | Format | Library |
 |--------|---------|
-| PDF | QuestPDF, iTextSharp |
+| PDF | PdfSharpCore, iTextSharp |
 | HTML | Razor templates |
 | CSV | CsvHelper |
 | JSON | System.Text.Json |

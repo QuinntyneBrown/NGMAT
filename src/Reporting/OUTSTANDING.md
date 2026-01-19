@@ -173,7 +173,7 @@ The Reporting Service has a comprehensive service implementation (738 lines) and
 **Status:** ⚠️ Logic exists, no PDF/Excel export
 
 **Missing Components:**
-- [ ] PDF generation (using QuestPDF or similar)
+- [x] PDF generation (using PdfSharpCore)
 - [ ] Excel generation (using ClosedXML or EPPlus)
 - [ ] Report template rendering
 - [ ] Charts and graphs in reports
@@ -376,7 +376,7 @@ The Reporting Service has a comprehensive service implementation (738 lines) and
 **Requires:**
 - Database (SQL Server or PostgreSQL)
 - File storage (Azure Blob or file system)
-- PDF library (QuestPDF, PdfSharpCore)
+- PDF library (PdfSharpCore - implemented)
 - Excel library (ClosedXML, EPPlus)
 - Background job scheduler (Hangfire, Quartz.NET)
 - Template engine (Razor, Scriban, Liquid)

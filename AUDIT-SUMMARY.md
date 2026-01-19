@@ -205,7 +205,7 @@ This document summarizes the comprehensive audit of all NGMAT microservices agai
 3. **Technical Decisions**
    - Select API Gateway framework (YARP recommended)
    - Select email provider (SendGrid or SMTP)
-   - Select PDF library (QuestPDF recommended)
+   - Select PDF library (PdfSharpCore - implemented)
    - Select 3D export library
 
 ### Short Term (Weeks 2-8)
