@@ -10,3 +10,9 @@ C:\projects\NGMAT\src\ForceModel\ForceModel.Core\obj\Debug\net8.0\ForceModel.Cor
 C:\projects\NGMAT\src\ForceModel\ForceModel.Core\obj\Debug\net8.0\refint\ForceModel.Core.dll
 C:\projects\NGMAT\src\ForceModel\ForceModel.Core\obj\Debug\net8.0\ForceModel.Core.pdb
 C:\projects\NGMAT\src\ForceModel\ForceModel.Core\obj\Debug\net8.0\ref\ForceModel.Core.dll
+C:\projects\NGMAT\src\ForceModel\ForceModel.Core\bin\Debug\net8.0\Shared.Domain.dll
+C:\projects\NGMAT\src\ForceModel\ForceModel.Core\bin\Debug\net8.0\Shared.Messaging.Abstractions.dll
+C:\projects\NGMAT\src\ForceModel\ForceModel.Core\bin\Debug\net8.0\Shared.Domain.pdb
+C:\projects\NGMAT\src\ForceModel\ForceModel.Core\bin\Debug\net8.0\Shared.Messaging.Abstractions.pdb
+C:\projects\NGMAT\src\ForceModel\ForceModel.Core\obj\Debug\net8.0\ForceModel.Core.csproj.AssemblyReference.cache
+C:\projects\NGMAT\src\ForceModel\ForceModel.Core\obj\Debug\net8.0\ForceMod.D8D0ACF8.Up2Date

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ForceModel.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3931e9e6f89467710273530b07975eb4f9095025")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7b63d010e71071566987b1c950c8022e2dea7303")]
 [assembly: System.Reflection.AssemblyProductAttribute("ForceModel.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ForceModel.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
