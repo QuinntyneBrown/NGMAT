@@ -1,0 +1,77 @@
+.app-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: #1e1e1e;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1);
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: 8px;
+  }
+
+  &__logo-icon {
+    color: #2196f3;
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  &__title {
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.87);
+  }
+
+  &__spacer {
+    flex: 1;
+  }
+}
+
+.app-sidenav-container {
+  height: calc(100vh - 64px);
+}
+
+.app-sidenav {
+  width: 256px;
+  background-color: #1e1e1e;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.app-sidenav-content {
+  background-color: #121212;
+}
+
+.app-nav-list {
+  padding: 8px 0;
+
+  &__item {
+    color: rgba(255, 255, 255, 0.87);
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.08);
+    }
+
+    &--active {
+      background-color: rgba(33, 150, 243, 0.16);
+      color: #2196f3;
+
+      .app-nav-list__icon {
+        color: #2196f3;
+      }
+    }
+  }
+
+  &__icon {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  &__label {
+    font-size: 14px;
+    font-weight: 500;
+  }
+}

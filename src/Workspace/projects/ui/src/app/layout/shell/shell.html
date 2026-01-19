@@ -1,0 +1,61 @@
+<mat-toolbar class="app-toolbar">
+  <button mat-icon-button (click)="toggleSidenav()" aria-label="Toggle navigation menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <div class="app-toolbar__logo">
+    <mat-icon class="app-toolbar__logo-icon">rocket_launch</mat-icon>
+    <span class="app-toolbar__title">NGMAT</span>
+  </div>
+
+  <span class="app-toolbar__spacer"></span>
+
+  <button mat-icon-button aria-label="Notifications" [matBadge]="notificationCount()" matBadgeColor="warn">
+    <mat-icon>notifications</mat-icon>
+  </button>
+
+  <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User menu">
+    <mat-icon>account_circle</mat-icon>
+  </button>
+
+  <mat-menu #userMenu="matMenu">
+    <button mat-menu-item routerLink="/profile">
+      <mat-icon>person</mat-icon>
+      <span>Profile</span>
+    </button>
+    <button mat-menu-item routerLink="/settings">
+      <mat-icon>settings</mat-icon>
+      <span>Settings</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Logout</span>
+    </button>
+  </mat-menu>
+</mat-toolbar>
+
+<mat-sidenav-container class="app-sidenav-container">
+  <mat-sidenav
+    mode="side"
+    [opened]="sidenavOpened()"
+    class="app-sidenav"
+  >
+    <mat-nav-list class="app-nav-list">
+      <a
+        mat-list-item
+        *ngFor="let item of navItems"
+        [routerLink]="item.route"
+        routerLinkActive="app-nav-list__item--active"
+        class="app-nav-list__item"
+      >
+        <mat-icon matListItemIcon class="app-nav-list__icon">{{ item.icon }}</mat-icon>
+        <span matListItemTitle class="app-nav-list__label">{{ item.label }}</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="app-sidenav-content">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
