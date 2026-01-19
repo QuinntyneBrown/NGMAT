@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Notification.Core.Interfaces;
@@ -47,10 +48,12 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddNotificationSignalR(this IServiceCollection services)
+    public static IServiceCollection AddNotificationRealTime<THub>(this IServiceCollection services)
+        where THub : Hub
     {
-        services.AddSignalR();
-        services.AddScoped<IRealTimeNotificationService, RealTimeNotificationService>();
+        // Note: AddSignalR should be called in the API layer (Program.cs)
+        // This just registers the real-time notification service
+        services.AddScoped<IRealTimeNotificationService, RealTimeNotificationService<THub>>();
         return services;
     }
 

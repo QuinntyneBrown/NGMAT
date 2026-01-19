@@ -24,7 +24,8 @@ var webhookOptions = builder.Configuration.GetSection("Webhook").Get<WebhookOpti
 
 // Add services
 builder.Services.AddNotificationInfrastructure(connectionString, emailOptions, webhookOptions);
-builder.Services.AddNotificationSignalR();
+builder.Services.AddSignalR();
+builder.Services.AddNotificationRealTime<NotificationHub>();
 
 // Add Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();

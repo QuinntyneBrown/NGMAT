@@ -1,4 +1,3 @@
-using System.Net.Mail;
 using System.Text.RegularExpressions;
 using MailKit.Net.Smtp;
 using MailKit.Security;

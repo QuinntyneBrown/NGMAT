@@ -15,6 +15,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { MissionService } from '../../services/mission.service';
 import { Mission, MissionStatus, MissionType } from '../../models/mission.model';
@@ -36,7 +37,8 @@ import { Mission, MissionStatus, MissionType } from '../../models/mission.model'
     MatChipsModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSnackBarModule
   ],
   templateUrl: './missions.html',
   styleUrl: './missions.scss'
@@ -57,7 +59,8 @@ export class Missions implements OnInit {
   constructor(
     private missionService: MissionService,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -79,6 +82,7 @@ export class Missions implements OnInit {
       },
       error: () => {
         this.loading.set(false);
+        this.snackBar.open('Failed to load missions', 'Close', { duration: 3000 });
       }
     });
   }
@@ -122,8 +126,12 @@ export class Missions implements OnInit {
   protected cloneMission(mission: Mission): void {
     this.missionService.cloneMission(mission.id).subscribe({
       next: (cloned) => {
+        this.snackBar.open('Mission cloned successfully', 'Close', { duration: 3000 });
         this.loadMissions();
         this.router.navigate(['/missions', cloned.id, 'edit']);
+      },
+      error: () => {
+        this.snackBar.open('Failed to clone mission', 'Close', { duration: 3000 });
       }
     });
   }
@@ -132,7 +140,11 @@ export class Missions implements OnInit {
     if (confirm(`Are you sure you want to delete "${mission.name}"?`)) {
       this.missionService.deleteMission(mission.id).subscribe({
         next: () => {
+          this.snackBar.open('Mission deleted', 'Close', { duration: 3000 });
           this.loadMissions();
+        },
+        error: () => {
+          this.snackBar.open('Failed to delete mission', 'Close', { duration: 3000 });
         }
       });
     }

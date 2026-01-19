@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
 using Notification.Core.Models;
+using Notification.Infrastructure.Services;
 
 namespace Notification.Api.Hubs;
 
@@ -9,8 +10,6 @@ namespace Notification.Api.Hubs;
 public sealed class NotificationHub : Hub
 {
     private readonly ILogger<NotificationHub> _logger;
-    private static readonly Dictionary<string, HashSet<string>> UserConnections = new();
-    private static readonly object ConnectionLock = new();
 
     public NotificationHub(ILogger<NotificationHub> logger)
     {
@@ -24,16 +23,7 @@ public sealed class NotificationHub : Hub
         if (!string.IsNullOrEmpty(userId))
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, userId);
-
-            lock (ConnectionLock)
-            {
-                if (!UserConnections.TryGetValue(userId, out var connections))
-                {
-                    connections = new HashSet<string>();
-                    UserConnections[userId] = connections;
-                }
-                connections.Add(Context.ConnectionId);
-            }
+            ConnectionTracker.AddConnection(userId, Context.ConnectionId);
 
             _logger.LogInformation(
                 "User {UserId} connected with connection {ConnectionId}",
@@ -51,18 +41,7 @@ public sealed class NotificationHub : Hub
         if (!string.IsNullOrEmpty(userId))
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, userId);
-
-            lock (ConnectionLock)
-            {
-                if (UserConnections.TryGetValue(userId, out var connections))
-                {
-                    connections.Remove(Context.ConnectionId);
-                    if (connections.Count == 0)
-                    {
-                        UserConnections.Remove(userId);
-                    }
-                }
-            }
+            ConnectionTracker.RemoveConnection(userId, Context.ConnectionId);
 
             _logger.LogInformation(
                 "User {UserId} disconnected from connection {ConnectionId}",
@@ -103,30 +82,6 @@ public sealed class NotificationHub : Hub
         {
             _logger.LogInformation("User {UserId} marked all notifications as read", userId);
             await Clients.OthersInGroup(userId).SendAsync("AllNotificationsRead");
-        }
-    }
-
-    /// <summary>
-    /// Gets the count of connected clients for a user
-    /// </summary>
-    public static int GetUserConnectionCount(string userId)
-    {
-        lock (ConnectionLock)
-        {
-            return UserConnections.TryGetValue(userId, out var connections)
-                ? connections.Count
-                : 0;
-        }
-    }
-
-    /// <summary>
-    /// Checks if a user is currently connected
-    /// </summary>
-    public static bool IsUserConnected(string userId)
-    {
-        lock (ConnectionLock)
-        {
-            return UserConnections.ContainsKey(userId);
         }
     }
 

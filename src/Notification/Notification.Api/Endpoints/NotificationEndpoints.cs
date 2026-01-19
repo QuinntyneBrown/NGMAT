@@ -53,14 +53,14 @@ public static class NotificationEndpoints
 
     private static async Task<IResult> GetNotificationsAsync(
         [FromRoute] string userId,
-        [FromQuery] NotificationType? type,
-        [FromQuery] NotificationStatus? status,
-        [FromQuery] NotificationChannel? channel,
-        [FromQuery] bool? unreadOnly,
-        [FromQuery] int skip = 0,
-        [FromQuery] int take = 50,
         [FromServices] INotificationService notificationService,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        [FromQuery] NotificationType? type = null,
+        [FromQuery] NotificationStatus? status = null,
+        [FromQuery] NotificationChannel? channel = null,
+        [FromQuery] bool? unreadOnly = null,
+        [FromQuery] int skip = 0,
+        [FromQuery] int take = 50)
     {
         var filter = new NotificationFilter
         {

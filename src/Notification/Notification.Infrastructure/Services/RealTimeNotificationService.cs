@@ -5,14 +5,15 @@ using Notification.Core.Models;
 
 namespace Notification.Infrastructure.Services;
 
-internal sealed class RealTimeNotificationService : IRealTimeNotificationService
+internal sealed class RealTimeNotificationService<THub> : IRealTimeNotificationService
+    where THub : Hub
 {
-    private readonly IHubContext<NotificationHub> _hubContext;
-    private readonly ILogger<RealTimeNotificationService> _logger;
+    private readonly IHubContext<THub> _hubContext;
+    private readonly ILogger<RealTimeNotificationService<THub>> _logger;
 
     public RealTimeNotificationService(
-        IHubContext<NotificationHub> hubContext,
-        ILogger<RealTimeNotificationService> logger)
+        IHubContext<THub> hubContext,
+        ILogger<RealTimeNotificationService<THub>> logger)
     {
         _hubContext = hubContext;
         _logger = logger;
@@ -70,19 +71,19 @@ internal sealed class RealTimeNotificationService : IRealTimeNotificationService
 
     public Task<int> GetConnectionCountAsync(string userId, CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(NotificationHub.GetUserConnectionCount(userId));
+        return Task.FromResult(ConnectionTracker.GetUserConnectionCount(userId));
     }
 
     public Task<bool> IsUserConnectedAsync(string userId, CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(NotificationHub.IsUserConnected(userId));
+        return Task.FromResult(ConnectionTracker.IsUserConnected(userId));
     }
 }
 
 /// <summary>
-/// Marker class for the hub context - used by infrastructure layer
+/// Tracks SignalR connections for users
 /// </summary>
-public sealed class NotificationHub : Hub
+public static class ConnectionTracker
 {
     private static readonly Dictionary<string, HashSet<string>> UserConnections = new();
     private static readonly object ConnectionLock = new();
@@ -105,7 +106,7 @@ public sealed class NotificationHub : Hub
         }
     }
 
-    internal static void AddConnection(string userId, string connectionId)
+    public static void AddConnection(string userId, string connectionId)
     {
         lock (ConnectionLock)
         {
@@ -118,7 +119,7 @@ public sealed class NotificationHub : Hub
         }
     }
 
-    internal static void RemoveConnection(string userId, string connectionId)
+    public static void RemoveConnection(string userId, string connectionId)
     {
         lock (ConnectionLock)
         {

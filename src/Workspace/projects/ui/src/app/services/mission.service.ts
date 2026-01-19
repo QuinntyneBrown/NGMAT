@@ -1,7 +1,8 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, of, delay, BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, BehaviorSubject, of } from 'rxjs';
+import { map, tap, catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 import {
   Mission,
   MissionType,
@@ -12,74 +13,29 @@ import {
   MissionTreeNode
 } from '../models/mission.model';
 
+export interface ChangeStatusRequest {
+  status: MissionStatus;
+}
+
+export interface MissionExportData {
+  exportedAt: string;
+  version: string;
+  mission: MissionData;
+}
+
+export interface MissionData {
+  name: string;
+  description?: string;
+  type: MissionType;
+  startEpoch: string;
+  endEpoch?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class MissionService {
-  private readonly apiUrl = '/api/v1/missions';
-
-  // Mock data for development
-  private readonly mockMissions: Mission[] = [
-    {
-      id: 'MSN-2025-0042',
-      name: 'LEO Constellation Deploy',
-      description: 'Deploy 6 satellites to low Earth orbit constellation for global coverage.',
-      type: MissionType.LEO,
-      status: MissionStatus.Active,
-      startEpoch: new Date('2025-03-15T12:00:00Z'),
-      endEpoch: new Date('2025-03-17T12:00:00Z'),
-      ownerId: 'user-001',
-      createdAt: new Date('2025-01-10'),
-      updatedAt: new Date('2025-01-18')
-    },
-    {
-      id: 'MSN-2025-0041',
-      name: 'GEO Station Keeping',
-      description: 'Maintain geostationary orbit position for communication satellite.',
-      type: MissionType.GEO,
-      status: MissionStatus.Active,
-      startEpoch: new Date('2025-02-01T00:00:00Z'),
-      endEpoch: new Date('2025-12-31T23:59:59Z'),
-      ownerId: 'user-001',
-      createdAt: new Date('2025-01-05'),
-      updatedAt: new Date('2025-01-15')
-    },
-    {
-      id: 'MSN-2025-0040',
-      name: 'Lunar Transfer',
-      description: 'Trans-lunar injection and lunar orbit insertion mission.',
-      type: MissionType.Lunar,
-      status: MissionStatus.Draft,
-      startEpoch: new Date('2025-06-01T08:00:00Z'),
-      ownerId: 'user-001',
-      createdAt: new Date('2025-01-02'),
-      updatedAt: new Date('2025-01-12')
-    },
-    {
-      id: 'MSN-2024-0156',
-      name: 'MEO Navigation Constellation',
-      description: 'Medium Earth orbit navigation satellite deployment.',
-      type: MissionType.MEO,
-      status: MissionStatus.Completed,
-      startEpoch: new Date('2024-09-15T06:00:00Z'),
-      endEpoch: new Date('2024-12-15T18:00:00Z'),
-      ownerId: 'user-001',
-      createdAt: new Date('2024-08-01'),
-      updatedAt: new Date('2024-12-15')
-    },
-    {
-      id: 'MSN-2024-0122',
-      name: 'ISS Resupply Mission',
-      description: 'Cargo delivery to International Space Station.',
-      type: MissionType.LEO,
-      status: MissionStatus.Archived,
-      startEpoch: new Date('2024-05-10T14:30:00Z'),
-      endEpoch: new Date('2024-05-12T08:00:00Z'),
-      ownerId: 'user-001',
-      createdAt: new Date('2024-04-01'),
-      updatedAt: new Date('2024-05-12')
-    }
-  ];
+  private readonly apiUrl = `${environment.baseUrl}/api/missions/v1/missions`;
 
   private currentMission = new BehaviorSubject<Mission | null>(null);
   currentMission$ = this.currentMission.asObservable();
@@ -92,109 +48,99 @@ export class MissionService {
     status?: MissionStatus,
     search?: string
   ): Observable<MissionListResponse> {
-    // For now, return mock data
-    let filtered = [...this.mockMissions];
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', pageSize.toString());
 
     if (status) {
-      filtered = filtered.filter(m => m.status === status);
+      params = params.set('status', status);
     }
 
     if (search) {
-      const searchLower = search.toLowerCase();
-      filtered = filtered.filter(m =>
-        m.name.toLowerCase().includes(searchLower) ||
-        m.description?.toLowerCase().includes(searchLower)
-      );
+      params = params.set('search', search);
     }
 
-    const start = (page - 1) * pageSize;
-    const items = filtered.slice(start, start + pageSize);
-
-    return of({
-      items,
-      page,
-      pageSize,
-      totalCount: filtered.length,
-      totalPages: Math.ceil(filtered.length / pageSize)
-    }).pipe(delay(300));
+    return this.http.get<MissionListResponse>(this.apiUrl, { params }).pipe(
+      map(response => ({
+        ...response,
+        items: response.items.map(this.mapMissionDates)
+      }))
+    );
   }
 
   getMission(id: string): Observable<Mission | undefined> {
-    const mission = this.mockMissions.find(m => m.id === id);
-    if (mission) {
-      this.currentMission.next(mission);
-    }
-    return of(mission).pipe(delay(200));
+    return this.http.get<Mission>(`${this.apiUrl}/${id}`).pipe(
+      map(this.mapMissionDates),
+      tap(mission => this.currentMission.next(mission)),
+      catchError(() => of(undefined))
+    );
   }
 
   createMission(request: CreateMissionRequest): Observable<Mission> {
-    const newMission: Mission = {
-      id: `MSN-2025-${String(Math.floor(Math.random() * 9999)).padStart(4, '0')}`,
-      ...request,
-      status: MissionStatus.Draft,
-      ownerId: 'user-001',
-      createdAt: new Date(),
-      updatedAt: new Date()
+    const payload = {
+      name: request.name,
+      description: request.description,
+      type: request.type,
+      startEpoch: request.startEpoch.toISOString(),
+      endEpoch: request.endEpoch?.toISOString()
     };
-    this.mockMissions.unshift(newMission);
-    return of(newMission).pipe(delay(300));
+
+    return this.http.post<Mission>(this.apiUrl, payload).pipe(
+      map(this.mapMissionDates)
+    );
   }
 
   updateMission(id: string, request: UpdateMissionRequest): Observable<Mission> {
-    const index = this.mockMissions.findIndex(m => m.id === id);
-    if (index >= 0) {
-      this.mockMissions[index] = {
-        ...this.mockMissions[index],
-        ...request,
-        updatedAt: new Date()
-      };
-      this.currentMission.next(this.mockMissions[index]);
-      return of(this.mockMissions[index]).pipe(delay(300));
-    }
-    throw new Error('Mission not found');
+    const payload = {
+      name: request.name,
+      description: request.description,
+      startEpoch: request.startEpoch?.toISOString(),
+      endEpoch: request.endEpoch?.toISOString()
+    };
+
+    return this.http.put<Mission>(`${this.apiUrl}/${id}`, payload).pipe(
+      map(this.mapMissionDates),
+      tap(mission => this.currentMission.next(mission))
+    );
   }
 
   deleteMission(id: string): Observable<void> {
-    const index = this.mockMissions.findIndex(m => m.id === id);
-    if (index >= 0) {
-      this.mockMissions.splice(index, 1);
-    }
-    return of(undefined).pipe(delay(300));
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
   changeStatus(id: string, status: MissionStatus): Observable<Mission> {
-    const index = this.mockMissions.findIndex(m => m.id === id);
-    if (index >= 0) {
-      this.mockMissions[index] = {
-        ...this.mockMissions[index],
-        status,
-        updatedAt: new Date()
-      };
-      this.currentMission.next(this.mockMissions[index]);
-      return of(this.mockMissions[index]).pipe(delay(300));
-    }
-    throw new Error('Mission not found');
+    const request: ChangeStatusRequest = { status };
+    return this.http.patch<Mission>(`${this.apiUrl}/${id}/status`, request).pipe(
+      map(this.mapMissionDates),
+      tap(mission => this.currentMission.next(mission))
+    );
   }
 
   cloneMission(id: string): Observable<Mission> {
-    const original = this.mockMissions.find(m => m.id === id);
-    if (!original) {
-      throw new Error('Mission not found');
-    }
+    return this.http.post<Mission>(`${this.apiUrl}/${id}/clone`, {}).pipe(
+      map(this.mapMissionDates)
+    );
+  }
 
-    const cloned: Mission = {
-      ...original,
-      id: `MSN-2025-${String(Math.floor(Math.random() * 9999)).padStart(4, '0')}`,
-      name: `${original.name} (Copy)`,
-      status: MissionStatus.Draft,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-    this.mockMissions.unshift(cloned);
-    return of(cloned).pipe(delay(300));
+  exportMission(id: string): Observable<MissionExportData> {
+    return this.http.get<MissionExportData>(`${this.apiUrl}/${id}/export`);
+  }
+
+  exportMissions(missionIds?: string[], status?: MissionStatus): Observable<any> {
+    return this.http.post(`${this.apiUrl}/export`, { missionIds, status });
+  }
+
+  importMission(mission: MissionData, overwriteExisting: boolean = false): Observable<any> {
+    return this.http.post(`${this.apiUrl}/import`, { mission, overwriteExisting });
+  }
+
+  importMissions(missions: MissionData[], overwriteExisting: boolean = false, stopOnError: boolean = true): Observable<any> {
+    return this.http.post(`${this.apiUrl}/import/batch`, { missions, overwriteExisting, stopOnError });
   }
 
   getMissionTree(missionId: string): Observable<MissionTreeNode[]> {
+    // Mission tree structure is not stored in backend yet
+    // Return default structure for now
     return of([
       {
         id: 'mission',
@@ -246,10 +192,18 @@ export class MissionService {
           }
         ]
       }
-    ]).pipe(delay(200));
+    ]);
   }
 
   setCurrentMission(mission: Mission | null): void {
     this.currentMission.next(mission);
   }
+
+  private mapMissionDates = (mission: Mission): Mission => ({
+    ...mission,
+    startEpoch: new Date(mission.startEpoch),
+    endEpoch: mission.endEpoch ? new Date(mission.endEpoch) : undefined,
+    createdAt: new Date(mission.createdAt),
+    updatedAt: mission.updatedAt ? new Date(mission.updatedAt) : undefined
+  });
 }
