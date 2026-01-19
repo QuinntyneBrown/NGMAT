@@ -15,11 +15,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-<<<<<<< HEAD
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-=======
 import { MatDividerModule } from '@angular/material/divider';
->>>>>>> b7795b291cfc5639465ac5fef2fb332742fd4963
 
 import { MissionService } from '../../services/mission.service';
 import { Mission, MissionStatus, MissionType } from '../../models/mission.model';
@@ -42,11 +39,8 @@ import { Mission, MissionStatus, MissionType } from '../../models/mission.model'
     MatProgressSpinnerModule,
     MatTooltipModule,
     MatDialogModule,
-<<<<<<< HEAD
-    MatSnackBarModule
-=======
+    MatSnackBarModule,
     MatDividerModule,
->>>>>>> b7795b291cfc5639465ac5fef2fb332742fd4963
   ],
   templateUrl: './missions.html',
   styleUrl: './missions.scss'
