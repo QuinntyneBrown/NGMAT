@@ -4,7 +4,8 @@
       "Bash(if not exist \"docs\" mkdir docs)",
       "Bash(test:*)",
       "Bash(mkdir:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(xargs git rm --cached)"
     ],
     "deny": [],
     "ask": []
