@@ -107,3 +107,55 @@ public sealed class UserDeactivated : EventBase
     [Key(12)]
     public string DeactivatedBy { get; init; } = string.Empty;
 }
+
+/// <summary>
+/// Event raised when a user's email is verified.
+/// </summary>
+[MessagePackObject]
+public sealed class UserEmailVerified : EventBase
+{
+    [Key(10)]
+    public string UserIdentifier { get; init; } = string.Empty;
+
+    [Key(11)]
+    public string? Email { get; init; }
+}
+
+/// <summary>
+/// Event raised when a user's password is changed.
+/// </summary>
+[MessagePackObject]
+public sealed class UserPasswordChanged : EventBase
+{
+    [Key(10)]
+    public string UserIdentifier { get; init; } = string.Empty;
+
+    [Key(11)]
+    public string? Email { get; init; }
+}
+
+/// <summary>
+/// Event raised when MFA is enabled for a user.
+/// </summary>
+[MessagePackObject]
+public sealed class MfaEnabled : EventBase
+{
+    [Key(10)]
+    public string UserIdentifier { get; init; } = string.Empty;
+
+    [Key(11)]
+    public string? Email { get; init; }
+}
+
+/// <summary>
+/// Event raised when MFA is disabled for a user.
+/// </summary>
+[MessagePackObject]
+public sealed class MfaDisabled : EventBase
+{
+    [Key(10)]
+    public string UserIdentifier { get; init; } = string.Empty;
+
+    [Key(11)]
+    public string? Email { get; init; }
+}

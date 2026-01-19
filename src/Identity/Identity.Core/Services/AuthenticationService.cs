@@ -265,6 +265,260 @@ public sealed class AuthenticationService
         };
     }
 
+    public async Task<Result<EmailVerificationResult>> RequestEmailVerificationAsync(
+        Guid userId,
+        CancellationToken cancellationToken = default)
+    {
+        var user = await _unitOfWork.Users.GetByIdAsync(userId, cancellationToken);
+        if (user == null)
+        {
+            return Error.NotFound("User", userId.ToString());
+        }
+
+        if (user.IsEmailVerified)
+        {
+            return Error.Validation("Email is already verified");
+        }
+
+        var token = _tokenService.GenerateEmailVerificationToken(user.Id);
+
+        return new EmailVerificationResult
+        {
+            UserId = user.Id,
+            Email = user.Email,
+            Token = token
+        };
+    }
+
+    public async Task<Result> VerifyEmailAsync(
+        string token,
+        CancellationToken cancellationToken = default)
+    {
+        var userId = _tokenService.ValidateEmailVerificationToken(token);
+        if (userId == null)
+        {
+            return Error.Unauthorized("Invalid or expired email verification token");
+        }
+
+        var user = await _unitOfWork.Users.GetByIdAsync(userId.Value, cancellationToken);
+        if (user == null)
+        {
+            return Error.NotFound("User", userId.Value.ToString());
+        }
+
+        if (user.IsEmailVerified)
+        {
+            return Error.Validation("Email is already verified");
+        }
+
+        user.VerifyEmail();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _eventPublisher.PublishAsync(new UserEmailVerified
+        {
+            UserIdentifier = user.Id.ToString(),
+            Email = user.Email
+        }, cancellationToken);
+
+        return Result.Success();
+    }
+
+    public async Task<Result<PasswordResetResult>> ForgotPasswordAsync(
+        string email,
+        CancellationToken cancellationToken = default)
+    {
+        var user = await _unitOfWork.Users.GetByEmailAsync(email, cancellationToken);
+        if (user == null)
+        {
+            // Return success to prevent email enumeration
+            return new PasswordResetResult { Email = email };
+        }
+
+        if (!user.IsActive)
+        {
+            // Return success to prevent email enumeration
+            return new PasswordResetResult { Email = email };
+        }
+
+        var token = _tokenService.GeneratePasswordResetToken(user.Id);
+
+        return new PasswordResetResult
+        {
+            UserId = user.Id,
+            Email = user.Email,
+            Token = token
+        };
+    }
+
+    public async Task<Result> ResetPasswordAsync(
+        string token,
+        string newPassword,
+        CancellationToken cancellationToken = default)
+    {
+        var userId = _tokenService.ValidatePasswordResetToken(token);
+        if (userId == null)
+        {
+            return Error.Unauthorized("Invalid or expired password reset token");
+        }
+
+        var passwordValidation = ValidatePassword(newPassword);
+        if (passwordValidation.IsFailure)
+        {
+            return passwordValidation.Error;
+        }
+
+        var user = await _unitOfWork.Users.GetByIdAsync(userId.Value, cancellationToken);
+        if (user == null)
+        {
+            return Error.NotFound("User", userId.Value.ToString());
+        }
+
+        var passwordHash = _passwordHasher.Hash(newPassword);
+        user.UpdatePassword(passwordHash);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _eventPublisher.PublishAsync(new UserPasswordChanged
+        {
+            UserIdentifier = user.Id.ToString(),
+            Email = user.Email
+        }, cancellationToken);
+
+        return Result.Success();
+    }
+
+    public async Task<Result<MfaSetupResult>> GetMfaSetupAsync(
+        Guid userId,
+        CancellationToken cancellationToken = default)
+    {
+        var user = await _unitOfWork.Users.GetByIdAsync(userId, cancellationToken);
+        if (user == null)
+        {
+            return Error.NotFound("User", userId.ToString());
+        }
+
+        if (user.IsMfaEnabled)
+        {
+            return Error.Validation("MFA is already enabled for this account");
+        }
+
+        var secret = _mfaService.GenerateSecret();
+        var qrCodeUri = _mfaService.GenerateQrCodeUri(user.Email, secret);
+
+        return new MfaSetupResult
+        {
+            Secret = secret,
+            QrCodeUri = qrCodeUri
+        };
+    }
+
+    public async Task<Result<MfaEnabledResult>> EnableMfaAsync(
+        Guid userId,
+        string secret,
+        string verificationCode,
+        CancellationToken cancellationToken = default)
+    {
+        var user = await _unitOfWork.Users.GetByIdAsync(userId, cancellationToken);
+        if (user == null)
+        {
+            return Error.NotFound("User", userId.ToString());
+        }
+
+        if (user.IsMfaEnabled)
+        {
+            return Error.Validation("MFA is already enabled for this account");
+        }
+
+        // Verify the code before enabling
+        if (!_mfaService.VerifyCode(secret, verificationCode))
+        {
+            return Error.Unauthorized("Invalid verification code");
+        }
+
+        var backupCodes = _mfaService.GenerateBackupCodes();
+        user.EnableMfa(secret);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _eventPublisher.PublishAsync(new MfaEnabled
+        {
+            UserIdentifier = user.Id.ToString(),
+            Email = user.Email
+        }, cancellationToken);
+
+        return new MfaEnabledResult
+        {
+            BackupCodes = backupCodes
+        };
+    }
+
+    public async Task<Result> DisableMfaAsync(
+        Guid userId,
+        string code,
+        CancellationToken cancellationToken = default)
+    {
+        var user = await _unitOfWork.Users.GetByIdAsync(userId, cancellationToken);
+        if (user == null)
+        {
+            return Error.NotFound("User", userId.ToString());
+        }
+
+        if (!user.IsMfaEnabled || string.IsNullOrEmpty(user.MfaSecret))
+        {
+            return Error.Validation("MFA is not enabled for this account");
+        }
+
+        if (!_mfaService.VerifyCode(user.MfaSecret, code))
+        {
+            return Error.Unauthorized("Invalid MFA code");
+        }
+
+        user.DisableMfa();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _eventPublisher.PublishAsync(new MfaDisabled
+        {
+            UserIdentifier = user.Id.ToString(),
+            Email = user.Email
+        }, cancellationToken);
+
+        return Result.Success();
+    }
+
+    public async Task<Result> ChangePasswordAsync(
+        Guid userId,
+        string currentPassword,
+        string newPassword,
+        CancellationToken cancellationToken = default)
+    {
+        var user = await _unitOfWork.Users.GetByIdAsync(userId, cancellationToken);
+        if (user == null)
+        {
+            return Error.NotFound("User", userId.ToString());
+        }
+
+        if (!_passwordHasher.Verify(currentPassword, user.PasswordHash))
+        {
+            return Error.Unauthorized("Current password is incorrect");
+        }
+
+        var passwordValidation = ValidatePassword(newPassword);
+        if (passwordValidation.IsFailure)
+        {
+            return passwordValidation.Error;
+        }
+
+        var passwordHash = _passwordHasher.Hash(newPassword);
+        user.UpdatePassword(passwordHash);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _eventPublisher.PublishAsync(new UserPasswordChanged
+        {
+            UserIdentifier = user.Id.ToString(),
+            Email = user.Email
+        }, cancellationToken);
+
+        return Result.Success();
+    }
+
     private Result ValidatePassword(string password)
     {
         if (string.IsNullOrWhiteSpace(password))
@@ -327,4 +581,41 @@ public sealed class AuthenticationOptions
     public bool RequireSpecialChar { get; set; } = false;
     public int MaxFailedAttempts { get; set; } = 5;
     public TimeSpan LockoutDuration { get; set; } = TimeSpan.FromMinutes(15);
+}
+
+/// <summary>
+/// Result of an email verification request.
+/// </summary>
+public sealed class EmailVerificationResult
+{
+    public Guid? UserId { get; init; }
+    public string Email { get; init; } = string.Empty;
+    public string? Token { get; init; }
+}
+
+/// <summary>
+/// Result of a password reset request.
+/// </summary>
+public sealed class PasswordResetResult
+{
+    public Guid? UserId { get; init; }
+    public string Email { get; init; } = string.Empty;
+    public string? Token { get; init; }
+}
+
+/// <summary>
+/// Result of MFA setup request.
+/// </summary>
+public sealed class MfaSetupResult
+{
+    public string Secret { get; init; } = string.Empty;
+    public string QrCodeUri { get; init; } = string.Empty;
+}
+
+/// <summary>
+/// Result of enabling MFA.
+/// </summary>
+public sealed class MfaEnabledResult
+{
+    public IReadOnlyList<string> BackupCodes { get; init; } = Array.Empty<string>();
 }

@@ -69,6 +69,51 @@ internal sealed class JwtTokenService : ITokenService
 
     public Guid? ValidateAccessToken(string token)
     {
+        return ValidateToken(token, "access");
+    }
+
+    public string GenerateEmailVerificationToken(Guid userId)
+    {
+        return GeneratePurposeToken(userId, "email_verification", _options.EmailVerificationTokenLifetime);
+    }
+
+    public Guid? ValidateEmailVerificationToken(string token)
+    {
+        return ValidateToken(token, "email_verification");
+    }
+
+    public string GeneratePasswordResetToken(Guid userId)
+    {
+        return GeneratePurposeToken(userId, "password_reset", _options.PasswordResetTokenLifetime);
+    }
+
+    public Guid? ValidatePasswordResetToken(string token)
+    {
+        return ValidateToken(token, "password_reset");
+    }
+
+    private string GeneratePurposeToken(Guid userId, string purpose, TimeSpan lifetime)
+    {
+        var claims = new List<Claim>
+        {
+            new(JwtRegisteredClaimNames.Sub, userId.ToString()),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new("purpose", purpose)
+        };
+
+        var token = new JwtSecurityToken(
+            issuer: _options.Issuer,
+            audience: _options.Audience,
+            claims: claims,
+            notBefore: DateTime.UtcNow,
+            expires: DateTime.UtcNow.Add(lifetime),
+            signingCredentials: _signingCredentials);
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    private Guid? ValidateToken(string token, string expectedPurpose)
+    {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(_options.SecretKey);
 
@@ -87,6 +132,17 @@ internal sealed class JwtTokenService : ITokenService
             }, out var validatedToken);
 
             var jwtToken = (JwtSecurityToken)validatedToken;
+
+            // For access tokens, there's no purpose claim
+            if (expectedPurpose != "access")
+            {
+                var purposeClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "purpose")?.Value;
+                if (purposeClaim != expectedPurpose)
+                {
+                    return null;
+                }
+            }
+
             var userId = jwtToken.Claims.First(c => c.Type == JwtRegisteredClaimNames.Sub).Value;
             return Guid.Parse(userId);
         }
@@ -107,4 +163,6 @@ public sealed class JwtOptions
     public string Audience { get; set; } = "NGMAT";
     public TimeSpan AccessTokenLifetime { get; set; } = TimeSpan.FromMinutes(15);
     public TimeSpan RefreshTokenLifetime { get; set; } = TimeSpan.FromDays(7);
+    public TimeSpan EmailVerificationTokenLifetime { get; set; } = TimeSpan.FromHours(24);
+    public TimeSpan PasswordResetTokenLifetime { get; set; } = TimeSpan.FromHours(1);
 }
