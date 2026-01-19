@@ -1,0 +1,36 @@
+:host {
+  display: inline-flex;
+}
+
+.g-notification-badge-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.g-notification-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background-color: var(--g-notification-badge-bg, #f44336);
+  color: var(--g-notification-badge-color, #ffffff);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  box-sizing: border-box;
+
+  &--dot {
+    min-width: 8px;
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border-radius: 50%;
+  }
+}

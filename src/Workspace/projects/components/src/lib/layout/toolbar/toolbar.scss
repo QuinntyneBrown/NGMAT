@@ -1,0 +1,28 @@
+:host {
+  display: block;
+}
+
+.g-toolbar {
+  &__spacer {
+    flex: 1 1 auto;
+  }
+
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-left: 8px;
+  }
+
+  &__menu-button {
+    margin-right: 8px;
+  }
+
+  &__search-button {
+    margin-left: 8px;
+  }
+}
+
+::ng-deep mat-toolbar {
+  display: flex;
+  align-items: center;
+}

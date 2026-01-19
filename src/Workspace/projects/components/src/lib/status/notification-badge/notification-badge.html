@@ -1,0 +1,10 @@
+<span class="g-notification-badge-wrapper">
+  <ng-content></ng-content>
+  <span
+    *ngIf="isVisible"
+    class="g-notification-badge"
+    [class.g-notification-badge--dot]="dot"
+  >
+    {{ displayValue }}
+  </span>
+</span>

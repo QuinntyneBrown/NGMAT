@@ -1,0 +1,33 @@
+<div class="g-datetime-group__label" *ngIf="label">
+  {{ label }}
+</div>
+
+<div class="g-datetime-group__container">
+  <div class="g-datetime-group__date">
+    <span class="g-datetime-group__prefix">Date</span>
+    <input
+      class="g-datetime-group__input"
+      [matDatepicker]="picker"
+      [value]="dateValue"
+      [disabled]="disabled"
+      (dateChange)="onDateChange($event.value)"
+      (blur)="onBlur()"
+      placeholder="YYYY-MM-DD"
+    />
+    <mat-datepicker-toggle [for]="picker" class="g-datetime-group__toggle"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </div>
+
+  <div class="g-datetime-group__time">
+    <span class="g-datetime-group__prefix">Time</span>
+    <input
+      type="time"
+      step="1"
+      class="g-datetime-group__input"
+      [value]="timeValue"
+      [disabled]="disabled"
+      (input)="onTimeChange($event)"
+      (blur)="onBlur()"
+    />
+  </div>
+</div>

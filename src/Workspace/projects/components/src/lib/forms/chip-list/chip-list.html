@@ -1,0 +1,15 @@
+<mat-chip-listbox
+  [multiple]="multiple"
+  [selectable]="selectable"
+  class="g-chip-list__container"
+>
+  <mat-chip-option
+    *ngFor="let chip of chips; trackBy: trackByValue"
+    [selected]="chip.selected"
+    [value]="chip.value"
+    (click)="onChipClick(chip)"
+    class="g-chip-list__chip"
+  >
+    {{ chip.label }}
+  </mat-chip-option>
+</mat-chip-listbox>

@@ -1,0 +1,59 @@
+:host {
+  display: block;
+}
+
+.g-editor-section {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  margin-bottom: 8px;
+  background: #fff;
+
+  &--collapsed {
+    .g-editor-section__header {
+      border-bottom: none;
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    user-select: none;
+    background: rgba(0, 0, 0, 0.02);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  &__chevron {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    margin-right: 4px;
+    color: rgba(0, 0, 0, 0.54);
+  }
+
+  &__icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    color: rgba(0, 0, 0, 0.54);
+  }
+
+  &__title {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.87);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__content {
+    padding: 12px;
+  }
+}

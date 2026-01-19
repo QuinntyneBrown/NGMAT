@@ -1,0 +1,16 @@
+<div class="g-editor-section" [class.g-editor-section--collapsed]="!expanded">
+  <div class="g-editor-section__header" (click)="toggle()">
+    <mat-icon class="g-editor-section__chevron">
+      {{ expanded ? 'expand_more' : 'chevron_right' }}
+    </mat-icon>
+    @if (icon) {
+      <mat-icon class="g-editor-section__icon">{{ icon }}</mat-icon>
+    }
+    <span class="g-editor-section__title">{{ title }}</span>
+  </div>
+  @if (expanded) {
+    <div class="g-editor-section__content">
+      <ng-content></ng-content>
+    </div>
+  }
+</div>

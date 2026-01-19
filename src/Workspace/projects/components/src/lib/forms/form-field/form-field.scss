@@ -1,0 +1,41 @@
+:host {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.g-form-field {
+  &__label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--g-text-secondary, rgba(255, 255, 255, 0.7));
+    margin-bottom: 4px;
+  }
+
+  &__required {
+    color: var(--g-error, #f44336);
+    margin-left: 2px;
+  }
+
+  &__content {
+    position: relative;
+  }
+
+  &__hint {
+    font-size: 12px;
+    color: var(--g-text-tertiary, rgba(255, 255, 255, 0.5));
+    margin-top: 4px;
+  }
+
+  &__error {
+    font-size: 12px;
+    color: var(--g-error, #f44336);
+    margin-top: 4px;
+  }
+}
+
+:host(.g-form-field--error) {
+  .g-form-field__label {
+    color: var(--g-error, #f44336);
+  }
+}

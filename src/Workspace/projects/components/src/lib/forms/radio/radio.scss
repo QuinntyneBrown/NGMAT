@@ -1,0 +1,33 @@
+:host {
+  display: inline-block;
+}
+
+.g-radio {
+  &__control {
+    ::ng-deep {
+      .mdc-radio {
+        --mdc-radio-selected-focus-icon-color: var(--g-primary, #90caf9);
+        --mdc-radio-selected-hover-icon-color: var(--g-primary, #90caf9);
+        --mdc-radio-selected-icon-color: var(--g-primary, #90caf9);
+        --mdc-radio-selected-pressed-icon-color: var(--g-primary, #90caf9);
+        --mdc-radio-unselected-focus-icon-color: var(--g-text-secondary, rgba(255, 255, 255, 0.7));
+        --mdc-radio-unselected-hover-icon-color: var(--g-text-primary, #ffffff);
+        --mdc-radio-unselected-icon-color: var(--g-text-secondary, rgba(255, 255, 255, 0.7));
+        --mdc-radio-unselected-pressed-icon-color: var(--g-text-secondary, rgba(255, 255, 255, 0.7));
+      }
+
+      .mdc-form-field {
+        color: var(--g-text-primary, #ffffff);
+      }
+
+      .mdc-label {
+        font-size: 14px;
+        color: var(--g-text-primary, #ffffff);
+      }
+    }
+  }
+}
+
+:host(.g-radio--disabled) {
+  opacity: 0.5;
+}

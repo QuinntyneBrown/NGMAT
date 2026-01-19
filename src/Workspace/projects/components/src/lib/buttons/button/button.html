@@ -1,0 +1,63 @@
+<!-- Primary (raised) variant -->
+<button
+  *ngIf="variant === 'primary'"
+  mat-raised-button
+  [color]="color"
+  [disabled]="disabled"
+  class="g-button"
+  [class.g-button--small]="size === 'small'"
+  [class.g-button--large]="size === 'large'"
+  (click)="onClick($event)"
+>
+  <mat-icon *ngIf="icon" class="g-button__icon">{{ icon }}</mat-icon>
+  <ng-container *ngTemplateOutlet="contentTpl"></ng-container>
+</button>
+
+<!-- Stroked variant -->
+<button
+  *ngIf="variant === 'stroked'"
+  mat-stroked-button
+  [color]="color"
+  [disabled]="disabled"
+  class="g-button"
+  [class.g-button--small]="size === 'small'"
+  [class.g-button--large]="size === 'large'"
+  (click)="onClick($event)"
+>
+  <mat-icon *ngIf="icon" class="g-button__icon">{{ icon }}</mat-icon>
+  <ng-container *ngTemplateOutlet="contentTpl"></ng-container>
+</button>
+
+<!-- Flat variant -->
+<button
+  *ngIf="variant === 'flat'"
+  mat-flat-button
+  [color]="color"
+  [disabled]="disabled"
+  class="g-button"
+  [class.g-button--small]="size === 'small'"
+  [class.g-button--large]="size === 'large'"
+  (click)="onClick($event)"
+>
+  <mat-icon *ngIf="icon" class="g-button__icon">{{ icon }}</mat-icon>
+  <ng-container *ngTemplateOutlet="contentTpl"></ng-container>
+</button>
+
+<!-- Basic variant -->
+<button
+  *ngIf="variant === 'basic'"
+  mat-button
+  [color]="color"
+  [disabled]="disabled"
+  class="g-button"
+  [class.g-button--small]="size === 'small'"
+  [class.g-button--large]="size === 'large'"
+  (click)="onClick($event)"
+>
+  <mat-icon *ngIf="icon" class="g-button__icon">{{ icon }}</mat-icon>
+  <ng-container *ngTemplateOutlet="contentTpl"></ng-container>
+</button>
+
+<ng-template #contentTpl>
+  <ng-content></ng-content>
+</ng-template>

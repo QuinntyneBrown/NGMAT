@@ -1,0 +1,14 @@
+<div class="g-dialog">
+  <div class="g-dialog-header" *ngIf="title">
+    <h2 mat-dialog-title>{{ title }}</h2>
+    <ng-content select="[dialogHeader]"></ng-content>
+  </div>
+
+  <mat-dialog-content class="g-dialog-content">
+    <ng-content></ng-content>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="g-dialog-footer" align="end">
+    <ng-content select="[dialogFooter]"></ng-content>
+  </mat-dialog-actions>
+</div>

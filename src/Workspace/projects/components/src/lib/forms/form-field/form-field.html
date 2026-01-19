@@ -1,0 +1,16 @@
+<div class="g-form-field__label" *ngIf="label">
+  {{ label }}
+  <span class="g-form-field__required" *ngIf="required">*</span>
+</div>
+
+<div class="g-form-field__content">
+  <ng-content></ng-content>
+</div>
+
+<div class="g-form-field__hint" *ngIf="hint && !error">
+  {{ hint }}
+</div>
+
+<div class="g-form-field__error" *ngIf="error">
+  {{ error }}
+</div>

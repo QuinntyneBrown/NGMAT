@@ -1,0 +1,42 @@
+<div class="g-vector-input__label" *ngIf="label">
+  {{ label }}
+  <span class="g-vector-input__unit" *ngIf="unit">({{ unit }})</span>
+</div>
+
+<div class="g-vector-input__container">
+  <div class="g-vector-input__field">
+    <span class="g-vector-input__axis g-vector-input__axis--x">X</span>
+    <input
+      type="number"
+      class="g-vector-input__input"
+      [value]="value.x"
+      [disabled]="disabled"
+      (input)="onComponentChange('x', $event)"
+      (blur)="onBlur()"
+    />
+  </div>
+
+  <div class="g-vector-input__field">
+    <span class="g-vector-input__axis g-vector-input__axis--y">Y</span>
+    <input
+      type="number"
+      class="g-vector-input__input"
+      [value]="value.y"
+      [disabled]="disabled"
+      (input)="onComponentChange('y', $event)"
+      (blur)="onBlur()"
+    />
+  </div>
+
+  <div class="g-vector-input__field">
+    <span class="g-vector-input__axis g-vector-input__axis--z">Z</span>
+    <input
+      type="number"
+      class="g-vector-input__input"
+      [value]="value.z"
+      [disabled]="disabled"
+      (input)="onComponentChange('z', $event)"
+      (blur)="onBlur()"
+    />
+  </div>
+</div>

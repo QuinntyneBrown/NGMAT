@@ -1,0 +1,21 @@
+<mat-card *ngIf="mission" class="g-mission-card">
+  <div class="g-mission-card__header">
+    <h3 class="g-mission-card__name">{{ mission.name }}</h3>
+    <span
+      class="g-mission-card__status"
+      [class.g-mission-card__status--planning]="mission.status === 'planning'"
+      [class.g-mission-card__status--active]="mission.status === 'active'"
+      [class.g-mission-card__status--completed]="mission.status === 'completed'"
+      [class.g-mission-card__status--failed]="mission.status === 'failed'"
+      [class.g-mission-card__status--on-hold]="mission.status === 'on-hold'"
+    >
+      <mat-icon class="g-mission-card__status-icon">{{ statusIcon }}</mat-icon>
+      {{ mission.status }}
+    </span>
+  </div>
+  <p class="g-mission-card__description">{{ mission.description }}</p>
+  <div class="g-mission-card__footer">
+    <mat-icon class="g-mission-card__date-icon">event</mat-icon>
+    <span class="g-mission-card__date">{{ formattedDate }}</span>
+  </div>
+</mat-card>

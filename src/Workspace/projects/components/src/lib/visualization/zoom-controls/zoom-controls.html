@@ -1,0 +1,32 @@
+<div class="g-zoom-controls">
+  <button
+    mat-icon-button
+    class="g-zoom-controls__button"
+    [disabled]="!canZoomOut"
+    matTooltip="Zoom out"
+    (click)="onZoomOut()"
+  >
+    <mat-icon>remove</mat-icon>
+  </button>
+
+  <span class="g-zoom-controls__level">{{ level }}%</span>
+
+  <button
+    mat-icon-button
+    class="g-zoom-controls__button"
+    [disabled]="!canZoomIn"
+    matTooltip="Zoom in"
+    (click)="onZoomIn()"
+  >
+    <mat-icon>add</mat-icon>
+  </button>
+
+  <button
+    mat-icon-button
+    class="g-zoom-controls__button g-zoom-controls__button--reset"
+    matTooltip="Reset zoom"
+    (click)="onReset()"
+  >
+    <mat-icon>refresh</mat-icon>
+  </button>
+</div>

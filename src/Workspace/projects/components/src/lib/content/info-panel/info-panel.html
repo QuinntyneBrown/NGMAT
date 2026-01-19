@@ -1,0 +1,12 @@
+<mat-card class="g-info-panel">
+  <h4 *ngIf="title" class="g-info-panel__title">{{ title }}</h4>
+  <div class="g-info-panel__list">
+    <div *ngFor="let item of items" class="g-info-panel__item">
+      <mat-icon class="g-info-panel__icon">{{ item.icon }}</mat-icon>
+      <div class="g-info-panel__content">
+        <span class="g-info-panel__label">{{ item.label }}</span>
+        <span class="g-info-panel__value">{{ item.value }}</span>
+      </div>
+    </div>
+  </div>
+</mat-card>

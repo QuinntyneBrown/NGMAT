@@ -1,0 +1,29 @@
+.g-dialog {
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+
+  .g-dialog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px 0;
+
+    h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 500;
+    }
+  }
+
+  .g-dialog-content {
+    padding: 16px 24px;
+    max-height: 65vh;
+    overflow-y: auto;
+  }
+
+  .g-dialog-footer {
+    padding: 8px 16px 16px;
+    gap: 8px;
+  }
+}

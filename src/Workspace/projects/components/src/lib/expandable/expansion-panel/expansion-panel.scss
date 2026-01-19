@@ -1,0 +1,24 @@
+:host {
+  display: block;
+}
+
+.g-expansion-panel {
+  &.mat-expansion-panel {
+    border-radius: 4px;
+    margin-bottom: 8px;
+
+    &:not(.mat-expanded) {
+      .mat-expansion-panel-header:hover {
+        background: rgba(0, 0, 0, 0.04);
+      }
+    }
+  }
+
+  .mat-expansion-panel-header {
+    font-weight: 500;
+  }
+
+  .mat-expansion-panel-content {
+    padding-top: 8px;
+  }
+}

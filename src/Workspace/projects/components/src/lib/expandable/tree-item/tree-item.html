@@ -1,0 +1,34 @@
+<div class="g-tree-item">
+  <div
+    class="g-tree-item__row"
+    [style.padding-left]="indentPadding"
+    (click)="onItemClick()">
+    <span class="g-tree-item__toggle" (click)="toggle($event)">
+      @if (hasChildren) {
+        <mat-icon class="g-tree-item__chevron">
+          {{ expanded ? 'expand_more' : 'chevron_right' }}
+        </mat-icon>
+      } @else {
+        <span class="g-tree-item__spacer"></span>
+      }
+    </span>
+    @if (icon) {
+      <mat-icon class="g-tree-item__icon">{{ icon }}</mat-icon>
+    }
+    <span class="g-tree-item__label">{{ label }}</span>
+  </div>
+  @if (hasChildren && expanded) {
+    <div class="g-tree-item__children">
+      @for (child of children; track child.label; let i = $index) {
+        <g-tree-item
+          [label]="child.label"
+          [icon]="child.icon || ''"
+          [children]="child.children || []"
+          [expanded]="child.expanded || false"
+          [level]="level + 1"
+          (expandedChange)="onChildExpandedChange(i, $event)">
+        </g-tree-item>
+      }
+    </div>
+  }
+</div>

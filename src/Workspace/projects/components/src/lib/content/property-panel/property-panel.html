@@ -1,0 +1,11 @@
+<mat-card class="g-property-panel">
+  <h4 *ngIf="title" class="g-property-panel__title">{{ title }}</h4>
+  <div class="g-property-panel__list">
+    <div *ngFor="let prop of properties" class="g-property-panel__item">
+      <span class="g-property-panel__label">{{ prop.label }}</span>
+      <span class="g-property-panel__value">
+        {{ prop.value }}<span *ngIf="prop.unit" class="g-property-panel__unit">{{ prop.unit }}</span>
+      </span>
+    </div>
+  </div>
+</mat-card>

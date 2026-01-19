@@ -1,0 +1,9 @@
+<mat-chip
+  [highlighted]="selected"
+  class="g-chip__control"
+>
+  {{ label }}
+  <button matChipRemove *ngIf="removable" (click)="onRemove()">
+    <mat-icon>cancel</mat-icon>
+  </button>
+</mat-chip>

@@ -1,0 +1,25 @@
+<mat-toolbar>
+  @if (showMenuButton) {
+    <button mat-icon-button class="g-toolbar__menu-button" (click)="onMenuClick()">
+      <mat-icon>menu</mat-icon>
+    </button>
+  }
+
+  @if (title) {
+    <span class="g-toolbar__title">{{ title }}</span>
+  }
+
+  <ng-content select="[toolbarStart]"></ng-content>
+
+  <span class="g-toolbar__spacer"></span>
+
+  <ng-content></ng-content>
+
+  @if (showSearch) {
+    <button mat-icon-button class="g-toolbar__search-button">
+      <mat-icon>search</mat-icon>
+    </button>
+  }
+
+  <ng-content select="[toolbarEnd]"></ng-content>
+</mat-toolbar>

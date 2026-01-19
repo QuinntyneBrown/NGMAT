@@ -1,0 +1,20 @@
+.g-divider {
+  display: block;
+
+  &--horizontal {
+    width: 100%;
+
+    mat-divider {
+      width: 100%;
+    }
+  }
+
+  &--vertical {
+    display: inline-block;
+    height: 100%;
+
+    mat-divider {
+      height: 100%;
+    }
+  }
+}

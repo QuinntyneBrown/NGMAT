@@ -1,0 +1,50 @@
+:host {
+  display: block;
+}
+
+.g-filter-chips {
+  &__container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    ::ng-deep {
+      .mat-mdc-chip-listbox {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+    }
+  }
+
+  &__chip {
+    ::ng-deep {
+      &.mat-mdc-chip-option {
+        --mdc-chip-elevated-container-color: var(--g-surface-variant, #2d2d2d);
+        --mdc-chip-label-text-color: var(--g-text-primary, #ffffff);
+        --mdc-chip-selected-hover-state-layer-color: var(--g-primary, #90caf9);
+        --mdc-chip-with-icon-selected-icon-color: var(--g-on-primary, #000000);
+        border: 1px solid var(--g-border, #424242);
+
+        &.mat-mdc-chip-selected {
+          --mdc-chip-elevated-container-color: var(--g-primary, #90caf9);
+          --mdc-chip-label-text-color: var(--g-on-primary, #000000);
+          border-color: var(--g-primary, #90caf9);
+        }
+      }
+
+      .mat-mdc-chip-action-label {
+        font-size: 13px;
+        font-weight: 500;
+      }
+    }
+
+    &--all {
+      ::ng-deep {
+        &.mat-mdc-chip-option {
+          font-style: italic;
+        }
+      }
+    }
+  }
+}

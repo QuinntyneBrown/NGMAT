@@ -1,0 +1,95 @@
+:host {
+  display: block;
+}
+
+.g-mission-card {
+  padding: 20px;
+  border-radius: 8px;
+  background-color: var(--g-mission-card-background, #ffffff);
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    gap: 12px;
+  }
+
+  &__name {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--g-mission-card-title-color, #1a1a1a);
+    line-height: 1.3;
+  }
+
+  &__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+    white-space: nowrap;
+
+    &--planning {
+      background-color: var(--g-status-planning-bg, #e3f2fd);
+      color: var(--g-status-planning, #1976d2);
+    }
+
+    &--active {
+      background-color: var(--g-status-active-bg, #e8f5e9);
+      color: var(--g-status-active, #388e3c);
+    }
+
+    &--completed {
+      background-color: var(--g-status-completed-bg, #f3e5f5);
+      color: var(--g-status-completed, #7b1fa2);
+    }
+
+    &--failed {
+      background-color: var(--g-status-failed-bg, #ffebee);
+      color: var(--g-status-failed, #d32f2f);
+    }
+
+    &--on-hold {
+      background-color: var(--g-status-on-hold-bg, #fff3e0);
+      color: var(--g-status-on-hold, #f57c00);
+    }
+  }
+
+  &__status-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+
+  &__description {
+    margin: 0 0 16px 0;
+    font-size: 14px;
+    color: var(--g-mission-card-description-color, #666666);
+    line-height: 1.5;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-top: 12px;
+    border-top: 1px solid var(--g-mission-card-border, #e0e0e0);
+  }
+
+  &__date-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: var(--g-mission-card-date-icon-color, #999999);
+  }
+
+  &__date {
+    font-size: 13px;
+    color: var(--g-mission-card-date-color, #666666);
+  }
+}

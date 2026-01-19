@@ -1,0 +1,40 @@
+@if (routerLink && !disabled) {
+  <a
+    class="g-nav-item__link"
+    [routerLink]="routerLink"
+    [class.g-nav-item__link--active]="active"
+    matRipple
+  >
+    <ng-container *ngTemplateOutlet="itemContent"></ng-container>
+  </a>
+} @else {
+  <div
+    class="g-nav-item__link"
+    [class.g-nav-item__link--active]="active"
+    [class.g-nav-item__link--disabled]="disabled"
+    matRipple
+    [matRippleDisabled]="disabled"
+  >
+    <ng-container *ngTemplateOutlet="itemContent"></ng-container>
+  </div>
+}
+
+<ng-template #itemContent>
+  @if (icon) {
+    <mat-icon
+      class="g-nav-item__icon"
+      [matBadge]="badge"
+      [matBadgeHidden]="!badge"
+      matBadgeSize="small"
+      matBadgeColor="accent"
+    >
+      {{ icon }}
+    </mat-icon>
+  }
+  @if (!collapsed) {
+    <span class="g-nav-item__label">{{ label }}</span>
+    @if (badge && !icon) {
+      <span class="g-nav-item__badge">{{ badge }}</span>
+    }
+  }
+</ng-template>

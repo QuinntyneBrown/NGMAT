@@ -1,0 +1,45 @@
+:host {
+  display: inline-flex;
+}
+
+.g-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+
+  &__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: currentColor;
+  }
+
+  &__label {
+    color: inherit;
+  }
+
+  &--success {
+    background-color: var(--g-status-success-bg, rgba(76, 175, 80, 0.12));
+    color: var(--g-status-success, #4caf50);
+  }
+
+  &--warning {
+    background-color: var(--g-status-warning-bg, rgba(255, 152, 0, 0.12));
+    color: var(--g-status-warning, #ff9800);
+  }
+
+  &--error {
+    background-color: var(--g-status-error-bg, rgba(244, 67, 54, 0.12));
+    color: var(--g-status-error, #f44336);
+  }
+
+  &--info {
+    background-color: var(--g-status-info-bg, rgba(33, 150, 243, 0.12));
+    color: var(--g-status-info, #2196f3);
+  }
+}

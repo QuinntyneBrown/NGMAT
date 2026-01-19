@@ -1,0 +1,46 @@
+:host {
+  display: block;
+}
+
+.g-chip-list {
+  &__container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    ::ng-deep {
+      .mat-mdc-chip-listbox {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+    }
+  }
+
+  &__chip {
+    ::ng-deep {
+      &.mat-mdc-chip-option {
+        --mdc-chip-elevated-container-color: var(--g-surface-variant, #2d2d2d);
+        --mdc-chip-label-text-color: var(--g-text-primary, #ffffff);
+        --mdc-chip-selected-hover-state-layer-color: var(--g-primary, #90caf9);
+        --mdc-chip-with-icon-selected-icon-color: var(--g-on-primary, #000000);
+
+        &.mat-mdc-chip-selected {
+          --mdc-chip-elevated-container-color: var(--g-primary, #90caf9);
+          --mdc-chip-label-text-color: var(--g-on-primary, #000000);
+        }
+      }
+
+      .mat-mdc-chip-action-label {
+        font-size: 13px;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+:host(:not(.g-chip-list--selectable)) {
+  .g-chip-list__chip {
+    cursor: default;
+  }
+}

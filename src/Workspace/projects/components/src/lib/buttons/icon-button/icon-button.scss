@@ -1,0 +1,29 @@
+:host {
+  display: inline-block;
+}
+
+.g-icon-button {
+  &--small {
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+
+    .mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  &--large {
+    width: 56px;
+    height: 56px;
+    line-height: 56px;
+
+    .mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+  }
+}

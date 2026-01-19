@@ -1,0 +1,7 @@
+<div class="g-chart-legend">
+  <div *ngFor="let item of items" class="g-chart-legend__item">
+    <span class="g-chart-legend__indicator" [style.backgroundColor]="item.color"></span>
+    <span class="g-chart-legend__label">{{ item.label }}</span>
+    <span *ngIf="item.value !== undefined" class="g-chart-legend__value">{{ item.value }}</span>
+  </div>
+</div>

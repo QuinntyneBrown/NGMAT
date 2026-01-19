@@ -1,0 +1,48 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.g-status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: currentColor;
+
+  &--success {
+    color: var(--g-status-success, #4caf50);
+  }
+
+  &--warning {
+    color: var(--g-status-warning, #ff9800);
+  }
+
+  &--error {
+    color: var(--g-status-error, #f44336);
+  }
+
+  &--info {
+    color: var(--g-status-info, #2196f3);
+  }
+
+  &--pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

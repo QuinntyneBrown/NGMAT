@@ -1,0 +1,26 @@
+// Spacing scale
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+$spacing-xxl: 48px;
+
+// Spacing function
+@function spacing($size) {
+  @if $size == 'xs' {
+    @return $spacing-xs;
+  } @else if $size == 'sm' {
+    @return $spacing-sm;
+  } @else if $size == 'md' {
+    @return $spacing-md;
+  } @else if $size == 'lg' {
+    @return $spacing-lg;
+  } @else if $size == 'xl' {
+    @return $spacing-xl;
+  } @else if $size == 'xxl' {
+    @return $spacing-xxl;
+  } @else {
+    @return $size;
+  }
+}

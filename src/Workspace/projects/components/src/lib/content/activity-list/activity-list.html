@@ -1,0 +1,15 @@
+<div class="g-activity-list">
+  <div *ngFor="let item of items; let last = last" class="g-activity-list__item">
+    <div class="g-activity-list__icon-container">
+      <mat-icon class="g-activity-list__icon">{{ item.icon }}</mat-icon>
+      <div *ngIf="!last" class="g-activity-list__line"></div>
+    </div>
+    <div class="g-activity-list__content">
+      <div class="g-activity-list__header">
+        <span class="g-activity-list__title">{{ item.title }}</span>
+        <span class="g-activity-list__timestamp">{{ formatTimestamp(item.timestamp) }}</span>
+      </div>
+      <p class="g-activity-list__description">{{ item.description }}</p>
+    </div>
+  </div>
+</div>

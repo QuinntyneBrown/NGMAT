@@ -1,0 +1,20 @@
+<mat-chip-listbox multiple class="g-filter-chips__container">
+  <mat-chip-option
+    *ngIf="showAll"
+    [selected]="isAllSelected"
+    (click)="onAllClick()"
+    class="g-filter-chips__chip g-filter-chips__chip--all"
+  >
+    All
+  </mat-chip-option>
+
+  <mat-chip-option
+    *ngFor="let option of options; trackBy: trackByValue"
+    [selected]="isSelected(option.value)"
+    [value]="option.value"
+    (click)="onOptionClick(option)"
+    class="g-filter-chips__chip"
+  >
+    {{ option.label }}
+  </mat-chip-option>
+</mat-chip-listbox>

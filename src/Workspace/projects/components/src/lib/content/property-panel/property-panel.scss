@@ -1,0 +1,52 @@
+:host {
+  display: block;
+}
+
+.g-property-panel {
+  padding: 20px;
+  border-radius: 8px;
+  background-color: var(--g-property-panel-background, #ffffff);
+
+  &__title {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--g-property-panel-title-color, #1a1a1a);
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--g-property-panel-border, #e0e0e0);
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+  }
+
+  &__label {
+    font-size: 14px;
+    color: var(--g-property-panel-label-color, #666666);
+    flex-shrink: 0;
+  }
+
+  &__value {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--g-property-panel-value-color, #1a1a1a);
+    text-align: right;
+    word-break: break-word;
+  }
+
+  &__unit {
+    margin-left: 4px;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--g-property-panel-unit-color, #999999);
+  }
+}

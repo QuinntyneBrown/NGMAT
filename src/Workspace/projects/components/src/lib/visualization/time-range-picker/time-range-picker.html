@@ -1,0 +1,35 @@
+<div class="g-time-range-picker">
+  <div class="g-time-range-picker__fields">
+    <mat-form-field class="g-time-range-picker__field" appearance="outline">
+      <mat-label>From</mat-label>
+      <input matInput [matDatepicker]="fromPicker" [ngModel]="from" (dateChange)="onFromChange($event.value)">
+      <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+      <mat-datepicker #fromPicker></mat-datepicker>
+    </mat-form-field>
+
+    <span class="g-time-range-picker__separator">-</span>
+
+    <mat-form-field class="g-time-range-picker__field" appearance="outline">
+      <mat-label>To</mat-label>
+      <input matInput [matDatepicker]="toPicker" [ngModel]="to" (dateChange)="onToChange($event.value)">
+      <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+      <mat-datepicker #toPicker></mat-datepicker>
+    </mat-form-field>
+  </div>
+
+  <button
+    *ngIf="presets.length > 0"
+    mat-stroked-button
+    class="g-time-range-picker__presets-button"
+    [matMenuTriggerFor]="presetsMenu"
+  >
+    <mat-icon>schedule</mat-icon>
+    Presets
+  </button>
+
+  <mat-menu #presetsMenu="matMenu">
+    <button mat-menu-item *ngFor="let preset of presets" (click)="selectPreset(preset)">
+      {{ preset.label }}
+    </button>
+  </mat-menu>
+</div>

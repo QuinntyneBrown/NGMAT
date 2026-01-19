@@ -1,0 +1,43 @@
+:host {
+  display: inline-block;
+}
+
+.g-toggle {
+  &__control {
+    ::ng-deep {
+      .mdc-switch {
+        --mdc-switch-selected-focus-state-layer-color: var(--g-primary, #90caf9);
+        --mdc-switch-selected-handle-color: var(--g-primary, #90caf9);
+        --mdc-switch-selected-hover-state-layer-color: var(--g-primary, #90caf9);
+        --mdc-switch-selected-pressed-state-layer-color: var(--g-primary, #90caf9);
+        --mdc-switch-selected-focus-handle-color: var(--g-primary, #90caf9);
+        --mdc-switch-selected-hover-handle-color: var(--g-primary, #90caf9);
+        --mdc-switch-selected-pressed-handle-color: var(--g-primary, #90caf9);
+        --mdc-switch-selected-focus-track-color: var(--g-primary-variant, #64b5f6);
+        --mdc-switch-selected-hover-track-color: var(--g-primary-variant, #64b5f6);
+        --mdc-switch-selected-pressed-track-color: var(--g-primary-variant, #64b5f6);
+        --mdc-switch-selected-track-color: var(--g-primary-variant, #64b5f6);
+        --mdc-switch-unselected-focus-handle-color: var(--g-text-secondary, rgba(255, 255, 255, 0.7));
+        --mdc-switch-unselected-focus-state-layer-color: var(--g-text-secondary, rgba(255, 255, 255, 0.7));
+        --mdc-switch-unselected-handle-color: var(--g-text-secondary, rgba(255, 255, 255, 0.7));
+        --mdc-switch-unselected-hover-handle-color: var(--g-text-primary, #ffffff);
+        --mdc-switch-unselected-hover-state-layer-color: var(--g-text-secondary, rgba(255, 255, 255, 0.7));
+        --mdc-switch-unselected-pressed-handle-color: var(--g-text-secondary, rgba(255, 255, 255, 0.7));
+        --mdc-switch-unselected-pressed-state-layer-color: var(--g-text-secondary, rgba(255, 255, 255, 0.7));
+        --mdc-switch-unselected-focus-track-color: var(--g-surface-variant, #424242);
+        --mdc-switch-unselected-hover-track-color: var(--g-surface-variant, #424242);
+        --mdc-switch-unselected-pressed-track-color: var(--g-surface-variant, #424242);
+        --mdc-switch-unselected-track-color: var(--g-surface-variant, #424242);
+      }
+
+      .mdc-label {
+        font-size: 14px;
+        color: var(--g-text-primary, #ffffff);
+      }
+    }
+  }
+}
+
+:host(.g-toggle--disabled) {
+  opacity: 0.5;
+}

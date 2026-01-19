@@ -1,0 +1,11 @@
+<button
+  mat-icon-button
+  [color]="color"
+  [disabled]="disabled"
+  class="g-icon-button"
+  [class.g-icon-button--small]="size === 'small'"
+  [class.g-icon-button--large]="size === 'large'"
+  (click)="onClick($event)"
+>
+  <mat-icon>{{ icon }}</mat-icon>
+</button>

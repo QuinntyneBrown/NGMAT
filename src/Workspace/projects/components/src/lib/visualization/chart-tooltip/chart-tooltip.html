@@ -1,0 +1,15 @@
+<div
+  *ngIf="data"
+  class="g-chart-tooltip"
+  [style.left.px]="position.x"
+  [style.top.px]="position.y"
+>
+  <div *ngIf="data.title" class="g-chart-tooltip__title">{{ data.title }}</div>
+  <div class="g-chart-tooltip__items">
+    <div *ngFor="let item of data.items" class="g-chart-tooltip__item">
+      <span *ngIf="item.color" class="g-chart-tooltip__indicator" [style.backgroundColor]="item.color"></span>
+      <span class="g-chart-tooltip__label">{{ item.label }}:</span>
+      <span class="g-chart-tooltip__value">{{ item.value }}</span>
+    </div>
+  </div>
+</div>

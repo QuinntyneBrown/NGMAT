@@ -1,0 +1,99 @@
+.g-text {
+  display: inline;
+
+  &__content {
+    display: inline;
+  }
+
+  // Variants - Material Design 3 Typography
+  &--body-1 {
+    .g-text__content {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  &--body-2 {
+    .g-text__content {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      letter-spacing: 0.25px;
+    }
+  }
+
+  &--caption {
+    .g-text__content {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      letter-spacing: 0.4px;
+    }
+  }
+
+  &--overline {
+    .g-text__content {
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 16px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+  }
+
+  // Colors
+  &--primary {
+    .g-text__content {
+      color: rgba(0, 0, 0, 0.87);
+    }
+  }
+
+  &--secondary {
+    .g-text__content {
+      color: rgba(0, 0, 0, 0.6);
+    }
+  }
+
+  &--disabled {
+    .g-text__content {
+      color: rgba(0, 0, 0, 0.38);
+    }
+  }
+
+  &--hint {
+    .g-text__content {
+      color: rgba(0, 0, 0, 0.6);
+    }
+  }
+}
+
+// Dark theme support
+:host-context(.dark-theme) {
+  .g-text {
+    &--primary {
+      .g-text__content {
+        color: rgba(255, 255, 255, 0.87);
+      }
+    }
+
+    &--secondary {
+      .g-text__content {
+        color: rgba(255, 255, 255, 0.6);
+      }
+    }
+
+    &--disabled {
+      .g-text__content {
+        color: rgba(255, 255, 255, 0.38);
+      }
+    }
+
+    &--hint {
+      .g-text__content {
+        color: rgba(255, 255, 255, 0.6);
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+<span
+  class="g-status-badge"
+  [class.g-status-badge--success]="status === 'success'"
+  [class.g-status-badge--warning]="status === 'warning'"
+  [class.g-status-badge--error]="status === 'error'"
+  [class.g-status-badge--info]="status === 'info'"
+>
+  <span class="g-status-badge__dot"></span>
+  <span class="g-status-badge__label">{{ label }}</span>
+</span>

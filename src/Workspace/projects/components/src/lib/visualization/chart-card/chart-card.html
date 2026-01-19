@@ -1,0 +1,9 @@
+<mat-card class="g-chart-card">
+  <mat-card-header *ngIf="title || subtitle" class="g-chart-card__header">
+    <mat-card-title *ngIf="title" class="g-chart-card__title">{{ title }}</mat-card-title>
+    <mat-card-subtitle *ngIf="subtitle" class="g-chart-card__subtitle">{{ subtitle }}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content class="g-chart-card__content">
+    <ng-content></ng-content>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,16 @@
+<div class="g-input-group__label" *ngIf="label">
+  {{ label }}
+</div>
+
+<div class="g-input-group__container">
+  <input
+    class="g-input-group__input"
+    [type]="type"
+    [placeholder]="placeholder"
+    [value]="value"
+    [disabled]="disabled"
+    (input)="onInputChange($event)"
+    (blur)="onBlur()"
+  />
+  <span class="g-input-group__unit" *ngIf="unit">{{ unit }}</span>
+</div>

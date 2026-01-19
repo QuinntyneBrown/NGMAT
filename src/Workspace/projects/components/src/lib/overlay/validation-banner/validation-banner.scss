@@ -1,0 +1,58 @@
+.g-validation-banner {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 4px;
+  gap: 12px;
+
+  .g-validation-banner-icon {
+    flex-shrink: 0;
+  }
+
+  .g-validation-banner-message {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .g-validation-banner-close {
+    flex-shrink: 0;
+    margin: -8px -8px -8px 0;
+  }
+
+  &--success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+
+    .g-validation-banner-icon {
+      color: #2e7d32;
+    }
+  }
+
+  &--warning {
+    background-color: #fff3e0;
+    color: #e65100;
+
+    .g-validation-banner-icon {
+      color: #e65100;
+    }
+  }
+
+  &--error {
+    background-color: #ffebee;
+    color: #c62828;
+
+    .g-validation-banner-icon {
+      color: #c62828;
+    }
+  }
+
+  &--info {
+    background-color: #e3f2fd;
+    color: #1565c0;
+
+    .g-validation-banner-icon {
+      color: #1565c0;
+    }
+  }
+}

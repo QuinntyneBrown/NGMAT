@@ -1,0 +1,16 @@
+<mat-sidenav-container class="g-sidenav__container">
+  <mat-sidenav
+    [opened]="opened"
+    [mode]="mode"
+    [class.g-sidenav__drawer--collapsed]="collapsed"
+    class="g-sidenav__drawer"
+  >
+    <div class="g-sidenav__content">
+      <ng-content></ng-content>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="g-sidenav__main">
+    <ng-content select="[sidenavContent]"></ng-content>
+  </mat-sidenav-content>
+</mat-sidenav-container>

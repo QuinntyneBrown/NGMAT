@@ -1,0 +1,13 @@
+<div class="g-validation-banner" [class]="'g-validation-banner--' + status">
+  <mat-icon class="g-validation-banner-icon">{{ icon }}</mat-icon>
+  <span class="g-validation-banner-message">{{ message }}</span>
+  <button
+    *ngIf="closable"
+    mat-icon-button
+    class="g-validation-banner-close"
+    (click)="onClose()"
+    aria-label="Close"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+</div>

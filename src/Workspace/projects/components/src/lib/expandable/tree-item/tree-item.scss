@@ -1,0 +1,62 @@
+:host {
+  display: block;
+}
+
+.g-tree-item {
+  &__row {
+    display: flex;
+    align-items: center;
+    padding: 4px 8px;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 4px;
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.04);
+    }
+  }
+
+  &__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  &__chevron {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: rgba(0, 0, 0, 0.54);
+    transition: transform 0.15s ease;
+  }
+
+  &__spacer {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+  }
+
+  &__icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    margin-right: 6px;
+    color: rgba(0, 0, 0, 0.54);
+  }
+
+  &__label {
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.87);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__children {
+    // Children are rendered with increased padding via level input
+  }
+}

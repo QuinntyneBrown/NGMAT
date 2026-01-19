@@ -1,0 +1,17 @@
+<mat-card class="g-stat-card">
+  <div class="g-stat-card__header">
+    <mat-icon *ngIf="icon" class="g-stat-card__icon">{{ icon }}</mat-icon>
+    <span class="g-stat-card__label">{{ label }}</span>
+  </div>
+  <div class="g-stat-card__value">{{ value }}</div>
+  <div
+    *ngIf="trend"
+    class="g-stat-card__trend"
+    [class.g-stat-card__trend--up]="trend.direction === 'up'"
+    [class.g-stat-card__trend--down]="trend.direction === 'down'"
+    [class.g-stat-card__trend--neutral]="trend.direction === 'neutral'"
+  >
+    <mat-icon class="g-stat-card__trend-icon">{{ trendIcon }}</mat-icon>
+    <span class="g-stat-card__trend-value">{{ trend.value }}</span>
+  </div>
+</mat-card>

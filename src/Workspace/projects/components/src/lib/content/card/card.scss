@@ -1,0 +1,13 @@
+:host {
+  display: block;
+}
+
+.g-card {
+  padding: 16px;
+  border-radius: 8px;
+  background-color: var(--g-card-background, #ffffff);
+
+  &--elevated {
+    box-shadow: var(--g-card-shadow, 0 4px 12px rgba(0, 0, 0, 0.15));
+  }
+}

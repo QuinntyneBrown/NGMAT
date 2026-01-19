@@ -1,0 +1,9 @@
+<span
+  class="g-trend-indicator"
+  [class.g-trend-indicator--up]="direction === 'up'"
+  [class.g-trend-indicator--down]="direction === 'down'"
+  [class.g-trend-indicator--neutral]="direction === 'neutral'"
+>
+  <mat-icon class="g-trend-indicator__icon">{{ iconName }}</mat-icon>
+  <span class="g-trend-indicator__value">{{ value }}</span>
+</span>
