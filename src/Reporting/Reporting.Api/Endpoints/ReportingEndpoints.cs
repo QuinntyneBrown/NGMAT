@@ -8,6 +8,10 @@ namespace Reporting.Api.Endpoints;
 
 public static class ReportingEndpoints
 {
+    // Default values for demonstration purposes
+    private const double DefaultInitialFuelKg = 1000.0;
+    private const double DefaultRemainingFuelKg = 800.0;
+
     public static IEndpointRouteBuilder MapReportingEndpoints(this IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/api/reports")
@@ -228,18 +232,31 @@ public static class ReportingEndpoints
     private static IResult GetDeltaVBudget(
         Guid missionId,
         [FromQuery] string? name,
+        [FromQuery] string? format,
         [FromServices] ReportingService service)
     {
         var missionName = name ?? "Unknown Mission";
+        var reportFormat = ParseFormat(format);
 
-        // Default values for demonstration
-        var result = service.GenerateDeltaVBudget(missionId, missionName, 1000, 800);
+        // Use default values for demonstration when no specific data is provided
+        var result = service.GenerateDeltaVBudget(missionId, missionName, DefaultInitialFuelKg, DefaultRemainingFuelKg, null, reportFormat);
         if (result.IsFailure)
         {
             return Results.Problem(result.Error.Message);
         }
 
-        return Results.Ok(result.Value);
+        var budget = result.Value!;
+        
+        // If PDF format, return as file
+        if (reportFormat == ReportFormat.Pdf)
+        {
+            var bytes = service.ExportToBytes(budget);
+            var contentType = FormatToContentType(reportFormat);
+            var fileName = $"delta_v_budget_{missionId:N}.{FormatToExtension(reportFormat)}";
+            return Results.File(bytes, contentType, fileName);
+        }
+
+        return Results.Ok(budget);
     }
 
     private static IResult GenerateDeltaVBudget(
@@ -262,14 +279,26 @@ public static class ReportingEndpoints
             request.MissionName,
             request.InitialFuelKg,
             request.RemainingFuelKg,
-            maneuvers);
+            maneuvers,
+            request.Format);
 
         if (result.IsFailure)
         {
             return Results.Problem(result.Error.Message);
         }
 
-        return Results.Ok(result.Value);
+        var budget = result.Value!;
+        
+        // If PDF format, return as file
+        if (request.Format == ReportFormat.Pdf)
+        {
+            var bytes = service.ExportToBytes(budget);
+            var contentType = FormatToContentType(request.Format);
+            var fileName = $"delta_v_budget_{request.MissionId:N}.{FormatToExtension(request.Format)}";
+            return Results.File(bytes, contentType, fileName);
+        }
+
+        return Results.Ok(budget);
     }
 
     // Event Timeline Handler
@@ -416,7 +445,8 @@ public record DeltaVBudgetRequest(
     string MissionName,
     double InitialFuelKg,
     double RemainingFuelKg,
-    List<ManeuverInput>? Maneuvers = null);
+    List<ManeuverInput>? Maneuvers = null,
+    ReportFormat Format = ReportFormat.Json);
 
 public record ManeuverInput(
     string Name,

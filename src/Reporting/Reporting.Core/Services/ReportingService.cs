@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using Shared.Domain.Results;
 using Reporting.Core.Models;
+using Reporting.Core.Services.Pdf;
 
 namespace Reporting.Core.Services;
 
@@ -9,6 +10,12 @@ public sealed class ReportingService
 {
     private const double EarthRadiusKm = 6378.137;
     private const double EarthGM = 398600.4418;
+    private readonly PdfGenerator _pdfGenerator;
+
+    public ReportingService()
+    {
+        _pdfGenerator = new PdfGenerator();
+    }
 
     /// <summary>
     /// Generate a mission report
@@ -39,6 +46,7 @@ public sealed class ReportingService
         // Generate report content
         report.Content = format switch
         {
+            ReportFormat.Pdf => _pdfGenerator.GenerateMissionReportPdf(report),
             ReportFormat.Json => GenerateJsonContent(report),
             ReportFormat.Csv => GenerateCsvMissionContent(report),
             ReportFormat.Html => GenerateHtmlMissionContent(report),
@@ -205,7 +213,8 @@ public sealed class ReportingService
         string missionName,
         double initialFuelKg,
         double remainingFuelKg,
-        List<DeltaVManeuver>? maneuvers = null)
+        List<DeltaVManeuver>? maneuvers = null,
+        ReportFormat format = ReportFormat.Json)
     {
         var budget = new DeltaVBudget
         {
@@ -213,7 +222,8 @@ public sealed class ReportingService
             MissionName = missionName,
             InitialFuelKg = initialFuelKg,
             RemainingFuelKg = remainingFuelKg,
-            Maneuvers = maneuvers ?? new List<DeltaVManeuver>()
+            Maneuvers = maneuvers ?? new List<DeltaVManeuver>(),
+            Format = format
         };
 
         return Result<DeltaVBudget>.Success(budget);
@@ -379,6 +389,19 @@ public sealed class ReportingService
             ReportFormat.Csv => GenerateCsvOrbitalElements(export),
             ReportFormat.Json => JsonSerializer.SerializeToUtf8Bytes(export, new JsonSerializerOptions { WriteIndented = true }),
             _ => JsonSerializer.SerializeToUtf8Bytes(export)
+        };
+    }
+
+    /// <summary>
+    /// Convert delta-V budget to bytes
+    /// </summary>
+    public byte[] ExportToBytes(DeltaVBudget budget)
+    {
+        return budget.Format switch
+        {
+            ReportFormat.Pdf => _pdfGenerator.GenerateDeltaVBudgetPdf(budget),
+            ReportFormat.Json => JsonSerializer.SerializeToUtf8Bytes(budget, new JsonSerializerOptions { WriteIndented = true }),
+            _ => JsonSerializer.SerializeToUtf8Bytes(budget)
         };
     }
 
