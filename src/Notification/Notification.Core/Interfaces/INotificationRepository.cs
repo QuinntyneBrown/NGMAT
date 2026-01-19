@@ -1,14 +1,17 @@
+using Notification.Core.Entities;
 using Notification.Core.Models;
 
 namespace Notification.Core.Interfaces;
 
 public interface INotificationRepository
 {
-    Task<UserNotification?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
-    Task<IReadOnlyList<UserNotification>> GetByUserAsync(string userId, NotificationFilter? filter = null, CancellationToken cancellationToken = default);
+    Task<NotificationEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<NotificationEntity>> GetByUserAsync(string userId, NotificationFilter? filter = null, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<NotificationEntity>> GetPendingAsync(int batchSize = 100, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<NotificationEntity>> GetFailedForRetryAsync(int maxRetries = 3, CancellationToken cancellationToken = default);
     Task<int> GetUnreadCountAsync(string userId, CancellationToken cancellationToken = default);
-    Task AddAsync(UserNotification notification, CancellationToken cancellationToken = default);
-    Task UpdateAsync(UserNotification notification, CancellationToken cancellationToken = default);
+    Task AddAsync(NotificationEntity notification, CancellationToken cancellationToken = default);
+    Task UpdateAsync(NotificationEntity notification, CancellationToken cancellationToken = default);
     Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
     Task MarkAsReadAsync(Guid id, CancellationToken cancellationToken = default);
     Task MarkAllAsReadAsync(string userId, CancellationToken cancellationToken = default);
@@ -16,6 +19,7 @@ public interface INotificationRepository
 
 public interface INotificationPreferencesRepository
 {
-    Task<NotificationPreferences?> GetByUserIdAsync(string userId, CancellationToken cancellationToken = default);
-    Task SaveAsync(NotificationPreferences preferences, CancellationToken cancellationToken = default);
+    Task<NotificationPreferencesEntity?> GetByUserIdAsync(string userId, CancellationToken cancellationToken = default);
+    Task AddAsync(NotificationPreferencesEntity preferences, CancellationToken cancellationToken = default);
+    Task UpdateAsync(NotificationPreferencesEntity preferences, CancellationToken cancellationToken = default);
 }

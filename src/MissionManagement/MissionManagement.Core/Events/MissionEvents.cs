@@ -133,3 +133,76 @@ public sealed class MissionClonedEvent : EventBase
     [Key(13)]
     public required DateTime ClonedAt { get; init; }
 }
+
+[MessagePackObject]
+public sealed class MissionExportedEvent : EventBase
+{
+    [Key(10)]
+    public required Guid MissionId { get; init; }
+
+    [Key(11)]
+    public required string MissionName { get; init; }
+
+    [Key(12)]
+    public required Guid ExportedByUserId { get; init; }
+
+    [Key(13)]
+    public required DateTime ExportedAt { get; init; }
+
+    [Key(14)]
+    public required string ExportFormat { get; init; }
+}
+
+[MessagePackObject]
+public sealed class MissionImportedEvent : EventBase
+{
+    [Key(10)]
+    public required Guid MissionId { get; init; }
+
+    [Key(11)]
+    public required string MissionName { get; init; }
+
+    [Key(12)]
+    public required Guid ImportedByUserId { get; init; }
+
+    [Key(13)]
+    public required DateTime ImportedAt { get; init; }
+
+    [Key(14)]
+    public required bool WasOverwritten { get; init; }
+}
+
+[MessagePackObject]
+public sealed class MissionBatchExportedEvent : EventBase
+{
+    [Key(10)]
+    public required int MissionCount { get; init; }
+
+    [Key(11)]
+    public required Guid ExportedByUserId { get; init; }
+
+    [Key(12)]
+    public required DateTime ExportedAt { get; init; }
+
+    [Key(13)]
+    public required string ExportFormat { get; init; }
+}
+
+[MessagePackObject]
+public sealed class MissionBatchImportedEvent : EventBase
+{
+    [Key(10)]
+    public required int TotalCount { get; init; }
+
+    [Key(11)]
+    public required int SuccessCount { get; init; }
+
+    [Key(12)]
+    public required int FailureCount { get; init; }
+
+    [Key(13)]
+    public required Guid ImportedByUserId { get; init; }
+
+    [Key(14)]
+    public required DateTime ImportedAt { get; init; }
+}
