@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ScriptExecution.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3931e9e6f89467710273530b07975eb4f9095025")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+49a00425b97c2d47f01433d00aafad7fd4809a14")]
 [assembly: System.Reflection.AssemblyProductAttribute("ScriptExecution.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ScriptExecution.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -10,3 +10,9 @@ C:\projects\NGMAT\src\Propagation\Propagation.Core\obj\Debug\net8.0\Propagation.
 C:\projects\NGMAT\src\Propagation\Propagation.Core\obj\Debug\net8.0\refint\Propagation.Core.dll
 C:\projects\NGMAT\src\Propagation\Propagation.Core\obj\Debug\net8.0\Propagation.Core.pdb
 C:\projects\NGMAT\src\Propagation\Propagation.Core\obj\Debug\net8.0\ref\Propagation.Core.dll
+C:\projects\NGMAT\src\Propagation\Propagation.Core\bin\Debug\net8.0\Shared.Domain.dll
+C:\projects\NGMAT\src\Propagation\Propagation.Core\bin\Debug\net8.0\Shared.Messaging.Abstractions.dll
+C:\projects\NGMAT\src\Propagation\Propagation.Core\bin\Debug\net8.0\Shared.Domain.pdb
+C:\projects\NGMAT\src\Propagation\Propagation.Core\bin\Debug\net8.0\Shared.Messaging.Abstractions.pdb
+C:\projects\NGMAT\src\Propagation\Propagation.Core\obj\Debug\net8.0\Propagation.Core.csproj.AssemblyReference.cache
+C:\projects\NGMAT\src\Propagation\Propagation.Core\obj\Debug\net8.0\Propagat.4C11B7EF.Up2Date

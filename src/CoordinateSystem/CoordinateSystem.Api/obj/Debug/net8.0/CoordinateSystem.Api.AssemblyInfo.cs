@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CoordinateSystem.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3931e9e6f89467710273530b07975eb4f9095025")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+be96433e3e9bccdaabe5a4ef78a327c172035e29")]
 [assembly: System.Reflection.AssemblyProductAttribute("CoordinateSystem.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CoordinateSystem.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

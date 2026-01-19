@@ -10,3 +10,11 @@ C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\obj\Deb
 C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\obj\Debug\net8.0\refint\MissionManagement.Infrastructure.dll
 C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\obj\Debug\net8.0\MissionManagement.Infrastructure.pdb
 C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\obj\Debug\net8.0\ref\MissionManagement.Infrastructure.dll
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\bin\Debug\net8.0\MissionManagement.Core.dll
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\bin\Debug\net8.0\Shared.Domain.dll
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\bin\Debug\net8.0\Shared.Messaging.Abstractions.dll
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\bin\Debug\net8.0\MissionManagement.Core.pdb
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\bin\Debug\net8.0\Shared.Domain.pdb
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\bin\Debug\net8.0\Shared.Messaging.Abstractions.pdb
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\obj\Debug\net8.0\MissionManagement.Infrastructure.csproj.AssemblyReference.cache
+C:\projects\NGMAT\src\MissionManagement\MissionManagement.Infrastructure\obj\Debug\net8.0\MissionM.3386D54D.Up2Date

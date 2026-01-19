@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Spacecraft.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3931e9e6f89467710273530b07975eb4f9095025")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8a8520e2cfd38c00b66d2d0caac077d26e7b01e2")]
 [assembly: System.Reflection.AssemblyProductAttribute("Spacecraft.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Spacecraft.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
