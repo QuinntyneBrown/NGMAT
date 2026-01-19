@@ -7,8 +7,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../../core';
 
 @Component({
   selector: 'app-login',
@@ -22,6 +25,7 @@ import { Router } from '@angular/router';
     MatButtonModule,
     MatCheckboxModule,
     MatIconModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss',
@@ -29,10 +33,13 @@ import { Router } from '@angular/router';
 export class Login {
   protected readonly loginForm: FormGroup;
   protected hidePassword = true;
+  protected loading = false;
+  protected errorMessage: string | null = null;
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly authService: AuthService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -43,9 +50,25 @@ export class Login {
 
   protected onSubmit(): void {
     if (this.loginForm.valid) {
-      // TODO: Implement actual authentication
-      // For now, navigate to dashboard
-      this.router.navigate(['/dashboard']);
+      this.loading = true;
+      this.errorMessage = null;
+
+      const { email, password } = this.loginForm.value;
+      this.authService.login({ email, password }).subscribe({
+        next: () => {
+          this.router.navigate(['/dashboard']);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.loading = false;
+          if (error.status === 401) {
+            this.errorMessage = 'Invalid email or password';
+          } else if (error.status === 0) {
+            this.errorMessage = 'Unable to connect to server';
+          } else {
+            this.errorMessage = error.error?.message || 'An error occurred during login';
+          }
+        },
+      });
     }
   }
 
