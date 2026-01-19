@@ -97,6 +97,120 @@ public class MissionTests
     }
 
     [Fact]
+    public void ChangeStatus_DraftToActive_IsValid()
+    {
+        // Arrange
+        var mission = Mission.Create("Test", MissionType.LEO, DateTimeOffset.UtcNow, Guid.NewGuid());
+
+        // Act
+        mission.ChangeStatus(MissionStatus.Active);
+
+        // Assert
+        mission.Status.Should().Be(MissionStatus.Active);
+    }
+
+    [Fact]
+    public void ChangeStatus_DraftToArchived_IsValid()
+    {
+        // Arrange
+        var mission = Mission.Create("Test", MissionType.LEO, DateTimeOffset.UtcNow, Guid.NewGuid());
+
+        // Act
+        mission.ChangeStatus(MissionStatus.Archived);
+
+        // Assert
+        mission.Status.Should().Be(MissionStatus.Archived);
+    }
+
+    [Fact]
+    public void ChangeStatus_DraftToCompleted_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var mission = Mission.Create("Test", MissionType.LEO, DateTimeOffset.UtcNow, Guid.NewGuid());
+
+        // Act
+        var act = () => mission.ChangeStatus(MissionStatus.Completed);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>()
+            .WithMessage("Invalid status transition*");
+    }
+
+    [Fact]
+    public void ChangeStatus_ActiveToCompleted_IsValid()
+    {
+        // Arrange
+        var mission = Mission.Create("Test", MissionType.LEO, DateTimeOffset.UtcNow, Guid.NewGuid());
+        mission.ChangeStatus(MissionStatus.Active);
+
+        // Act
+        mission.ChangeStatus(MissionStatus.Completed);
+
+        // Assert
+        mission.Status.Should().Be(MissionStatus.Completed);
+    }
+
+    [Fact]
+    public void ChangeStatus_ActiveToArchived_IsValid()
+    {
+        // Arrange
+        var mission = Mission.Create("Test", MissionType.LEO, DateTimeOffset.UtcNow, Guid.NewGuid());
+        mission.ChangeStatus(MissionStatus.Active);
+
+        // Act
+        mission.ChangeStatus(MissionStatus.Archived);
+
+        // Assert
+        mission.Status.Should().Be(MissionStatus.Archived);
+    }
+
+    [Fact]
+    public void ChangeStatus_ActiveToDraft_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var mission = Mission.Create("Test", MissionType.LEO, DateTimeOffset.UtcNow, Guid.NewGuid());
+        mission.ChangeStatus(MissionStatus.Active);
+
+        // Act
+        var act = () => mission.ChangeStatus(MissionStatus.Draft);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>()
+            .WithMessage("Invalid status transition*");
+    }
+
+    [Fact]
+    public void ChangeStatus_CompletedToArchived_IsValid()
+    {
+        // Arrange
+        var mission = Mission.Create("Test", MissionType.LEO, DateTimeOffset.UtcNow, Guid.NewGuid());
+        mission.ChangeStatus(MissionStatus.Active);
+        mission.ChangeStatus(MissionStatus.Completed);
+
+        // Act
+        mission.ChangeStatus(MissionStatus.Archived);
+
+        // Assert
+        mission.Status.Should().Be(MissionStatus.Archived);
+    }
+
+    [Fact]
+    public void ChangeStatus_CompletedToActive_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var mission = Mission.Create("Test", MissionType.LEO, DateTimeOffset.UtcNow, Guid.NewGuid());
+        mission.ChangeStatus(MissionStatus.Active);
+        mission.ChangeStatus(MissionStatus.Completed);
+
+        // Act
+        var act = () => mission.ChangeStatus(MissionStatus.Active);
+
+        // Assert
+        act.Should().Throw<InvalidOperationException>()
+            .WithMessage("Invalid status transition*");
+    }
+
+    [Fact]
     public void ChangeStatus_ArchivedMission_ThrowsInvalidOperationException()
     {
         // Arrange

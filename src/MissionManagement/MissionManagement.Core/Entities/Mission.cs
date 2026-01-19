@@ -81,13 +81,30 @@ public class Mission
     /// </summary>
     public void ChangeStatus(MissionStatus newStatus)
     {
-        // Validate status transitions
+        // No change needed
         if (Status == newStatus)
             return;
 
-        // Basic transition validation: Draft → Active → Completed → Archived
+        // Validate status transitions: Draft → Active → Completed → Archived
+        // Cannot change status of an archived mission
         if (Status == MissionStatus.Archived)
             throw new InvalidOperationException("Cannot change status of an archived mission.");
+
+        // Validate allowed transitions
+        var isValidTransition = Status switch
+        {
+            MissionStatus.Draft => newStatus is MissionStatus.Active or MissionStatus.Archived,
+            MissionStatus.Active => newStatus is MissionStatus.Completed or MissionStatus.Archived,
+            MissionStatus.Completed => newStatus == MissionStatus.Archived,
+            _ => false
+        };
+
+        if (!isValidTransition)
+        {
+            throw new InvalidOperationException(
+                $"Invalid status transition from {Status} to {newStatus}. " +
+                "Valid transitions: Draft → Active/Archived, Active → Completed/Archived, Completed → Archived.");
+        }
 
         Status = newStatus;
         UpdatedAt = DateTimeOffset.UtcNow;
