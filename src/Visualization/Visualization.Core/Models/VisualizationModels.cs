@@ -244,6 +244,7 @@ public sealed class ConjunctionPoint
     public double RelativeZ { get; init; }  // km
     public double DistanceKm { get; init; }
     public double RelativeSpeedKmps { get; init; }
+    public double TimeToClosestApproachSeconds { get; set; }  // Time to/from closest approach
 }
 
 public sealed class ConjunctionEvent
