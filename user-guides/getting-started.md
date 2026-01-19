@@ -32,7 +32,7 @@ The NGMAT web application requires no installation. Simply:
 For the full-featured desktop application:
 
 1. **Download the Installer**
-   - Visit the [NGMAT Releases](https://github.com/QuinntyneBrown/NGMAT/releases) page
+   - Visit the NGMAT Releases page on your deployment's repository
    - Download the latest installer for your operating system:
      - Windows: `NGMAT-Setup-x.x.x.msi`
      - macOS: `NGMAT-x.x.x.dmg` (if available)
@@ -52,8 +52,8 @@ For the full-featured desktop application:
 For developers who want to run NGMAT from source:
 
 ```bash
-# Clone the repository
-git clone https://github.com/QuinntyneBrown/NGMAT.git
+# Clone the repository (replace with your repository URL)
+git clone <your-ngmat-repository-url>
 cd NGMAT
 
 # Restore dependencies

@@ -329,9 +329,16 @@ Programmatic access to NGMAT:
 **Authentication:**
 ```bash
 # Get API key from settings
+# Store credentials securely in environment variables
+export NGMAT_EMAIL="user@example.com"
+export NGMAT_PASSWORD="your-secure-password"
+
 curl -X POST https://api.ngmat.example/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"user@example.com","password":"..."}'
+  -d "{\"email\":\"$NGMAT_EMAIL\",\"password\":\"$NGMAT_PASSWORD\"}"
+
+# Or use API key directly (recommended for automation)
+export NGMAT_API_KEY="your-api-key"
 ```
 
 **Create Mission:**

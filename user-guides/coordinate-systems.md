@@ -488,7 +488,8 @@ Rotation Rate (ω): 7.2921159e-5 rad/s
 
 ## Additional Resources
 
-- [Vallado, D. "Fundamentals of Astrodynamics and Applications"](https://www.celestrak.com/) - Standard reference
+- Vallado, D. "Fundamentals of Astrodynamics and Applications" - Standard reference textbook
+- [Celestrak](https://www.celestrak.com/) - Satellite tracking and orbital data
 - [IERS Conventions](https://www.iers.org/) - Earth orientation parameters
 - [SPICE Toolkit](https://naif.jpl.nasa.gov/naif/) - NASA coordinate system tools
 

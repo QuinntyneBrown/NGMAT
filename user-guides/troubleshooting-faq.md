@@ -572,4 +572,4 @@ Submit feature requests via GitHub Issues with:
 
 ---
 
-**Still need help?** Visit the [Community Forum](https://github.com/QuinntyneBrown/NGMAT/discussions) or create an [Issue](https://github.com/QuinntyneBrown/NGMAT/issues).
+**Still need help?** Visit the Community Forum or create an Issue in your NGMAT repository.

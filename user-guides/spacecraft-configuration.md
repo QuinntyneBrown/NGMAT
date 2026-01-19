@@ -421,9 +421,9 @@ ISS (ZARYA)
 
 ### TLE Sources
 
-- [Celestrak](https://celestrak.org/) - Comprehensive TLE database
-- [Space-Track](https://www.space-track.org/) - Official U.S. database
-- [N2YO](https://www.n2yo.com/) - Real-time satellite tracking
+- [Celestrak](https://celestrak.org/) - Comprehensive TLE database (public access)
+- [Space-Track](https://www.space-track.org/) - Official U.S. database (requires registration and ITAR compliance)
+- [N2YO](https://www.n2yo.com/) - Real-time satellite tracking (public access)
 
 ## Spacecraft Validation
 
