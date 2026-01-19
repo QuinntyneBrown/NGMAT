@@ -13,6 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("IdentityDb")
     ?? "Server=localhost;Database=NGMAT_Identity;Trusted_Connection=True;TrustServerCertificate=True";
 
+var useInMemoryDb = builder.Configuration.GetValue<bool>("UseInMemoryDatabase")
+    || Environment.GetEnvironmentVariable("USE_INMEMORY_DB") == "true";
+
 var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>() ?? new JwtOptions
 {
     SecretKey = builder.Configuration["Jwt:SecretKey"] ?? "super-secret-key-that-should-be-at-least-32-chars!",
@@ -23,7 +26,7 @@ var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>() ?? ne
 };
 
 // Add services
-builder.Services.AddIdentityInfrastructure(connectionString, jwtOptions);
+builder.Services.AddIdentityInfrastructure(connectionString, jwtOptions, useInMemoryDatabase: useInMemoryDb);
 
 // Add a null event publisher for now (will be replaced with Redis later)
 builder.Services.AddSingleton<IEventPublisher, NullEventPublisher>();

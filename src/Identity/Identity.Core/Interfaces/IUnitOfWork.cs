@@ -1,3 +1,5 @@
+using Identity.Core.Entities;
+
 namespace Identity.Core.Interfaces;
 
 /// <summary>
@@ -14,6 +16,11 @@ public interface IUnitOfWork : IDisposable
     /// Saves all changes made in this unit of work.
     /// </summary>
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Adds a refresh token directly to the context.
+    /// </summary>
+    Task AddRefreshTokenAsync(RefreshToken token, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Begins a new transaction.

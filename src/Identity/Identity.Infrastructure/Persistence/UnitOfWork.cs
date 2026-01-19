@@ -1,3 +1,4 @@
+using Identity.Core.Entities;
 using Identity.Core.Interfaces;
 using Identity.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -28,6 +29,11 @@ internal sealed class UnitOfWork : IUnitOfWork
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         return await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task AddRefreshTokenAsync(RefreshToken token, CancellationToken cancellationToken = default)
+    {
+        await _context.RefreshTokens.AddAsync(token, cancellationToken);
     }
 
     public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)

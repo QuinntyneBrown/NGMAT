@@ -64,10 +64,18 @@ public sealed class AuthenticationService
             user.AddRole(userRole);
         }
 
+        // Generate tokens
+        var accessToken = _tokenService.GenerateAccessToken(user);
+        var refreshToken = _tokenService.GenerateRefreshToken();
+
+        var token = RefreshToken.Create(user.Id, refreshToken, _tokenService.RefreshTokenLifetime);
+
+        // Add user and refresh token to context
         await _unitOfWork.Users.AddAsync(user, cancellationToken);
+        await _unitOfWork.AddRefreshTokenAsync(token, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        // Publish event
+        // Publish event after successful save
         await _eventPublisher.PublishAsync(new UserCreated
         {
             UserIdentifier = user.Id.ToString(),
@@ -75,14 +83,6 @@ public sealed class AuthenticationService
             DisplayName = user.DisplayName,
             CreatedBy = "system"
         }, cancellationToken);
-
-        // Generate tokens
-        var accessToken = _tokenService.GenerateAccessToken(user);
-        var refreshToken = _tokenService.GenerateRefreshToken();
-
-        var token = RefreshToken.Create(user.Id, refreshToken, _tokenService.RefreshTokenLifetime);
-        user.AddRefreshToken(token);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new AuthenticationResult
         {
@@ -185,8 +185,7 @@ public sealed class AuthenticationService
         token.Revoke(ipAddress, newRefreshToken);
 
         var newToken = RefreshToken.Create(user.Id, newRefreshToken, _tokenService.RefreshTokenLifetime, ipAddress);
-        user.AddRefreshToken(newToken);
-
+        await _unitOfWork.AddRefreshTokenAsync(newToken, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         // Publish event
@@ -242,8 +241,9 @@ public sealed class AuthenticationService
         var refreshToken = _tokenService.GenerateRefreshToken();
 
         var token = RefreshToken.Create(user.Id, refreshToken, _tokenService.RefreshTokenLifetime, ipAddress);
-        user.AddRefreshToken(token);
 
+        // Add refresh token directly to context to avoid EF Core tracking issues
+        await _unitOfWork.AddRefreshTokenAsync(token, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         await _eventPublisher.PublishAsync(new UserLoggedIn
