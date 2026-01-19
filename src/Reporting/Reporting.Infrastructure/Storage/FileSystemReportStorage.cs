@@ -24,7 +24,13 @@ public sealed class FileSystemReportStorage : IReportStorageService
     public async Task<string> SaveReportAsync(Guid reportId, byte[] content, string fileName, CancellationToken cancellationToken = default)
     {
         var storagePath = GetStoragePath(reportId, fileName);
-        var fullPath = Path.Combine(_baseDirectory, storagePath);
+        var fullPath = Path.GetFullPath(Path.Combine(_baseDirectory, storagePath));
+        
+        // Validate that the resolved path is within the base directory (prevent path traversal)
+        if (!fullPath.StartsWith(Path.GetFullPath(_baseDirectory), StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException("Invalid storage path: path traversal attempt detected");
+        }
         
         // Ensure directory exists
         var directory = Path.GetDirectoryName(fullPath);
@@ -40,7 +46,13 @@ public sealed class FileSystemReportStorage : IReportStorageService
 
     public async Task<byte[]?> GetReportAsync(string storagePath, CancellationToken cancellationToken = default)
     {
-        var fullPath = Path.Combine(_baseDirectory, storagePath);
+        var fullPath = Path.GetFullPath(Path.Combine(_baseDirectory, storagePath));
+        
+        // Validate that the resolved path is within the base directory (prevent path traversal)
+        if (!fullPath.StartsWith(Path.GetFullPath(_baseDirectory), StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException("Invalid storage path: path traversal attempt detected");
+        }
         
         if (!File.Exists(fullPath))
         {
@@ -52,7 +64,13 @@ public sealed class FileSystemReportStorage : IReportStorageService
 
     public Task DeleteReportAsync(string storagePath, CancellationToken cancellationToken = default)
     {
-        var fullPath = Path.Combine(_baseDirectory, storagePath);
+        var fullPath = Path.GetFullPath(Path.Combine(_baseDirectory, storagePath));
+        
+        // Validate that the resolved path is within the base directory (prevent path traversal)
+        if (!fullPath.StartsWith(Path.GetFullPath(_baseDirectory), StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException("Invalid storage path: path traversal attempt detected");
+        }
         
         if (File.Exists(fullPath))
         {
@@ -64,7 +82,14 @@ public sealed class FileSystemReportStorage : IReportStorageService
 
     public Task<bool> ExistsAsync(string storagePath, CancellationToken cancellationToken = default)
     {
-        var fullPath = Path.Combine(_baseDirectory, storagePath);
+        var fullPath = Path.GetFullPath(Path.Combine(_baseDirectory, storagePath));
+        
+        // Validate that the resolved path is within the base directory (prevent path traversal)
+        if (!fullPath.StartsWith(Path.GetFullPath(_baseDirectory), StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException("Invalid storage path: path traversal attempt detected");
+        }
+        
         return Task.FromResult(File.Exists(fullPath));
     }
 

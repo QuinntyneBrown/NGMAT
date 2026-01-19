@@ -8,6 +8,10 @@ namespace Reporting.Api.Endpoints;
 
 public static class ReportingEndpoints
 {
+    // Default values for demonstration purposes
+    private const double DefaultInitialFuelKg = 1000.0;
+    private const double DefaultRemainingFuelKg = 800.0;
+
     public static IEndpointRouteBuilder MapReportingEndpoints(this IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/api/reports")
@@ -234,8 +238,8 @@ public static class ReportingEndpoints
         var missionName = name ?? "Unknown Mission";
         var reportFormat = ParseFormat(format);
 
-        // Default values for demonstration
-        var result = service.GenerateDeltaVBudget(missionId, missionName, 1000, 800, null, reportFormat);
+        // Use default values for demonstration when no specific data is provided
+        var result = service.GenerateDeltaVBudget(missionId, missionName, DefaultInitialFuelKg, DefaultRemainingFuelKg, null, reportFormat);
         if (result.IsFailure)
         {
             return Results.Problem(result.Error.Message);
