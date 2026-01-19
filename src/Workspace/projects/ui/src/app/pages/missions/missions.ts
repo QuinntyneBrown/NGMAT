@@ -15,6 +15,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 
 import { MissionService } from '../../services/mission.service';
 import { Mission, MissionStatus, MissionType } from '../../models/mission.model';
@@ -36,7 +37,8 @@ import { Mission, MissionStatus, MissionType } from '../../models/mission.model'
     MatChipsModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
-    MatDialogModule
+    MatDialogModule,
+    MatDividerModule,
   ],
   templateUrl: './missions.html',
   styleUrl: './missions.scss'
