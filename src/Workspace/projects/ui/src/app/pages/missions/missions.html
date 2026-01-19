@@ -1,150 +1,152 @@
-<div class="missions-page">
-  <div class="missions-page__header">
-    <div class="missions-page__title-section">
-      <h1 class="missions-page__title">Missions</h1>
-      <p class="missions-page__subtitle">Manage your mission analysis projects</p>
+<ng-container *ngIf="viewModel$ | async as vm">
+  <div class="missions-page">
+    <div class="missions-page__header">
+      <div class="missions-page__title-section">
+        <h1 class="missions-page__title">Missions</h1>
+        <p class="missions-page__subtitle">Manage your mission analysis projects</p>
+      </div>
+      <button mat-flat-button color="primary" class="missions-page__create-btn" (click)="createMission()">
+        <mat-icon>add</mat-icon>
+        New Mission
+      </button>
     </div>
-    <button mat-flat-button color="primary" class="missions-page__create-btn" (click)="createMission()">
-      <mat-icon>add</mat-icon>
-      New Mission
-    </button>
-  </div>
 
-  <mat-card class="missions-card">
-    <div class="missions-card__toolbar">
-      <div class="missions-card__search">
-        <mat-form-field appearance="outline" class="search-field">
-          <mat-icon matPrefix>search</mat-icon>
-          <input matInput placeholder="Search missions..." [(ngModel)]="searchTerm" (keyup.enter)="onSearch()">
-          <button *ngIf="searchTerm()" matSuffix mat-icon-button (click)="searchTerm.set(''); onSearch()">
-            <mat-icon>close</mat-icon>
+    <mat-card class="missions-card">
+      <div class="missions-card__toolbar">
+        <div class="missions-card__search">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput placeholder="Search missions..." [(ngModel)]="searchTermValue" (keyup.enter)="onSearch()">
+            <button *ngIf="searchTermValue" matSuffix mat-icon-button (click)="clearSearch()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+
+        <div class="missions-card__filters">
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Status</mat-label>
+            <mat-select [value]="statusFilterValue" (selectionChange)="onStatusFilterChange($event.value)">
+              <mat-option [value]="null">All Statuses</mat-option>
+              <mat-option *ngFor="let status of statusOptions" [value]="status">{{ status }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <button mat-stroked-button *ngIf="vm.statusFilter || vm.searchTerm" (click)="clearFilters()">
+            <mat-icon>filter_list_off</mat-icon>
+            Clear
           </button>
-        </mat-form-field>
+        </div>
       </div>
 
-      <div class="missions-card__filters">
-        <mat-form-field appearance="outline" class="filter-field">
-          <mat-label>Status</mat-label>
-          <mat-select [value]="statusFilter()" (selectionChange)="onStatusFilterChange($event.value)">
-            <mat-option [value]="null">All Statuses</mat-option>
-            <mat-option *ngFor="let status of statusOptions" [value]="status">{{ status }}</mat-option>
-          </mat-select>
-        </mat-form-field>
+      <div class="missions-card__content">
+        <div *ngIf="vm.loading" class="missions-card__loading">
+          <mat-spinner diameter="40"></mat-spinner>
+        </div>
 
-        <button mat-stroked-button *ngIf="statusFilter() || searchTerm()" (click)="clearFilters()">
-          <mat-icon>filter_list_off</mat-icon>
-          Clear
-        </button>
-      </div>
-    </div>
+        <div *ngIf="!vm.loading && vm.missions.length === 0" class="missions-card__empty">
+          <mat-icon class="missions-card__empty-icon">rocket_launch</mat-icon>
+          <h3>No missions found</h3>
+          <p>Create your first mission to get started</p>
+          <button mat-flat-button color="primary" (click)="createMission()">
+            <mat-icon>add</mat-icon>
+            Create Mission
+          </button>
+        </div>
 
-    <div class="missions-card__content">
-      <div *ngIf="loading()" class="missions-card__loading">
-        <mat-spinner diameter="40"></mat-spinner>
-      </div>
-
-      <div *ngIf="!loading() && missions().length === 0" class="missions-card__empty">
-        <mat-icon class="missions-card__empty-icon">rocket_launch</mat-icon>
-        <h3>No missions found</h3>
-        <p>Create your first mission to get started</p>
-        <button mat-flat-button color="primary" (click)="createMission()">
-          <mat-icon>add</mat-icon>
-          Create Mission
-        </button>
-      </div>
-
-      <table mat-table [dataSource]="missions()" *ngIf="!loading() && missions().length > 0" class="missions-table">
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Mission</th>
-          <td mat-cell *matCellDef="let mission">
-            <div class="mission-cell">
-              <div class="mission-cell__icon">
-                <mat-icon>rocket_launch</mat-icon>
+        <table mat-table [dataSource]="vm.missions" *ngIf="!vm.loading && vm.missions.length > 0" class="missions-table">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Mission</th>
+            <td mat-cell *matCellDef="let mission">
+              <div class="mission-cell">
+                <div class="mission-cell__icon">
+                  <mat-icon>rocket_launch</mat-icon>
+                </div>
+                <div class="mission-cell__info">
+                  <span class="mission-cell__name">{{ mission.name }}</span>
+                  <span class="mission-cell__id">{{ mission.id }}</span>
+                </div>
               </div>
-              <div class="mission-cell__info">
-                <span class="mission-cell__name">{{ mission.name }}</span>
-                <span class="mission-cell__id">{{ mission.id }}</span>
-              </div>
-            </div>
-          </td>
-        </ng-container>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="type">
-          <th mat-header-cell *matHeaderCellDef>Type</th>
-          <td mat-cell *matCellDef="let mission">
-            <span class="type-badge">{{ mission.type }}</span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef>Type</th>
+            <td mat-cell *matCellDef="let mission">
+              <span class="type-badge">{{ mission.type }}</span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let mission">
-            <span class="status-chip" [ngClass]="getStatusClass(mission.status)">
-              {{ mission.status }}
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let mission">
+              <span class="status-chip" [ngClass]="getStatusClass(mission.status)">
+                {{ mission.status }}
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="startEpoch">
-          <th mat-header-cell *matHeaderCellDef>Start Epoch</th>
-          <td mat-cell *matCellDef="let mission">
-            <span class="date-cell">{{ formatDateTime(mission.startEpoch) }}</span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="startEpoch">
+            <th mat-header-cell *matHeaderCellDef>Start Epoch</th>
+            <td mat-cell *matCellDef="let mission">
+              <span class="date-cell">{{ formatDateTime(mission.startEpoch) }}</span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="updatedAt">
-          <th mat-header-cell *matHeaderCellDef>Last Modified</th>
-          <td mat-cell *matCellDef="let mission">
-            <span class="date-cell">{{ formatDate(mission.updatedAt) }}</span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="updatedAt">
+            <th mat-header-cell *matHeaderCellDef>Last Modified</th>
+            <td mat-cell *matCellDef="let mission">
+              <span class="date-cell">{{ formatDate(mission.updatedAt) }}</span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef></th>
-          <td mat-cell *matCellDef="let mission">
-            <div class="actions-cell">
-              <button mat-icon-button matTooltip="Edit" (click)="editMission(mission); $event.stopPropagation()">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button [matMenuTriggerFor]="missionMenu" (click)="$event.stopPropagation()">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #missionMenu="matMenu">
-                <button mat-menu-item (click)="viewMission(mission)">
-                  <mat-icon>visibility</mat-icon>
-                  <span>View Details</span>
-                </button>
-                <button mat-menu-item (click)="editMission(mission)">
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let mission">
+              <div class="actions-cell">
+                <button mat-icon-button matTooltip="Edit" (click)="editMission(mission); $event.stopPropagation()">
                   <mat-icon>edit</mat-icon>
-                  <span>Edit</span>
                 </button>
-                <button mat-menu-item (click)="cloneMission(mission)">
-                  <mat-icon>content_copy</mat-icon>
-                  <span>Clone</span>
+                <button mat-icon-button [matMenuTriggerFor]="missionMenu" (click)="$event.stopPropagation()">
+                  <mat-icon>more_vert</mat-icon>
                 </button>
-                <mat-divider></mat-divider>
-                <button mat-menu-item class="delete-action" (click)="deleteMission(mission)">
-                  <mat-icon color="warn">delete</mat-icon>
-                  <span>Delete</span>
-                </button>
-              </mat-menu>
-            </div>
-          </td>
-        </ng-container>
+                <mat-menu #missionMenu="matMenu">
+                  <button mat-menu-item (click)="viewMission(mission)">
+                    <mat-icon>visibility</mat-icon>
+                    <span>View Details</span>
+                  </button>
+                  <button mat-menu-item (click)="editMission(mission)">
+                    <mat-icon>edit</mat-icon>
+                    <span>Edit</span>
+                  </button>
+                  <button mat-menu-item (click)="cloneMission(mission)">
+                    <mat-icon>content_copy</mat-icon>
+                    <span>Clone</span>
+                  </button>
+                  <mat-divider></mat-divider>
+                  <button mat-menu-item class="delete-action" (click)="deleteMission(mission)">
+                    <mat-icon color="warn">delete</mat-icon>
+                    <span>Delete</span>
+                  </button>
+                </mat-menu>
+              </div>
+            </td>
+          </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="editMission(row)" class="mission-row"></tr>
-      </table>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="editMission(row)" class="mission-row"></tr>
+        </table>
 
-      <mat-paginator
-        *ngIf="!loading() && missions().length > 0"
-        [length]="totalCount()"
-        [pageSize]="pageSize()"
-        [pageIndex]="pageIndex()"
-        [pageSizeOptions]="[5, 10, 20, 50]"
-        (page)="onPageChange($event)"
-        showFirstLastButtons>
-      </mat-paginator>
-    </div>
-  </mat-card>
-</div>
+        <mat-paginator
+          *ngIf="!vm.loading && vm.missions.length > 0"
+          [length]="vm.totalCount"
+          [pageSize]="vm.pageSize"
+          [pageIndex]="vm.pageIndex"
+          [pageSizeOptions]="[5, 10, 20, 50]"
+          (page)="onPageChange($event)"
+          showFirstLastButtons>
+        </mat-paginator>
+      </div>
+    </mat-card>
+  </div>
+</ng-container>

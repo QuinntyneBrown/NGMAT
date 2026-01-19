@@ -2,8 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-
-export type ValidationBannerStatus = 'success' | 'warning' | 'error' | 'info';
+import { ValidationBannerStatus } from './validation-banner.types';
 
 @Component({
   selector: 'g-validation-banner',

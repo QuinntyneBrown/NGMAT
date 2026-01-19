@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -15,10 +15,27 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
-import { Subject, takeUntil, debounceTime } from 'rxjs';
+import { BehaviorSubject, Subject, combineLatest, of } from 'rxjs';
+import { takeUntil, debounceTime, switchMap, map, catchError, tap, filter } from 'rxjs/operators';
 
 import { MissionService } from '../../services/mission.service';
 import { Mission, MissionStatus, MissionType, MissionTreeNode } from '../../models/mission.model';
+
+interface MissionEditorViewModel {
+  mission: Mission | null;
+  missionTree: MissionTreeNode[];
+  selectedNode: MissionTreeNode | null;
+  loading: boolean;
+  saving: boolean;
+  autoSaved: boolean;
+  isNew: boolean;
+  validationStatus: 'valid' | 'warning' | 'error';
+  validationMessage: string;
+  enableRealTimePropagation: boolean;
+  enableManeuverOptimization: boolean;
+  enableEphemerisOutput: boolean;
+  enableCollisionAvoidance: boolean;
+}
 
 @Component({
   selector: 'app-mission-editor',
@@ -38,10 +55,10 @@ import { Mission, MissionStatus, MissionType, MissionTreeNode } from '../../mode
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatMenuModule,
-    MatDividerModule
+    MatDividerModule,
   ],
   templateUrl: './mission-editor.html',
-  styleUrl: './mission-editor.scss'
+  styleUrl: './mission-editor.scss',
 })
 export class MissionEditor implements OnInit, OnDestroy {
   protected readonly missionTypes = Object.values(MissionType);
@@ -50,38 +67,87 @@ export class MissionEditor implements OnInit, OnDestroy {
     { value: 'UTC', label: 'UTC - Coordinated Universal Time' },
     { value: 'TAI', label: 'TAI - International Atomic Time' },
     { value: 'TDB', label: 'TDB - Barycentric Dynamical Time' },
-    { value: 'TT', label: 'TT - Terrestrial Time' }
+    { value: 'TT', label: 'TT - Terrestrial Time' },
   ];
   protected readonly epochFormatOptions = [
     { value: 'Gregorian', label: 'Gregorian' },
     { value: 'MJD', label: 'Modified Julian Date' },
-    { value: 'JD', label: 'Julian Date' }
+    { value: 'JD', label: 'Julian Date' },
   ];
   protected readonly centralBodyOptions = ['Earth', 'Moon', 'Mars', 'Sun'];
   protected readonly referenceFrameOptions = [
     { value: 'J2000', label: 'J2000 (Earth Centered Inertial)' },
     { value: 'ECEF', label: 'ECEF (Earth Centered Earth Fixed)' },
-    { value: 'ICRF', label: 'ICRF (International Celestial Reference Frame)' }
+    { value: 'ICRF', label: 'ICRF (International Celestial Reference Frame)' },
   ];
 
   protected form!: FormGroup;
-  protected mission = signal<Mission | null>(null);
-  protected missionTree = signal<MissionTreeNode[]>([]);
-  protected selectedNode = signal<MissionTreeNode | null>(null);
-  protected loading = signal(false);
-  protected saving = signal(false);
-  protected autoSaved = signal(false);
-  protected isNew = signal(false);
-  protected validationStatus = signal<'valid' | 'warning' | 'error'>('valid');
-  protected validationMessage = signal('All mission parameters are valid. Ready to propagate.');
 
-  // Mission options toggles
-  protected enableRealTimePropagation = signal(true);
-  protected enableManeuverOptimization = signal(true);
-  protected enableEphemerisOutput = signal(false);
-  protected enableCollisionAvoidance = signal(true);
+  private readonly mission$ = new BehaviorSubject<Mission | null>(null);
+  private readonly missionTree$ = new BehaviorSubject<MissionTreeNode[]>([]);
+  private readonly selectedNode$ = new BehaviorSubject<MissionTreeNode | null>(null);
+  private readonly loading$ = new BehaviorSubject<boolean>(false);
+  private readonly saving$ = new BehaviorSubject<boolean>(false);
+  private readonly autoSaved$ = new BehaviorSubject<boolean>(false);
+  private readonly isNew$ = new BehaviorSubject<boolean>(false);
+  private readonly validationStatus$ = new BehaviorSubject<'valid' | 'warning' | 'error'>('valid');
+  private readonly validationMessage$ = new BehaviorSubject<string>(
+    'All mission parameters are valid. Ready to propagate.'
+  );
+  private readonly enableRealTimePropagation$ = new BehaviorSubject<boolean>(true);
+  private readonly enableManeuverOptimization$ = new BehaviorSubject<boolean>(true);
+  private readonly enableEphemerisOutput$ = new BehaviorSubject<boolean>(false);
+  private readonly enableCollisionAvoidance$ = new BehaviorSubject<boolean>(true);
 
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
+
+  protected readonly viewModel$ = combineLatest([
+    this.mission$,
+    this.missionTree$,
+    this.selectedNode$,
+    this.loading$,
+    this.saving$,
+    this.autoSaved$,
+    this.isNew$,
+    this.validationStatus$,
+    this.validationMessage$,
+    this.enableRealTimePropagation$,
+    this.enableManeuverOptimization$,
+    this.enableEphemerisOutput$,
+    this.enableCollisionAvoidance$,
+  ]).pipe(
+    map(
+      ([
+        mission,
+        missionTree,
+        selectedNode,
+        loading,
+        saving,
+        autoSaved,
+        isNew,
+        validationStatus,
+        validationMessage,
+        enableRealTimePropagation,
+        enableManeuverOptimization,
+        enableEphemerisOutput,
+        enableCollisionAvoidance,
+      ]) => ({
+        mission,
+        missionTree,
+        selectedNode,
+        loading,
+        saving,
+        autoSaved,
+        isNew,
+        validationStatus,
+        validationMessage,
+        enableRealTimePropagation,
+        enableManeuverOptimization,
+        enableEphemerisOutput,
+        enableCollisionAvoidance,
+      })
+    )
+  );
 
   constructor(
     private fb: FormBuilder,
@@ -97,8 +163,8 @@ export class MissionEditor implements OnInit, OnDestroy {
     const id = this.route.snapshot.paramMap.get('id');
 
     if (id === 'new') {
-      this.isNew.set(true);
-      this.mission.set({
+      this.isNew$.next(true);
+      this.mission$.next({
         id: '',
         name: '',
         description: '',
@@ -106,13 +172,14 @@ export class MissionEditor implements OnInit, OnDestroy {
         status: MissionStatus.Draft,
         startEpoch: new Date(),
         ownerId: '',
-        createdAt: new Date()
+        createdAt: new Date(),
       });
+      this.initDefaultTree();
     } else if (id) {
       this.loadMission(id);
+      this.loadMissionTree(id);
     }
 
-    this.loadMissionTree();
     this.setupAutoSave();
   }
 
@@ -134,25 +201,28 @@ export class MissionEditor implements OnInit, OnDestroy {
       timeSystem: ['UTC'],
       epochFormat: ['Gregorian'],
       centralBody: ['Earth'],
-      referenceFrame: ['J2000']
+      referenceFrame: ['J2000'],
     });
   }
 
   private loadMission(id: string): void {
-    this.loading.set(true);
-    this.missionService.getMission(id).subscribe({
-      next: (mission) => {
-        if (mission) {
-          this.mission.set(mission);
-          this.patchForm(mission);
-        }
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-        this.snackBar.open('Failed to load mission', 'Close', { duration: 3000 });
-      }
-    });
+    this.loading$.next(true);
+    this.missionService
+      .getMission(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (mission) => {
+          if (mission) {
+            this.mission$.next(mission);
+            this.patchForm(mission);
+          }
+          this.loading$.next(false);
+        },
+        error: () => {
+          this.loading$.next(false);
+          this.snackBar.open('Failed to load mission', 'Close', { duration: 3000 });
+        },
+      });
   }
 
   private patchForm(mission: Mission): void {
@@ -167,64 +237,72 @@ export class MissionEditor implements OnInit, OnDestroy {
       startDate: this.formatDateForInput(startDate),
       startTime: this.formatTimeForInput(startDate),
       endDate: endDate ? this.formatDateForInput(endDate) : '',
-      endTime: endDate ? this.formatTimeForInput(endDate) : '12:00:00.000'
+      endTime: endDate ? this.formatTimeForInput(endDate) : '12:00:00.000',
     });
   }
 
-  private loadMissionTree(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id && id !== 'new') {
-      this.missionService.getMissionTree(id).subscribe({
+  private loadMissionTree(id: string): void {
+    this.missionService
+      .getMissionTree(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
         next: (tree) => {
-          this.missionTree.set(tree);
+          this.missionTree$.next(tree);
           if (tree.length > 0) {
-            this.selectedNode.set(tree[0]);
+            this.selectedNode$.next(tree[0]);
           }
-        }
+        },
       });
-    } else {
-      // Default tree for new mission
-      this.missionTree.set([{
+  }
+
+  private initDefaultTree(): void {
+    const defaultTree: MissionTreeNode[] = [
+      {
         id: 'mission',
         label: 'Mission',
         icon: 'rocket_launch',
         type: 'mission',
         expanded: true,
-        children: []
-      }]);
-      this.selectedNode.set(this.missionTree()[0]);
-    }
+        children: [],
+      },
+    ];
+    this.missionTree$.next(defaultTree);
+    this.selectedNode$.next(defaultTree[0]);
   }
 
   private setupAutoSave(): void {
     this.form.valueChanges
       .pipe(
         takeUntil(this.destroy$),
-        debounceTime(2000)
+        debounceTime(2000),
+        filter(() => this.form.valid && !this.isNew$.value && this.mission$.value !== null)
       )
       .subscribe(() => {
-        if (this.form.valid && !this.isNew() && this.mission()) {
-          this.autoSave();
-        }
+        this.autoSave();
       });
   }
 
   private autoSave(): void {
-    const mission = this.mission();
+    const mission = this.mission$.value;
     if (!mission) return;
 
     const formValue = this.form.value;
-    this.missionService.updateMission(mission.id, {
-      name: formValue.name,
-      description: formValue.description,
-      startEpoch: this.combineDateTime(formValue.startDate, formValue.startTime),
-      endEpoch: formValue.endDate ? this.combineDateTime(formValue.endDate, formValue.endTime) : undefined
-    }).subscribe({
-      next: () => {
-        this.autoSaved.set(true);
-        setTimeout(() => this.autoSaved.set(false), 2000);
-      }
-    });
+    this.missionService
+      .updateMission(mission.id, {
+        name: formValue.name,
+        description: formValue.description,
+        startEpoch: this.combineDateTime(formValue.startDate, formValue.startTime),
+        endEpoch: formValue.endDate
+          ? this.combineDateTime(formValue.endDate, formValue.endTime)
+          : undefined,
+      })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.autoSaved$.next(true);
+          setTimeout(() => this.autoSaved$.next(false), 2000);
+        },
+      });
   }
 
   protected onSave(): void {
@@ -233,46 +311,56 @@ export class MissionEditor implements OnInit, OnDestroy {
       return;
     }
 
-    this.saving.set(true);
+    this.saving$.next(true);
     const formValue = this.form.value;
 
-    if (this.isNew()) {
-      this.missionService.createMission({
-        name: formValue.name,
-        description: formValue.description,
-        type: formValue.type,
-        startEpoch: this.combineDateTime(formValue.startDate, formValue.startTime),
-        endEpoch: formValue.endDate ? this.combineDateTime(formValue.endDate, formValue.endTime) : undefined
-      }).subscribe({
-        next: (mission) => {
-          this.saving.set(false);
-          this.snackBar.open('Mission created successfully', 'Close', { duration: 3000 });
-          this.router.navigate(['/missions', mission.id, 'edit']);
-        },
-        error: () => {
-          this.saving.set(false);
-          this.snackBar.open('Failed to create mission', 'Close', { duration: 3000 });
-        }
-      });
+    if (this.isNew$.value) {
+      this.missionService
+        .createMission({
+          name: formValue.name,
+          description: formValue.description,
+          type: formValue.type,
+          startEpoch: this.combineDateTime(formValue.startDate, formValue.startTime),
+          endEpoch: formValue.endDate
+            ? this.combineDateTime(formValue.endDate, formValue.endTime)
+            : undefined,
+        })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (mission) => {
+            this.saving$.next(false);
+            this.snackBar.open('Mission created successfully', 'Close', { duration: 3000 });
+            this.router.navigate(['/missions', mission.id, 'edit']);
+          },
+          error: () => {
+            this.saving$.next(false);
+            this.snackBar.open('Failed to create mission', 'Close', { duration: 3000 });
+          },
+        });
     } else {
-      const mission = this.mission();
+      const mission = this.mission$.value;
       if (!mission) return;
 
-      this.missionService.updateMission(mission.id, {
-        name: formValue.name,
-        description: formValue.description,
-        startEpoch: this.combineDateTime(formValue.startDate, formValue.startTime),
-        endEpoch: formValue.endDate ? this.combineDateTime(formValue.endDate, formValue.endTime) : undefined
-      }).subscribe({
-        next: () => {
-          this.saving.set(false);
-          this.snackBar.open('Mission saved successfully', 'Close', { duration: 3000 });
-        },
-        error: () => {
-          this.saving.set(false);
-          this.snackBar.open('Failed to save mission', 'Close', { duration: 3000 });
-        }
-      });
+      this.missionService
+        .updateMission(mission.id, {
+          name: formValue.name,
+          description: formValue.description,
+          startEpoch: this.combineDateTime(formValue.startDate, formValue.startTime),
+          endEpoch: formValue.endDate
+            ? this.combineDateTime(formValue.endDate, formValue.endTime)
+            : undefined,
+        })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            this.saving$.next(false);
+            this.snackBar.open('Mission saved successfully', 'Close', { duration: 3000 });
+          },
+          error: () => {
+            this.saving$.next(false);
+            this.snackBar.open('Failed to save mission', 'Close', { duration: 3000 });
+          },
+        });
     }
   }
 
@@ -285,15 +373,18 @@ export class MissionEditor implements OnInit, OnDestroy {
   }
 
   protected onClone(): void {
-    const mission = this.mission();
+    const mission = this.mission$.value;
     if (!mission) return;
 
-    this.missionService.cloneMission(mission.id).subscribe({
-      next: (cloned) => {
-        this.snackBar.open('Mission cloned successfully', 'Close', { duration: 3000 });
-        this.router.navigate(['/missions', cloned.id, 'edit']);
-      }
-    });
+    this.missionService
+      .cloneMission(mission.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (cloned) => {
+          this.snackBar.open('Mission cloned successfully', 'Close', { duration: 3000 });
+          this.router.navigate(['/missions', cloned.id, 'edit']);
+        },
+      });
   }
 
   protected onExport(): void {
@@ -301,26 +392,31 @@ export class MissionEditor implements OnInit, OnDestroy {
   }
 
   protected onDelete(): void {
-    const mission = this.mission();
+    const mission = this.mission$.value;
     if (!mission) return;
 
     if (confirm(`Are you sure you want to delete "${mission.name}"?`)) {
-      this.missionService.deleteMission(mission.id).subscribe({
-        next: () => {
-          this.snackBar.open('Mission deleted', 'Close', { duration: 3000 });
-          this.router.navigate(['/missions']);
-        }
-      });
+      this.missionService
+        .deleteMission(mission.id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            this.snackBar.open('Mission deleted', 'Close', { duration: 3000 });
+            this.router.navigate(['/missions']);
+          },
+        });
     }
   }
 
   protected selectNode(node: MissionTreeNode): void {
-    this.selectedNode.set(node);
+    this.selectedNode$.next(node);
   }
 
   protected toggleNode(node: MissionTreeNode, event: Event): void {
     event.stopPropagation();
     node.expanded = !node.expanded;
+    // Trigger change detection by creating a new array reference
+    this.missionTree$.next([...this.missionTree$.value]);
   }
 
   protected addTreeItem(): void {
@@ -331,12 +427,31 @@ export class MissionEditor implements OnInit, OnDestroy {
     this.router.navigate(['/missions']);
   }
 
-  protected getValidationIcon(): string {
-    switch (this.validationStatus()) {
-      case 'valid': return 'check_circle';
-      case 'warning': return 'warning';
-      case 'error': return 'error';
+  protected getValidationIcon(status: 'valid' | 'warning' | 'error'): string {
+    switch (status) {
+      case 'valid':
+        return 'check_circle';
+      case 'warning':
+        return 'warning';
+      case 'error':
+        return 'error';
     }
+  }
+
+  protected onToggleRealTimePropagation(checked: boolean): void {
+    this.enableRealTimePropagation$.next(checked);
+  }
+
+  protected onToggleManeuverOptimization(checked: boolean): void {
+    this.enableManeuverOptimization$.next(checked);
+  }
+
+  protected onToggleEphemerisOutput(checked: boolean): void {
+    this.enableEphemerisOutput$.next(checked);
+  }
+
+  protected onToggleCollisionAvoidance(checked: boolean): void {
+    this.enableCollisionAvoidance$.next(checked);
   }
 
   private formatDateForInput(date: Date): string {

@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 import { AuthService } from '../../core';
 
 interface NavItem {
@@ -47,8 +48,8 @@ export class Shell {
     { label: 'Reports', icon: 'assessment', route: '/reports' },
   ];
 
-  protected readonly notificationCount = signal(3);
-  protected readonly sidenavOpened = signal(true);
+  protected readonly notificationCount$ = new BehaviorSubject<number>(3);
+  protected readonly sidenavOpened$ = new BehaviorSubject<boolean>(true);
 
   constructor(
     private readonly router: Router,
@@ -61,6 +62,6 @@ export class Shell {
   }
 
   protected toggleSidenav(): void {
-    this.sidenavOpened.update((value) => !value);
+    this.sidenavOpened$.next(!this.sidenavOpened$.value);
   }
 }

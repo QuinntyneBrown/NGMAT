@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -17,9 +17,21 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
+import { BehaviorSubject, Subject, combineLatest, of } from 'rxjs';
+import { switchMap, tap, catchError, takeUntil, map, startWith } from 'rxjs/operators';
 
 import { MissionService } from '../../services/mission.service';
-import { Mission, MissionStatus, MissionType } from '../../models/mission.model';
+import { Mission, MissionStatus, MissionType, MissionListResponse } from '../../models/mission.model';
+
+interface MissionsViewModel {
+  missions: Mission[];
+  loading: boolean;
+  totalCount: number;
+  pageSize: number;
+  pageIndex: number;
+  searchTerm: string;
+  statusFilter: MissionStatus | null;
+}
 
 @Component({
   selector: 'app-missions',
@@ -43,20 +55,68 @@ import { Mission, MissionStatus, MissionType } from '../../models/mission.model'
     MatDividerModule,
   ],
   templateUrl: './missions.html',
-  styleUrl: './missions.scss'
+  styleUrl: './missions.scss',
 })
-export class Missions implements OnInit {
+export class Missions implements OnInit, OnDestroy {
   protected readonly displayedColumns = ['name', 'type', 'status', 'startEpoch', 'updatedAt', 'actions'];
   protected readonly statusOptions = Object.values(MissionStatus);
   protected readonly typeOptions = Object.values(MissionType);
 
-  protected missions = signal<Mission[]>([]);
-  protected loading = signal(false);
-  protected totalCount = signal(0);
-  protected pageSize = signal(10);
-  protected pageIndex = signal(0);
-  protected searchTerm = signal('');
-  protected statusFilter = signal<MissionStatus | null>(null);
+  private readonly pageIndex$ = new BehaviorSubject<number>(0);
+  private readonly pageSize$ = new BehaviorSubject<number>(10);
+  private readonly searchTerm$ = new BehaviorSubject<string>('');
+  private readonly statusFilter$ = new BehaviorSubject<MissionStatus | null>(null);
+  private readonly refresh$ = new BehaviorSubject<void>(undefined);
+  private readonly destroy$ = new Subject<void>();
+
+  protected searchTermValue = '';
+  protected statusFilterValue: MissionStatus | null = null;
+
+  protected readonly viewModel$ = combineLatest([
+    this.pageIndex$,
+    this.pageSize$,
+    this.searchTerm$,
+    this.statusFilter$,
+    this.refresh$,
+  ]).pipe(
+    switchMap(([pageIndex, pageSize, searchTerm, statusFilter]) =>
+      this.missionService
+        .getMissions(pageIndex + 1, pageSize, statusFilter || undefined, searchTerm || undefined)
+        .pipe(
+          map((response) => ({
+            missions: response.items,
+            loading: false,
+            totalCount: response.totalCount,
+            pageSize,
+            pageIndex,
+            searchTerm,
+            statusFilter,
+          })),
+          startWith({
+            missions: [] as Mission[],
+            loading: true,
+            totalCount: 0,
+            pageSize,
+            pageIndex,
+            searchTerm,
+            statusFilter,
+          }),
+          catchError(() => {
+            this.snackBar.open('Failed to load missions', 'Close', { duration: 3000 });
+            return of({
+              missions: [] as Mission[],
+              loading: false,
+              totalCount: 0,
+              pageSize,
+              pageIndex,
+              searchTerm,
+              statusFilter,
+            });
+          })
+        )
+    ),
+    takeUntil(this.destroy$)
+  );
 
   constructor(
     private missionService: MissionService,
@@ -66,51 +126,43 @@ export class Missions implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadMissions();
+    this.searchTermValue = this.searchTerm$.value;
+    this.statusFilterValue = this.statusFilter$.value;
   }
 
-  protected loadMissions(): void {
-    this.loading.set(true);
-    this.missionService.getMissions(
-      this.pageIndex() + 1,
-      this.pageSize(),
-      this.statusFilter() || undefined,
-      this.searchTerm() || undefined
-    ).subscribe({
-      next: (response) => {
-        this.missions.set(response.items);
-        this.totalCount.set(response.totalCount);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-        this.snackBar.open('Failed to load missions', 'Close', { duration: 3000 });
-      }
-    });
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   protected onPageChange(event: PageEvent): void {
-    this.pageIndex.set(event.pageIndex);
-    this.pageSize.set(event.pageSize);
-    this.loadMissions();
+    this.pageIndex$.next(event.pageIndex);
+    this.pageSize$.next(event.pageSize);
   }
 
   protected onSearch(): void {
-    this.pageIndex.set(0);
-    this.loadMissions();
+    this.searchTerm$.next(this.searchTermValue);
+    this.pageIndex$.next(0);
   }
 
   protected onStatusFilterChange(status: MissionStatus | null): void {
-    this.statusFilter.set(status);
-    this.pageIndex.set(0);
-    this.loadMissions();
+    this.statusFilterValue = status;
+    this.statusFilter$.next(status);
+    this.pageIndex$.next(0);
   }
 
   protected clearFilters(): void {
-    this.searchTerm.set('');
-    this.statusFilter.set(null);
-    this.pageIndex.set(0);
-    this.loadMissions();
+    this.searchTermValue = '';
+    this.statusFilterValue = null;
+    this.searchTerm$.next('');
+    this.statusFilter$.next(null);
+    this.pageIndex$.next(0);
+  }
+
+  protected clearSearch(): void {
+    this.searchTermValue = '';
+    this.searchTerm$.next('');
+    this.pageIndex$.next(0);
   }
 
   protected createMission(): void {
@@ -126,28 +178,28 @@ export class Missions implements OnInit {
   }
 
   protected cloneMission(mission: Mission): void {
-    this.missionService.cloneMission(mission.id).subscribe({
+    this.missionService.cloneMission(mission.id).pipe(takeUntil(this.destroy$)).subscribe({
       next: (cloned) => {
         this.snackBar.open('Mission cloned successfully', 'Close', { duration: 3000 });
-        this.loadMissions();
+        this.refresh$.next();
         this.router.navigate(['/missions', cloned.id, 'edit']);
       },
       error: () => {
         this.snackBar.open('Failed to clone mission', 'Close', { duration: 3000 });
-      }
+      },
     });
   }
 
   protected deleteMission(mission: Mission): void {
     if (confirm(`Are you sure you want to delete "${mission.name}"?`)) {
-      this.missionService.deleteMission(mission.id).subscribe({
+      this.missionService.deleteMission(mission.id).pipe(takeUntil(this.destroy$)).subscribe({
         next: () => {
           this.snackBar.open('Mission deleted', 'Close', { duration: 3000 });
-          this.loadMissions();
+          this.refresh$.next();
         },
         error: () => {
           this.snackBar.open('Failed to delete mission', 'Close', { duration: 3000 });
-        }
+        },
       });
     }
   }
@@ -172,7 +224,7 @@ export class Missions implements OnInit {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   }
 
@@ -183,7 +235,7 @@ export class Missions implements OnInit {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   }
 }

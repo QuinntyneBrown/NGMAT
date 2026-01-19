@@ -10,7 +10,7 @@
 
   <span class="app-toolbar__spacer"></span>
 
-  <button mat-icon-button aria-label="Notifications" [matBadge]="notificationCount()" matBadgeColor="warn">
+  <button mat-icon-button aria-label="Notifications" [matBadge]="notificationCount$ | async" matBadgeColor="warn">
     <mat-icon>notifications</mat-icon>
   </button>
 
@@ -38,7 +38,7 @@
 <mat-sidenav-container class="app-sidenav-container">
   <mat-sidenav
     mode="side"
-    [opened]="sidenavOpened()"
+    [opened]="sidenavOpened$ | async"
     class="app-sidenav"
   >
     <mat-nav-list class="app-nav-list">

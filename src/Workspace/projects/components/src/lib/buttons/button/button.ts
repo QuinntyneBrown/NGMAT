@@ -2,9 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-
-export type ButtonVariant = 'primary' | 'stroked' | 'flat' | 'basic';
-export type ButtonSize = 'small' | 'medium' | 'large';
+import { ButtonVariant, ButtonSize } from './button.types';
 
 @Component({
   selector: 'g-button',

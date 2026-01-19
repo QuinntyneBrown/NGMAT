@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-export type StatusBadgeStatus = 'success' | 'warning' | 'error' | 'info';
+import { StatusBadgeStatus } from './status-badge.types';
 
 @Component({
   selector: 'g-status-badge',

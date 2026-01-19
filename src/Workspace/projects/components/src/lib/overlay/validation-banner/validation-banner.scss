@@ -5,17 +5,17 @@
   border-radius: 4px;
   gap: 12px;
 
-  .g-validation-banner-icon {
+  .g-validation-banner__icon {
     flex-shrink: 0;
   }
 
-  .g-validation-banner-message {
+  .g-validation-banner__message {
     flex: 1;
     font-size: 14px;
     line-height: 1.4;
   }
 
-  .g-validation-banner-close {
+  .g-validation-banner__close {
     flex-shrink: 0;
     margin: -8px -8px -8px 0;
   }
@@ -24,7 +24,7 @@
     background-color: #e8f5e9;
     color: #2e7d32;
 
-    .g-validation-banner-icon {
+    .g-validation-banner__icon {
       color: #2e7d32;
     }
   }
@@ -33,7 +33,7 @@
     background-color: #fff3e0;
     color: #e65100;
 
-    .g-validation-banner-icon {
+    .g-validation-banner__icon {
       color: #e65100;
     }
   }
@@ -42,7 +42,7 @@
     background-color: #ffebee;
     color: #c62828;
 
-    .g-validation-banner-icon {
+    .g-validation-banner__icon {
       color: #c62828;
     }
   }
@@ -51,7 +51,7 @@
     background-color: #e3f2fd;
     color: #1565c0;
 
-    .g-validation-banner-icon {
+    .g-validation-banner__icon {
       color: #1565c0;
     }
   }
