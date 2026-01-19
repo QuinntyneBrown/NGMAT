@@ -17,6 +17,11 @@
           <span class="mfa-banner__text">Secure login with optional two-factor authentication</span>
         </div>
 
+        <div *ngIf="errorMessage" class="error-banner">
+          <mat-icon class="error-banner__icon">error</mat-icon>
+          <span class="error-banner__text">{{ errorMessage }}</span>
+        </div>
+
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Email Address</mat-label>
@@ -76,10 +81,11 @@
             color="primary"
             type="submit"
             class="login-button"
-            [disabled]="!loginForm.valid"
+            [disabled]="!loginForm.valid || loading"
           >
-            <mat-icon>login</mat-icon>
-            Sign In
+            <mat-spinner *ngIf="loading" diameter="20" class="login-button__spinner"></mat-spinner>
+            <mat-icon *ngIf="!loading">login</mat-icon>
+            {{ loading ? 'Signing in...' : 'Sign In' }}
           </button>
         </form>
 

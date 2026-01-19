@@ -103,6 +103,27 @@
   }
 }
 
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background-color: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  border-radius: 4px;
+  margin-bottom: 24px;
+
+  &__icon {
+    color: #f44336;
+  }
+
+  &__text {
+    flex: 1;
+    font-size: 13px;
+    color: #f44336;
+  }
+}
+
 .form-field {
   width: 100%;
   margin-bottom: 16px;
@@ -135,6 +156,11 @@
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 1.25px;
+
+  &__spinner {
+    display: inline-block;
+    margin-right: 8px;
+  }
 }
 
 .divider {

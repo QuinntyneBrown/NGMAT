@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { Router } from '@angular/router';
+import { AuthService } from '../../core';
 
 interface NavItem {
   label: string;
@@ -49,10 +50,13 @@ export class Shell {
   protected readonly notificationCount = signal(3);
   protected readonly sidenavOpened = signal(true);
 
-  constructor(private readonly router: Router) {}
+  constructor(
+    private readonly router: Router,
+    private readonly authService: AuthService
+  ) {}
 
   protected logout(): void {
-    // TODO: Implement actual logout
+    this.authService.logout();
     this.router.navigate(['/login']);
   }
 
