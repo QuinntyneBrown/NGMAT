@@ -346,38 +346,55 @@ public static class VisualizationEndpoints
         [FromQuery] string format,
         [FromQuery] Guid? spacecraftId,
         [FromQuery] DateTime? startEpoch,
-        [FromQuery] DateTime? endEpoch)
+        [FromQuery] DateTime? endEpoch,
+        [FromQuery] bool includeCentralBody,
+        [FromQuery] double? scaleFactor,
+        [FromServices] VisualizationService visualizationService,
+        [FromServices] SceneExportService exportService)
     {
-        // Simplified export - in production would generate actual GLTF/OBJ files
         var exportFormat = format?.ToLower() switch
         {
-            "gltf" => ExportFormat.Gltf,
+            "gltf" or "glb" => ExportFormat.Gltf,
             "obj" => ExportFormat.Obj,
             _ => ExportFormat.Json
         };
 
-        var result = new SceneExportData
-        {
-            Format = exportFormat,
-            FileName = $"scene_{DateTime.UtcNow:yyyyMMddHHmmss}.{format?.ToLower() ?? "json"}",
-            MimeType = exportFormat switch
-            {
-                ExportFormat.Gltf => "model/gltf-binary",
-                ExportFormat.Obj => "model/obj",
-                _ => "application/json"
-            },
-            Data = System.Text.Encoding.UTF8.GetBytes("{\"message\": \"Export placeholder\"}")
-        };
+        var start = startEpoch ?? DateTime.UtcNow;
+        var end = endEpoch ?? start.AddHours(2);
+        var scId = spacecraftId ?? Guid.NewGuid();
 
-        return Results.Ok(new
+        // Generate orbit data
+        var orbitResult = visualizationService.GenerateOrbitPlot(scId, start, end, 60);
+        if (!orbitResult.IsSuccess)
         {
-            result.Id,
-            result.Format,
-            result.FileName,
+            return Results.Problem(orbitResult.Error.Message);
+        }
+
+        // Export to requested format
+        var result = exportService.ExportOrbit(
+            orbitResult.Value,
+            exportFormat,
+            includeCentralBody,
+            scaleFactor ?? 0.001);
+
+        // Return file download or metadata based on format
+        if (exportFormat == ExportFormat.Json)
+        {
+            return Results.Ok(new
+            {
+                result.Id,
+                result.Format,
+                result.FileName,
+                result.MimeType,
+                DataSizeBytes = result.Data.Length,
+                result.GeneratedAt
+            });
+        }
+
+        return Results.File(
+            result.Data,
             result.MimeType,
-            DataSizeBytes = result.Data.Length,
-            result.GeneratedAt
-        });
+            result.FileName);
     }
 
     // Parameters Handler
