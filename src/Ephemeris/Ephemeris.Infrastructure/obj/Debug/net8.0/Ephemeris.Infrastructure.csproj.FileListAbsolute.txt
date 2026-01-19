@@ -10,3 +10,11 @@ C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\obj\Debug\net8.0\Epheme
 C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\obj\Debug\net8.0\refint\Ephemeris.Infrastructure.dll
 C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\obj\Debug\net8.0\Ephemeris.Infrastructure.pdb
 C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\obj\Debug\net8.0\ref\Ephemeris.Infrastructure.dll
+C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\bin\Debug\net8.0\Ephemeris.Core.dll
+C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\bin\Debug\net8.0\Shared.Domain.dll
+C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\bin\Debug\net8.0\Shared.Messaging.Abstractions.dll
+C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\bin\Debug\net8.0\Ephemeris.Core.pdb
+C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\bin\Debug\net8.0\Shared.Domain.pdb
+C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\bin\Debug\net8.0\Shared.Messaging.Abstractions.pdb
+C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\obj\Debug\net8.0\Ephemeris.Infrastructure.csproj.AssemblyReference.cache
+C:\projects\NGMAT\src\Ephemeris\Ephemeris.Infrastructure\obj\Debug\net8.0\Ephemeri.3BF8FF71.Up2Date
