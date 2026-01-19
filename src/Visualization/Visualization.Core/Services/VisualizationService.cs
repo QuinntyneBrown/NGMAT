@@ -570,9 +570,10 @@ public sealed class VisualizationService
         // Update time to closest approach for all points
         if (closestApproach != null)
         {
+            var caEpoch = closestApproach.Epoch;
             foreach (var point in points)
             {
-                // Store time to CA in a new property if needed
+                point.TimeToClosestApproachSeconds = (caEpoch - point.Epoch).TotalSeconds;
             }
         }
 
