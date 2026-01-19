@@ -1,0 +1,40 @@
+<div class="dashboard">
+  <div class="dashboard__header">
+    <h1 class="dashboard__title">Mission Dashboard</h1>
+    <p class="dashboard__subtitle">Overview of your mission analysis workspace</p>
+  </div>
+
+  <div class="dashboard__stats">
+    <mat-card *ngFor="let stat of stats" class="stat-card">
+      <mat-card-content class="stat-card__content">
+        <div class="stat-card__icon-wrapper">
+          <mat-icon class="stat-card__icon">{{ stat.icon }}</mat-icon>
+        </div>
+        <div class="stat-card__info">
+          <div class="stat-card__value">{{ stat.value }}</div>
+          <div class="stat-card__label">{{ stat.label }}</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="dashboard__content">
+    <mat-card class="dashboard-card">
+      <mat-card-header>
+        <mat-card-title>Recent Missions</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Mission list will be displayed here</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="dashboard-card">
+      <mat-card-header>
+        <mat-card-title>Quick Actions</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Quick action buttons will be displayed here</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
