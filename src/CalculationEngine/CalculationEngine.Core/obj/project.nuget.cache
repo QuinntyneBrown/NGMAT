@@ -1,11 +1,17 @@
 {
   "version": 2,
-  "dgSpecHash": "UT2fQ2nCQqU=",
+  "dgSpecHash": "AbpXf/5P2DE=",
   "success": true,
-  "projectFilePath": "/home/runner/work/NGMAT/NGMAT/src/CalculationEngine/CalculationEngine.Core/CalculationEngine.Core.csproj",
+  "projectFilePath": "C:\\projects\\NGMAT\\src\\CalculationEngine\\CalculationEngine.Core\\CalculationEngine.Core.csproj",
   "expectedPackageFiles": [
-    "/home/runner/work/NGMAT/.codeql-scratch/dbs/csharp/working/packages/microsoft.netcore.app.ref/8.0.22/microsoft.netcore.app.ref.8.0.22.nupkg.sha512",
-    "/home/runner/work/NGMAT/.codeql-scratch/dbs/csharp/working/packages/microsoft.aspnetcore.app.ref/8.0.22/microsoft.aspnetcore.app.ref.8.0.22.nupkg.sha512"
+    "C:\\Users\\quinn\\.nuget\\packages\\mathnet.numerics\\5.0.0\\mathnet.numerics.5.0.0.nupkg.sha512",
+    "C:\\Users\\quinn\\.nuget\\packages\\messagepack\\3.1.4\\messagepack.3.1.4.nupkg.sha512",
+    "C:\\Users\\quinn\\.nuget\\packages\\messagepack.annotations\\3.1.4\\messagepack.annotations.3.1.4.nupkg.sha512",
+    "C:\\Users\\quinn\\.nuget\\packages\\messagepackanalyzer\\3.1.4\\messagepackanalyzer.3.1.4.nupkg.sha512",
+    "C:\\Users\\quinn\\.nuget\\packages\\microsoft.net.stringtools\\17.11.4\\microsoft.net.stringtools.17.11.4.nupkg.sha512",
+    "C:\\Users\\quinn\\.nuget\\packages\\system.io.pipelines\\10.0.2\\system.io.pipelines.10.0.2.nupkg.sha512",
+    "C:\\Users\\quinn\\.nuget\\packages\\system.text.encodings.web\\10.0.2\\system.text.encodings.web.10.0.2.nupkg.sha512",
+    "C:\\Users\\quinn\\.nuget\\packages\\system.text.json\\10.0.2\\system.text.json.10.0.2.nupkg.sha512"
   ],
   "logs": []
 }

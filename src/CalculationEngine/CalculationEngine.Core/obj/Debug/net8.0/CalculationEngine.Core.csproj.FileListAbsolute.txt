@@ -10,3 +10,7 @@ C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Core\obj\Debug\net8.0\
 C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Core\obj\Debug\net8.0\refint\CalculationEngine.Core.dll
 C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Core\obj\Debug\net8.0\CalculationEngine.Core.pdb
 C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Core\obj\Debug\net8.0\ref\CalculationEngine.Core.dll
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Core\bin\Debug\net8.0\Shared.Domain.dll
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Core\bin\Debug\net8.0\Shared.Domain.pdb
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Core\obj\Debug\net8.0\CalculationEngine.Core.csproj.AssemblyReference.cache
+C:\projects\NGMAT\src\CalculationEngine\CalculationEngine.Core\obj\Debug\net8.0\Calculat.E6D5AC19.Up2Date

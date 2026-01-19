@@ -3,7 +3,8 @@
     "allow": [
       "Bash(if not exist \"docs\" mkdir docs)",
       "Bash(test:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []
