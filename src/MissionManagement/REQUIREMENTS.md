@@ -93,16 +93,16 @@ The Mission Management Service handles the complete lifecycle of space missions 
 
 ---
 
-### MS-MM-6: Mission Status Management
+### MS-MM-6: Mission Status Management ✅
 
 **Description:** Manage mission lifecycle status.
 
 **Acceptance Criteria:**
-- [ ] Status transitions: Draft → Active → Completed → Archived
-- [ ] Invalid transitions rejected
-- [ ] MissionStatusChangedEvent published
-- [ ] REST API: PATCH /v1/missions/{id}/status
-- [ ] Audit trail of status changes
+- [x] Status transitions: Draft → Active → Completed → Archived
+- [x] Invalid transitions rejected
+- [x] MissionStatusChangedEvent published
+- [x] REST API: PATCH /v1/missions/{id}/status
+- [x] Audit trail of status changes
 
 ---
 
