@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { Login } from './pages/login/login';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { Shell } from './layout/shell/shell';
+import { Missions } from './pages/missions/missions';
+import { MissionEditor } from './pages/mission-editor/mission-editor';
 
 export const routes: Routes = [
   {
@@ -15,6 +17,22 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         component: Dashboard,
+      },
+      {
+        path: 'missions',
+        component: Missions,
+      },
+      {
+        path: 'missions/new',
+        component: MissionEditor,
+      },
+      {
+        path: 'missions/:id',
+        component: MissionEditor,
+      },
+      {
+        path: 'missions/:id/edit',
+        component: MissionEditor,
       },
       {
         path: '',

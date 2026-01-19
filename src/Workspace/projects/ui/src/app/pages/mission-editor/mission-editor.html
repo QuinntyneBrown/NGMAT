@@ -1,0 +1,369 @@
+<div class="mission-editor">
+  <!-- Toolbar -->
+  <header class="editor-toolbar">
+    <button mat-icon-button class="editor-toolbar__back" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="editor-toolbar__title-group">
+      <div class="editor-toolbar__title">{{ mission()?.name || 'New Mission' }}</div>
+      <div class="editor-toolbar__subtitle">
+        <span class="status-chip" [class.status-chip--active]="mission()?.status === 'Active'"
+              [class.status-chip--draft]="mission()?.status === 'Draft'">
+          {{ mission()?.status || 'Draft' }}
+        </span>
+        <span class="editor-toolbar__mode">Mission Editor</span>
+      </div>
+    </div>
+    <div class="editor-toolbar__spacer"></div>
+    <div class="status-indicator" *ngIf="autoSaved()">
+      <span class="status-indicator__dot"></span>
+      Auto-saved
+    </div>
+    <div class="editor-toolbar__actions">
+      <button mat-icon-button matTooltip="Undo">
+        <mat-icon>undo</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="Redo">
+        <mat-icon>redo</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="History">
+        <mat-icon>history</mat-icon>
+      </button>
+      <button mat-stroked-button color="primary" (click)="onRun()" [disabled]="isNew()">
+        <mat-icon>play_arrow</mat-icon>
+        Run
+      </button>
+      <button mat-flat-button color="primary" (click)="onSave()" [disabled]="saving()">
+        <mat-icon>save</mat-icon>
+        {{ saving() ? 'Saving...' : 'Save' }}
+      </button>
+    </div>
+  </header>
+
+  <div class="editor-main">
+    <!-- Sidebar / Tree -->
+    <aside class="editor-sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-header__title">Mission Structure</span>
+        <button mat-icon-button class="sidebar-header__add" (click)="addTreeItem()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+      <div class="sidebar-content">
+        <ng-container *ngFor="let node of missionTree()">
+          <ng-container *ngTemplateOutlet="treeNode; context: { $implicit: node, level: 0 }"></ng-container>
+        </ng-container>
+      </div>
+    </aside>
+
+    <!-- Editor Panel -->
+    <main class="editor-panel" *ngIf="!loading()">
+      <!-- Validation Summary -->
+      <div class="validation-summary" [class.validation-summary--warning]="validationStatus() === 'warning'"
+           [class.validation-summary--error]="validationStatus() === 'error'">
+        <mat-icon class="validation-summary__icon">{{ getValidationIcon() }}</mat-icon>
+        <span class="validation-summary__text">{{ validationMessage() }}</span>
+      </div>
+
+      <form [formGroup]="form">
+        <!-- Basic Information -->
+        <mat-expansion-panel class="editor-section" expanded>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <mat-icon class="section-icon">info</mat-icon>
+              Basic Information
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div class="form-row form-row--single">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Mission Name</mat-label>
+              <input matInput formControlName="name" placeholder="Enter mission name">
+              <mat-error *ngIf="form.get('name')?.hasError('required')">Mission name is required</mat-error>
+              <mat-error *ngIf="form.get('name')?.hasError('minlength')">Name must be at least 3 characters</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row form-row--single">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Description</mat-label>
+              <textarea matInput formControlName="description" placeholder="Enter mission description..." rows="4"></textarea>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Mission Type</mat-label>
+              <mat-select formControlName="type">
+                <mat-option *ngFor="let type of missionTypes" [value]="type">{{ type }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Status</mat-label>
+              <mat-select formControlName="status">
+                <mat-option *ngFor="let status of missionStatuses" [value]="status">{{ status }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </mat-expansion-panel>
+
+        <!-- Mission Epoch -->
+        <mat-expansion-panel class="editor-section" expanded>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <mat-icon class="section-icon">schedule</mat-icon>
+              Mission Epoch
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-field__label">Start Epoch (UTC)</label>
+              <div class="datetime-group">
+                <mat-form-field appearance="outline">
+                  <input matInput type="date" formControlName="startDate">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <input matInput formControlName="startTime" placeholder="HH:MM:SS.sss" class="mono-input">
+                </mat-form-field>
+              </div>
+              <span class="form-field__hint">Format: YYYY-MM-DD HH:MM:SS.sss</span>
+            </div>
+
+            <div class="form-field">
+              <label class="form-field__label">End Epoch (UTC)</label>
+              <div class="datetime-group">
+                <mat-form-field appearance="outline">
+                  <input matInput type="date" formControlName="endDate">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <input matInput formControlName="endTime" placeholder="HH:MM:SS.sss" class="mono-input">
+                </mat-form-field>
+              </div>
+              <span class="form-field__hint">{{ getDuration() }}</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Time System</mat-label>
+              <mat-select formControlName="timeSystem">
+                <mat-option *ngFor="let option of timeSystemOptions" [value]="option.value">
+                  {{ option.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Epoch Format</mat-label>
+              <mat-select formControlName="epochFormat">
+                <mat-option *ngFor="let option of epochFormatOptions" [value]="option.value">
+                  {{ option.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </mat-expansion-panel>
+
+        <!-- Central Body -->
+        <mat-expansion-panel class="editor-section" expanded>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <mat-icon class="section-icon">public</mat-icon>
+              Central Body
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Primary Body</mat-label>
+              <mat-select formControlName="centralBody">
+                <mat-option *ngFor="let body of centralBodyOptions" [value]="body">{{ body }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Reference Frame</mat-label>
+              <mat-select formControlName="referenceFrame">
+                <mat-option *ngFor="let frame of referenceFrameOptions" [value]="frame.value">
+                  {{ frame.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </mat-expansion-panel>
+
+        <!-- Mission Options -->
+        <mat-expansion-panel class="editor-section" expanded>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <mat-icon class="section-icon">settings</mat-icon>
+              Mission Options
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div class="toggle-row">
+            <div class="toggle-row__label">
+              <span class="toggle-row__title">Enable Real-Time Propagation</span>
+              <span class="toggle-row__description">Propagate orbit as mission runs with live updates</span>
+            </div>
+            <mat-slide-toggle [checked]="enableRealTimePropagation()"
+                              (change)="enableRealTimePropagation.set($event.checked)">
+            </mat-slide-toggle>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-row__label">
+              <span class="toggle-row__title">Include Maneuver Optimization</span>
+              <span class="toggle-row__description">Automatically optimize maneuver sequences</span>
+            </div>
+            <mat-slide-toggle [checked]="enableManeuverOptimization()"
+                              (change)="enableManeuverOptimization.set($event.checked)">
+            </mat-slide-toggle>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-row__label">
+              <span class="toggle-row__title">Generate Ephemeris Output</span>
+              <span class="toggle-row__description">Create spacecraft ephemeris files after propagation</span>
+            </div>
+            <mat-slide-toggle [checked]="enableEphemerisOutput()"
+                              (change)="enableEphemerisOutput.set($event.checked)">
+            </mat-slide-toggle>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-row__label">
+              <span class="toggle-row__title">Collision Avoidance Analysis</span>
+              <span class="toggle-row__description">Screen for potential conjunctions during mission</span>
+            </div>
+            <mat-slide-toggle [checked]="enableCollisionAvoidance()"
+                              (change)="enableCollisionAvoidance.set($event.checked)">
+            </mat-slide-toggle>
+          </div>
+        </mat-expansion-panel>
+      </form>
+
+      <div class="action-row">
+        <button mat-stroked-button (click)="onCancel()">Cancel</button>
+        <button mat-flat-button color="primary" (click)="onSave()" [disabled]="saving()">
+          {{ isNew() ? 'Create Mission' : 'Save Changes' }}
+        </button>
+      </div>
+    </main>
+
+    <!-- Loading state -->
+    <div class="editor-loading" *ngIf="loading()">
+      <mat-spinner diameter="48"></mat-spinner>
+    </div>
+
+    <!-- Properties Panel -->
+    <aside class="properties-panel" *ngIf="!isNew() && mission()">
+      <div class="properties-panel__header">Properties</div>
+      <div class="properties-panel__content">
+        <div class="property-group">
+          <div class="property-group__title">Mission</div>
+          <div class="property-item">
+            <span class="property-item__label">ID</span>
+            <span class="property-item__value">{{ mission()?.id }}</span>
+          </div>
+          <div class="property-item">
+            <span class="property-item__label">Created</span>
+            <span class="property-item__value">{{ mission()?.createdAt | date:'yyyy-MM-dd' }}</span>
+          </div>
+          <div class="property-item">
+            <span class="property-item__label">Modified</span>
+            <span class="property-item__value">{{ mission()?.updatedAt | date:'yyyy-MM-dd' }}</span>
+          </div>
+          <div class="property-item">
+            <span class="property-item__label">Owner</span>
+            <span class="property-item__value">{{ mission()?.ownerId }}</span>
+          </div>
+        </div>
+
+        <div class="property-group">
+          <div class="property-group__title">Statistics</div>
+          <div class="property-item">
+            <span class="property-item__label">Spacecraft</span>
+            <span class="property-item__value">3</span>
+          </div>
+          <div class="property-item">
+            <span class="property-item__label">Maneuvers</span>
+            <span class="property-item__value">2</span>
+          </div>
+          <div class="property-item">
+            <span class="property-item__label">Total Delta-V</span>
+            <span class="property-item__value">342.5 m/s</span>
+          </div>
+          <div class="property-item">
+            <span class="property-item__label">Duration</span>
+            <span class="property-item__value">2d 0h 0m</span>
+          </div>
+        </div>
+
+        <div class="property-group">
+          <div class="property-group__title">Orbital Parameters</div>
+          <div class="property-item">
+            <span class="property-item__label">Semi-major axis</span>
+            <span class="property-item__value">6928.14 km</span>
+          </div>
+          <div class="property-item">
+            <span class="property-item__label">Eccentricity</span>
+            <span class="property-item__value">0.0001</span>
+          </div>
+          <div class="property-item">
+            <span class="property-item__label">Inclination</span>
+            <span class="property-item__value">53.0°</span>
+          </div>
+          <div class="property-item">
+            <span class="property-item__label">RAAN</span>
+            <span class="property-item__value">120.5°</span>
+          </div>
+          <div class="property-item">
+            <span class="property-item__label">Arg. of Perigee</span>
+            <span class="property-item__value">0.0°</span>
+          </div>
+          <div class="property-item">
+            <span class="property-item__label">True Anomaly</span>
+            <span class="property-item__value">0.0°</span>
+          </div>
+        </div>
+
+        <div class="property-group">
+          <div class="property-group__title">Quick Actions</div>
+          <button mat-stroked-button class="quick-action-btn" (click)="onClone()">
+            <mat-icon>content_copy</mat-icon>
+            Clone Mission
+          </button>
+          <button mat-stroked-button class="quick-action-btn" (click)="onExport()">
+            <mat-icon>file_download</mat-icon>
+            Export
+          </button>
+          <button mat-stroked-button class="quick-action-btn quick-action-btn--danger" (click)="onDelete()">
+            <mat-icon>delete</mat-icon>
+            Delete
+          </button>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- Tree Node Template -->
+<ng-template #treeNode let-node let-level="level">
+  <div class="tree-item" [class.tree-item--selected]="selectedNode() === node"
+       [style.padding-left.px]="16 + level * 24" (click)="selectNode(node)">
+    <mat-icon class="tree-item__icon">{{ node.icon }}</mat-icon>
+    <span class="tree-item__label">{{ node.label }}</span>
+    <mat-icon class="tree-item__expand" *ngIf="node.children?.length"
+              (click)="toggleNode(node, $event)">
+      {{ node.expanded ? 'expand_more' : 'chevron_right' }}
+    </mat-icon>
+  </div>
+  <div class="tree-children" *ngIf="node.expanded && node.children?.length">
+    <ng-container *ngFor="let child of node.children">
+      <ng-container *ngTemplateOutlet="treeNode; context: { $implicit: child, level: level + 1 }"></ng-container>
+    </ng-container>
+  </div>
+</ng-template>
